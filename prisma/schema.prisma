@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Media {
+  id          Int         @id @default(1)
+  name        String?     @db.VarChar(100)
+  description String?     @db.VarChar(1000)
+  url         String      @unique
+  duration    Int? // video-only
+  body        String? // article-only
+  type        MediaType // discriminator
+  activity    BigInt?
+  Activities  Activities? @relation(fields: [activity], references: [id], map: "activity_fk")
+}
+
+enum MediaType {
+  Video
+  Image
+}
+
+model Activities {
+  id          BigInt   @id @default(1)
+  title       String   @db.VarChar(100)
+  description String?  @db.VarChar(1000)
+  duration    BigInt?
+  deadline    DateTime @db.Date
+  module      String?  @db.VarChar(100)
+  Modules     Modules? @relation(fields: [module], references: [code], onDelete: NoAction, onUpdate: NoAction, map: "fk_module")
+  Media       Media[]
+}
+
+/// This table has subclasses and requires additional setup for migrations. Visit https://pris.ly/d/table-inheritance for more info.
+model Modules {
+  id          BigInt       @id @default(1)
+  title       String       @db.VarChar(100)
+  code        String       @unique @db.VarChar(20)
+  description String?      @db.VarChar(1000)
+  activities  Activities[]
+}
