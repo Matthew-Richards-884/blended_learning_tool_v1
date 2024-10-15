@@ -47,6 +47,9 @@ importers:
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
+      tailwindcss:
+        specifier: ^3.4.14
+        version: 3.4.14
       tanstack-test:
         specifier: 'file:'
         version: blended_learning_tool_v1@file:(@types/node@22.7.5)(ioredis@5.4.1)(terser@5.34.1)(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.5)(terser@5.34.1))
@@ -84,9 +87,6 @@ importers:
       prettier-plugin-tailwindcss:
         specifier: ^0.6.8
         version: 0.6.8(prettier@3.3.3)
-      tailwindcss:
-        specifier: ^3.4.14
-        version: 3.4.14
       typescript:
         specifier: ^5.6.3
         version: 5.6.3
