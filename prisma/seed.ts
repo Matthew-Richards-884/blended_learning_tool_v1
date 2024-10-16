@@ -1,7 +1,9 @@
-import { PrismaClient, Prisma, MediaType } from '@prisma/client';
+import { PrismaClient, MediaType } from '@prisma/client';
+
 const prisma = new PrismaClient();
 
-export async function initialiseDatabase() {
+async function main() {
+  console.log("INTIALISING DATABASE")
   await prisma.modules.create({
     data: {
       title: 'Third Year Project',
@@ -21,7 +23,7 @@ export async function initialiseDatabase() {
       title: 'Activity A',
       description: 'A basic quiz',
       duration: 10,
-      deadline: new Date('2024-10-11-18:00'),
+      deadline: new Date('2024-10-11 18:00').toISOString(),
       module: 'COMP30020',
     },
   });
@@ -30,7 +32,7 @@ export async function initialiseDatabase() {
       title: 'Activity B',
       description: 'A video to watch',
       duration: 15,
-      deadline: new Date('2024-10-17-18:00'),
+      deadline: new Date('2024-10-17 18:00').toISOString(),
       module: 'COMP30020',
     },
   });
@@ -39,7 +41,7 @@ export async function initialiseDatabase() {
       title: 'Activity C',
       description: 'A more complex quiz',
       duration: 30,
-      deadline: new Date('2024-10-15-18:00'),
+      deadline: new Date('2024-10-15 18:00').toISOString(),
       module: 'COMP30020',
     },
   });
@@ -48,7 +50,7 @@ export async function initialiseDatabase() {
       title: 'Activity D',
       description: 'An exercise sheet',
       duration: 20,
-      deadline: new Date('2024-10-21-18:00'),
+      deadline: new Date('2024-10-21 18:00').toISOString(),
       module: 'COMP30020',
     },
   });
@@ -58,7 +60,7 @@ export async function initialiseDatabase() {
       title: 'Activity E',
       description: 'A basic quiz',
       duration: 10,
-      deadline: new Date('2024-10-11-18:00'),
+      deadline: new Date('2024-10-11 18:00').toISOString(),
       module: 'COMP50020',
     },
   });
@@ -67,7 +69,7 @@ export async function initialiseDatabase() {
       title: 'Activity F',
       description: 'A video to watch',
       duration: 15,
-      deadline: new Date('2024-10-17-18:00'),
+      deadline: new Date('2024-10-17 18:00').toISOString(),
       module: 'COMP50020',
     },
   });
@@ -76,7 +78,7 @@ export async function initialiseDatabase() {
       title: 'Activity G',
       description: 'A more complex quiz',
       duration: 30,
-      deadline: new Date('2024-10-15-18:00'),
+      deadline: new Date('2024-10-15 18:00').toISOString(),
       module: 'COMP50020',
     },
   });
@@ -85,11 +87,10 @@ export async function initialiseDatabase() {
       title: 'Activity H',
       description: 'An exercise sheet',
       duration: 20,
-      deadline: new Date('2024-10-21-18:00'),
+      deadline: new Date('2024-10-21 18:00').toISOString(),
       module: 'COMP50020',
     },
   });
-
 
   await prisma.media.create({
     data: {
@@ -97,14 +98,26 @@ export async function initialiseDatabase() {
       description: 'The introduction lecture to stuff',
       url: 'SomeLinkGoesHere',
       type: MediaType.Video,
-    }
-  })
+    },
+  });
   await prisma.media.create({
     data: {
       name: 'Intro to Lecture 2',
       description: 'The introduction lecture to stuff',
       url: 'SomeLinkGoesHere2',
       type: MediaType.Video,
-    }
-  })
+    },
+  });
+
+  console.log("INITIALISED")
 }
+
+main()
+  .then(async () => {
+    await prisma.$disconnect()
+  })
+  .catch(async (e) => {
+    console.error(e)
+    await prisma.$disconnect()
+    process.exit(1)
+  })

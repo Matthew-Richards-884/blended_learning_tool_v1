@@ -17,7 +17,7 @@ import { Route as NavbarIndexImport } from './routes/_navbar/index'
 import { Route as NavbarModulesIndexImport } from './routes/_navbar/modules/index'
 import { Route as NavbarModulesModuleIndexImport } from './routes/_navbar/modules/$module/index'
 import { Route as NavbarModulesModuleActivityIndexImport } from './routes/_navbar/modules/$module/activity/index'
-import { Route as NavbarModulesModuleActivityActivityImport } from './routes/_navbar/modules/$module/activity/$activity'
+import { Route as NavbarModulesModuleActivityIdImport } from './routes/_navbar/modules/$module/activity/$id'
 
 // Create/Update Routes
 
@@ -52,9 +52,9 @@ const NavbarModulesModuleActivityIndexRoute =
     getParentRoute: () => NavbarRoute,
   } as any)
 
-const NavbarModulesModuleActivityActivityRoute =
-  NavbarModulesModuleActivityActivityImport.update({
-    path: '/modules/$module/activity/$activity',
+const NavbarModulesModuleActivityIdRoute =
+  NavbarModulesModuleActivityIdImport.update({
+    path: '/modules/$module/activity/$id',
     getParentRoute: () => NavbarRoute,
   } as any)
 
@@ -97,11 +97,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NavbarModulesModuleIndexImport
       parentRoute: typeof NavbarImport
     }
-    '/_navbar/modules/$module/activity/$activity': {
-      id: '/_navbar/modules/$module/activity/$activity'
-      path: '/modules/$module/activity/$activity'
-      fullPath: '/modules/$module/activity/$activity'
-      preLoaderRoute: typeof NavbarModulesModuleActivityActivityImport
+    '/_navbar/modules/$module/activity/$id': {
+      id: '/_navbar/modules/$module/activity/$id'
+      path: '/modules/$module/activity/$id'
+      fullPath: '/modules/$module/activity/$id'
+      preLoaderRoute: typeof NavbarModulesModuleActivityIdImport
       parentRoute: typeof NavbarImport
     }
     '/_navbar/modules/$module/activity/': {
@@ -120,7 +120,7 @@ interface NavbarRouteChildren {
   NavbarIndexRoute: typeof NavbarIndexRoute
   NavbarModulesIndexRoute: typeof NavbarModulesIndexRoute
   NavbarModulesModuleIndexRoute: typeof NavbarModulesModuleIndexRoute
-  NavbarModulesModuleActivityActivityRoute: typeof NavbarModulesModuleActivityActivityRoute
+  NavbarModulesModuleActivityIdRoute: typeof NavbarModulesModuleActivityIdRoute
   NavbarModulesModuleActivityIndexRoute: typeof NavbarModulesModuleActivityIndexRoute
 }
 
@@ -128,8 +128,7 @@ const NavbarRouteChildren: NavbarRouteChildren = {
   NavbarIndexRoute: NavbarIndexRoute,
   NavbarModulesIndexRoute: NavbarModulesIndexRoute,
   NavbarModulesModuleIndexRoute: NavbarModulesModuleIndexRoute,
-  NavbarModulesModuleActivityActivityRoute:
-    NavbarModulesModuleActivityActivityRoute,
+  NavbarModulesModuleActivityIdRoute: NavbarModulesModuleActivityIdRoute,
   NavbarModulesModuleActivityIndexRoute: NavbarModulesModuleActivityIndexRoute,
 }
 
@@ -142,7 +141,7 @@ export interface FileRoutesByFullPath {
   '/': typeof NavbarIndexRoute
   '/modules': typeof NavbarModulesIndexRoute
   '/modules/$module': typeof NavbarModulesModuleIndexRoute
-  '/modules/$module/activity/$activity': typeof NavbarModulesModuleActivityActivityRoute
+  '/modules/$module/activity/$id': typeof NavbarModulesModuleActivityIdRoute
   '/modules/$module/activity': typeof NavbarModulesModuleActivityIndexRoute
 }
 
@@ -151,7 +150,7 @@ export interface FileRoutesByTo {
   '/': typeof NavbarIndexRoute
   '/modules': typeof NavbarModulesIndexRoute
   '/modules/$module': typeof NavbarModulesModuleIndexRoute
-  '/modules/$module/activity/$activity': typeof NavbarModulesModuleActivityActivityRoute
+  '/modules/$module/activity/$id': typeof NavbarModulesModuleActivityIdRoute
   '/modules/$module/activity': typeof NavbarModulesModuleActivityIndexRoute
 }
 
@@ -162,7 +161,7 @@ export interface FileRoutesById {
   '/_navbar/': typeof NavbarIndexRoute
   '/_navbar/modules/': typeof NavbarModulesIndexRoute
   '/_navbar/modules/$module/': typeof NavbarModulesModuleIndexRoute
-  '/_navbar/modules/$module/activity/$activity': typeof NavbarModulesModuleActivityActivityRoute
+  '/_navbar/modules/$module/activity/$id': typeof NavbarModulesModuleActivityIdRoute
   '/_navbar/modules/$module/activity/': typeof NavbarModulesModuleActivityIndexRoute
 }
 
@@ -174,7 +173,7 @@ export interface FileRouteTypes {
     | '/'
     | '/modules'
     | '/modules/$module'
-    | '/modules/$module/activity/$activity'
+    | '/modules/$module/activity/$id'
     | '/modules/$module/activity'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -182,7 +181,7 @@ export interface FileRouteTypes {
     | '/'
     | '/modules'
     | '/modules/$module'
-    | '/modules/$module/activity/$activity'
+    | '/modules/$module/activity/$id'
     | '/modules/$module/activity'
   id:
     | '__root__'
@@ -191,7 +190,7 @@ export interface FileRouteTypes {
     | '/_navbar/'
     | '/_navbar/modules/'
     | '/_navbar/modules/$module/'
-    | '/_navbar/modules/$module/activity/$activity'
+    | '/_navbar/modules/$module/activity/$id'
     | '/_navbar/modules/$module/activity/'
   fileRoutesById: FileRoutesById
 }
@@ -228,7 +227,7 @@ export const routeTree = rootRoute
         "/_navbar/",
         "/_navbar/modules/",
         "/_navbar/modules/$module/",
-        "/_navbar/modules/$module/activity/$activity",
+        "/_navbar/modules/$module/activity/$id",
         "/_navbar/modules/$module/activity/"
       ]
     },
@@ -247,8 +246,8 @@ export const routeTree = rootRoute
       "filePath": "_navbar/modules/$module/index.tsx",
       "parent": "/_navbar"
     },
-    "/_navbar/modules/$module/activity/$activity": {
-      "filePath": "_navbar/modules/$module/activity/$activity.tsx",
+    "/_navbar/modules/$module/activity/$id": {
+      "filePath": "_navbar/modules/$module/activity/$id.tsx",
       "parent": "/_navbar"
     },
     "/_navbar/modules/$module/activity/": {

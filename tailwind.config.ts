@@ -10,7 +10,6 @@ export default {
       },
     },
   },
-  purge: ['./app/**/*.{js,ts,jsx,tsx}', './App/**/*.{js,ts,jsx,tsx}'],
   plugins: [],
   important: true,
 } satisfies Config;

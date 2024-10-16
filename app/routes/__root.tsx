@@ -1,8 +1,8 @@
-import { createRootRoute } from '@tanstack/react-router'
-import { Outlet, ScrollRestoration } from '@tanstack/react-router'
-import { Body, Head, Html, Meta, Scripts } from '@tanstack/start'
-import * as React from 'react'
-import "../styles/main.css"
+import { createRootRoute } from '@tanstack/react-router';
+import { Outlet, ScrollRestoration } from '@tanstack/react-router';
+import { Body, Head, Html, Meta, Scripts } from '@tanstack/start';
+import * as React from 'react';
+import '../styles/main.css';
 
 export const Route = createRootRoute({
   meta: () => [
@@ -18,14 +18,14 @@ export const Route = createRootRoute({
     },
   ],
   component: RootComponent,
-})
+});
 
 function RootComponent() {
   return (
     <RootDocument>
-      <Outlet />
+        <Outlet />
     </RootDocument>
-  )
+  );
 }
 
 function RootDocument({ children }: { children: React.ReactNode }) {
@@ -40,5 +40,5 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <Scripts />
       </Body>
     </Html>
-  )
+  );
 }

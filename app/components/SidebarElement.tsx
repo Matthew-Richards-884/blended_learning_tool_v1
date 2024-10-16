@@ -1,19 +1,32 @@
+import { PrismaClient } from '@prisma/client';
+import { useQuery } from '@tanstack/react-query';
 import { Link } from '@tanstack/react-router';
-import { database } from '../database/database';
+import { createServerFn } from '@tanstack/start';
 
-export const SidebarElement = ({ module }: { module: string }) => (
-  <Link
-    to={'/modules/$module'}
-    params={{ module: module }}
-    className='relative flex h-12 bg-slate-800 py-1 text-white border-b border-slate-400'
-  >
-    <div className='absolute inset-1 h-min w-fit text-[0.5rem]'>
-      <span className=''>{module}</span>&nbsp;
-    </div>
-    <div className='flex h-min flex-auto self-end'>
-      <span className='rounded-md px-1 text-sm'>
-        {database.modules[module].title}
-      </span>
-    </div>
-  </Link>
-);
+const prisma = new PrismaClient();
+
+const getModule = createServerFn('GET', async (code: string) => {
+  return await prisma.modules.findFirst({ where: { code: code } });
+});
+
+export const SidebarElement = ({ module }: { module: string }) => {
+  const moduleData = useQuery({
+    queryKey: ['moduleData', module, 'SidebarElement'],
+    queryFn: () => getModule(module),
+  }).data;
+
+  return (
+    <Link
+      to={'/modules/$module'}
+      params={{ module: module }}
+      className="relative flex h-12 border-b border-slate-400 bg-slate-800 py-1 text-white"
+    >
+      <div className="absolute inset-1 h-min w-fit text-[0.5rem]">
+        <span className="">{module}</span>&nbsp;
+      </div>
+      <div className="flex h-min flex-auto self-end">
+        <span className="rounded-md px-1 text-sm">{moduleData?.title}</span>
+      </div>
+    </Link>
+  );
+};

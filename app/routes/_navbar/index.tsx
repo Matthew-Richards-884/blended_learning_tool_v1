@@ -2,23 +2,38 @@ import { createFileRoute } from '@tanstack/react-router';
 import { SidebarElement } from '../../components/SidebarElement';
 import { ActivityCard } from '../../components/ActivityCard';
 import { NAVBAR_HEIGHT } from '../_navbar';
-import { database } from '../../database/database';
 import { ActivityForm } from '../../components/ActivityForm';
+
+import { getActivities, getModules } from '../../util/databaseFunctions';
+import { useQuery } from '@tanstack/react-query';
+import { Suspense } from 'react';
 
 export const Route = createFileRoute('/_navbar/')({
   component: HomeComponent,
 });
 
 function HomeComponent() {
+  const activities = useQuery({
+    queryKey: ['activities'],
+    queryFn: () => getActivities(),
+  }).data;
+
+  const modules = useQuery({
+    queryKey: ['modules'],
+    queryFn: () => getModules(),
+  }).data;
+
   return (
-    <>
+    <Suspense>
       <div
         className={`col-span-1 h-[var(--sidebar-height)] overflow-auto bg-slate-400 pb-20`}
       >
-        Modules
-        {Object.keys(database.modules).map((k) => (
-          <SidebarElement module={k}></SidebarElement>
-        ))}
+        <p>Modules</p>
+        <div>
+          {modules?.map((v) => (
+            <SidebarElement module={v.code}></SidebarElement>
+          ))}
+        </div>
       </div>
       <div className="col-span-2 h-[var(--sidebar-height)] bg-slate-700 text-white">
         <h1 className="p-1 text-center text-2xl">Activities</h1>
@@ -30,16 +45,15 @@ function HomeComponent() {
             } as React.CSSProperties
           }
         >
-          {Object.entries(database.modules).map(([k, v]) =>
-            Object.entries(v.activities).map(([activity, a]) => (
-              <ActivityCard
-                name={a.name}
-                action={activity}
-                moduleCode={k}
-                deadline={new Date(a.deadline)}
-              ></ActivityCard>
-            ))
-          )}
+          {activities?.map((v) => (
+            <ActivityCard
+              key={v.id}
+              name={v.title}
+              action={v.id}
+              moduleCode={v.module ? v.module : 'ERROR'}
+              deadline={new Date(v.deadline as any)}
+            ></ActivityCard>
+          ))}
         </div>
       </div>
       <div className="col-span-2 h-[var(--sidebar-height)] bg-slate-700 text-white">
@@ -52,12 +66,11 @@ function HomeComponent() {
             } as React.CSSProperties
           }
         >
-          <div className='text-black'>
+          <div className="text-black">
             <ActivityForm></ActivityForm>
           </div>
-          
         </div>
       </div>
-    </>
+    </Suspense>
   );
 }

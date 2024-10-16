@@ -8,14 +8,14 @@ datasource db {
 }
 
 model Media {
-  id          Int         @id @default(1)
+  id          Int         @id @default(autoincrement())
   name        String?     @db.VarChar(100)
   description String?     @db.VarChar(1000)
   url         String      @unique
   duration    Int? // video-only
   body        String? // article-only
   type        MediaType // discriminator
-  activity    BigInt?
+  activity    Int?
   Activities  Activities? @relation(fields: [activity], references: [id], map: "activity_fk")
 }
 
@@ -25,10 +25,10 @@ enum MediaType {
 }
 
 model Activities {
-  id          BigInt   @id @default(1)
+  id          Int   @id @default(autoincrement())
   title       String   @db.VarChar(100)
   description String?  @db.VarChar(1000)
-  duration    BigInt?
+  duration    Int?
   deadline    DateTime @db.Date
   module      String?  @db.VarChar(100)
   Modules     Modules? @relation(fields: [module], references: [code], onDelete: NoAction, onUpdate: NoAction, map: "fk_module")
@@ -37,7 +37,7 @@ model Activities {
 
 /// This table has subclasses and requires additional setup for migrations. Visit https://pris.ly/d/table-inheritance for more info.
 model Modules {
-  id          BigInt       @id @default(1)
+  id          Int       @id @default(autoincrement())
   title       String       @db.VarChar(100)
   code        String       @unique @db.VarChar(20)
   description String?      @db.VarChar(1000)
