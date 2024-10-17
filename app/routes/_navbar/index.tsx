@@ -35,8 +35,8 @@ function HomeComponent() {
           ))}
         </div>
       </div>
-      <div className="col-span-2 h-[var(--sidebar-height)] bg-slate-700 text-white">
-        <h1 className="p-1 text-center text-2xl">Activities</h1>
+      <div className="col-span-2 h-[var(--sidebar-height)] bg-slate-300 text-black">
+        <h1 className="p-1 text-center text-2xl bg-slate-400">Activities</h1>
         <div
           className={`h-[var(--element-height)] overflow-auto`}
           style={

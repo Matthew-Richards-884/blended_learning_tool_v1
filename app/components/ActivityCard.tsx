@@ -13,13 +13,17 @@ export const ActivityCard = ({
   moduleCode: string;
   deadline: Date;
 }) => (
-  <div className="relative m-1 flex h-12 rounded-md bg-purple-800 p-1 text-white">
+  <Link
+    to="/modules/$module/activity/$id"
+    params={{ module: moduleCode, id: action.toString() }}
+    className="relative m-1 flex h-14 rounded-md bg-slate-400 p-1 text-black"
+  >
     <div className="absolute inset-1 h-min w-fit text-[0.5rem]">
       <span className="">{moduleCode}</span>&nbsp;
       <span className="">
         {
           useQuery({
-            queryKey: ['moduleData', moduleCode, "ActivityCard"],
+            queryKey: ['moduleData', moduleCode, 'ActivityCard'],
             queryFn: () => getModule(moduleCode),
           }).data?.title
         }
@@ -33,10 +37,10 @@ export const ActivityCard = ({
       <Link
         to="/modules/$module/activity/$id"
         params={{ module: moduleCode, id: action.toString() }}
-        className="rounded-md bg-slate-400 px-1"
+        className="px-1"
       >
         Details
       </Link>
     </div>
-  </div>
+  </Link>
 );
