@@ -31,12 +31,12 @@ function HomeComponent() {
         <p>Modules</p>
         <div>
           {modules?.map((v) => (
-            <SidebarElement module={v.code}></SidebarElement>
+            <SidebarElement key={v.id} module={v.code}></SidebarElement>
           ))}
         </div>
       </div>
       <div className="col-span-2 h-[var(--sidebar-height)] bg-slate-300 text-black">
-        <h1 className="p-1 text-center text-2xl bg-slate-400">Activities</h1>
+        <h1 className="bg-slate-400 p-1 text-center text-2xl">Activities</h1>
         <div
           className={`h-[var(--element-height)] overflow-auto`}
           style={
@@ -66,9 +66,7 @@ function HomeComponent() {
             } as React.CSSProperties
           }
         >
-          <div className="text-black">
-            <ActivityForm></ActivityForm>
-          </div>
+          <div className="text-black"></div>
         </div>
       </div>
     </Suspense>

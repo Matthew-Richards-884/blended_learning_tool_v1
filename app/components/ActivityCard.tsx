@@ -34,13 +34,14 @@ export const ActivityCard = ({
     </div>
     <div className="flex h-min flex-auto self-end">
       <p className="flex-auto">{name}</p>
-      <Link
+      <span>Details</span>
+      {/* <Link
         to="/modules/$module/activity/$id"
         params={{ module: moduleCode, id: action.toString() }}
         className="px-1"
       >
         Details
-      </Link>
+      </Link> */}
     </div>
   </Link>
 );

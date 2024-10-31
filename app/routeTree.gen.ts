@@ -14,10 +14,14 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as OriginalindexImport } from './routes/original_index'
 import { Route as NavbarImport } from './routes/_navbar'
 import { Route as NavbarIndexImport } from './routes/_navbar/index'
-import { Route as NavbarModulesIndexImport } from './routes/_navbar/modules/index'
-import { Route as NavbarModulesModuleIndexImport } from './routes/_navbar/modules/$module/index'
-import { Route as NavbarModulesModuleActivityIndexImport } from './routes/_navbar/modules/$module/activity/index'
-import { Route as NavbarModulesModuleActivityIdImport } from './routes/_navbar/modules/$module/activity/$id'
+import { Route as NavbarAuthedImport } from './routes/_navbar/_authed'
+import { Route as NavbarSignupIndexImport } from './routes/_navbar/signup/index'
+import { Route as NavbarLoginIndexImport } from './routes/_navbar/login/index'
+import { Route as NavbarAuthedModulesIndexImport } from './routes/_navbar/_authed/modules/index'
+import { Route as NavbarAuthedModulesModuleIndexImport } from './routes/_navbar/_authed/modules/$module/index'
+import { Route as NavbarAuthedModulesModuleActivityIndexImport } from './routes/_navbar/_authed/modules/$module/activity/index'
+import { Route as NavbarAuthedModulesModuleActivityIdIndexImport } from './routes/_navbar/_authed/modules/$module/activity/$id/index'
+import { Route as NavbarAuthedModulesModuleActivityIdBeginImport } from './routes/_navbar/_authed/modules/$module/activity/$id/begin'
 
 // Create/Update Routes
 
@@ -36,26 +40,48 @@ const NavbarIndexRoute = NavbarIndexImport.update({
   getParentRoute: () => NavbarRoute,
 } as any)
 
-const NavbarModulesIndexRoute = NavbarModulesIndexImport.update({
+const NavbarAuthedRoute = NavbarAuthedImport.update({
+  id: '/_authed',
+  getParentRoute: () => NavbarRoute,
+} as any)
+
+const NavbarSignupIndexRoute = NavbarSignupIndexImport.update({
+  path: '/signup/',
+  getParentRoute: () => NavbarRoute,
+} as any)
+
+const NavbarLoginIndexRoute = NavbarLoginIndexImport.update({
+  path: '/login/',
+  getParentRoute: () => NavbarRoute,
+} as any)
+
+const NavbarAuthedModulesIndexRoute = NavbarAuthedModulesIndexImport.update({
   path: '/modules/',
-  getParentRoute: () => NavbarRoute,
+  getParentRoute: () => NavbarAuthedRoute,
 } as any)
 
-const NavbarModulesModuleIndexRoute = NavbarModulesModuleIndexImport.update({
-  path: '/modules/$module/',
-  getParentRoute: () => NavbarRoute,
-} as any)
-
-const NavbarModulesModuleActivityIndexRoute =
-  NavbarModulesModuleActivityIndexImport.update({
-    path: '/modules/$module/activity/',
-    getParentRoute: () => NavbarRoute,
+const NavbarAuthedModulesModuleIndexRoute =
+  NavbarAuthedModulesModuleIndexImport.update({
+    path: '/modules/$module/',
+    getParentRoute: () => NavbarAuthedRoute,
   } as any)
 
-const NavbarModulesModuleActivityIdRoute =
-  NavbarModulesModuleActivityIdImport.update({
-    path: '/modules/$module/activity/$id',
-    getParentRoute: () => NavbarRoute,
+const NavbarAuthedModulesModuleActivityIndexRoute =
+  NavbarAuthedModulesModuleActivityIndexImport.update({
+    path: '/modules/$module/activity/',
+    getParentRoute: () => NavbarAuthedRoute,
+  } as any)
+
+const NavbarAuthedModulesModuleActivityIdIndexRoute =
+  NavbarAuthedModulesModuleActivityIdIndexImport.update({
+    path: '/modules/$module/activity/$id/',
+    getParentRoute: () => NavbarAuthedRoute,
+  } as any)
+
+const NavbarAuthedModulesModuleActivityIdBeginRoute =
+  NavbarAuthedModulesModuleActivityIdBeginImport.update({
+    path: '/modules/$module/activity/$id/begin',
+    getParentRoute: () => NavbarAuthedRoute,
   } as any)
 
 // Populate the FileRoutesByPath interface
@@ -76,6 +102,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OriginalindexImport
       parentRoute: typeof rootRoute
     }
+    '/_navbar/_authed': {
+      id: '/_navbar/_authed'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof NavbarAuthedImport
+      parentRoute: typeof NavbarImport
+    }
     '/_navbar/': {
       id: '/_navbar/'
       path: '/'
@@ -83,86 +116,139 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NavbarIndexImport
       parentRoute: typeof NavbarImport
     }
-    '/_navbar/modules/': {
-      id: '/_navbar/modules/'
+    '/_navbar/login/': {
+      id: '/_navbar/login/'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof NavbarLoginIndexImport
+      parentRoute: typeof NavbarImport
+    }
+    '/_navbar/signup/': {
+      id: '/_navbar/signup/'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof NavbarSignupIndexImport
+      parentRoute: typeof NavbarImport
+    }
+    '/_navbar/_authed/modules/': {
+      id: '/_navbar/_authed/modules/'
       path: '/modules'
       fullPath: '/modules'
-      preLoaderRoute: typeof NavbarModulesIndexImport
-      parentRoute: typeof NavbarImport
+      preLoaderRoute: typeof NavbarAuthedModulesIndexImport
+      parentRoute: typeof NavbarAuthedImport
     }
-    '/_navbar/modules/$module/': {
-      id: '/_navbar/modules/$module/'
+    '/_navbar/_authed/modules/$module/': {
+      id: '/_navbar/_authed/modules/$module/'
       path: '/modules/$module'
       fullPath: '/modules/$module'
-      preLoaderRoute: typeof NavbarModulesModuleIndexImport
-      parentRoute: typeof NavbarImport
+      preLoaderRoute: typeof NavbarAuthedModulesModuleIndexImport
+      parentRoute: typeof NavbarAuthedImport
     }
-    '/_navbar/modules/$module/activity/$id': {
-      id: '/_navbar/modules/$module/activity/$id'
-      path: '/modules/$module/activity/$id'
-      fullPath: '/modules/$module/activity/$id'
-      preLoaderRoute: typeof NavbarModulesModuleActivityIdImport
-      parentRoute: typeof NavbarImport
-    }
-    '/_navbar/modules/$module/activity/': {
-      id: '/_navbar/modules/$module/activity/'
+    '/_navbar/_authed/modules/$module/activity/': {
+      id: '/_navbar/_authed/modules/$module/activity/'
       path: '/modules/$module/activity'
       fullPath: '/modules/$module/activity'
-      preLoaderRoute: typeof NavbarModulesModuleActivityIndexImport
-      parentRoute: typeof NavbarImport
+      preLoaderRoute: typeof NavbarAuthedModulesModuleActivityIndexImport
+      parentRoute: typeof NavbarAuthedImport
+    }
+    '/_navbar/_authed/modules/$module/activity/$id/begin': {
+      id: '/_navbar/_authed/modules/$module/activity/$id/begin'
+      path: '/modules/$module/activity/$id/begin'
+      fullPath: '/modules/$module/activity/$id/begin'
+      preLoaderRoute: typeof NavbarAuthedModulesModuleActivityIdBeginImport
+      parentRoute: typeof NavbarAuthedImport
+    }
+    '/_navbar/_authed/modules/$module/activity/$id/': {
+      id: '/_navbar/_authed/modules/$module/activity/$id/'
+      path: '/modules/$module/activity/$id'
+      fullPath: '/modules/$module/activity/$id'
+      preLoaderRoute: typeof NavbarAuthedModulesModuleActivityIdIndexImport
+      parentRoute: typeof NavbarAuthedImport
     }
   }
 }
 
 // Create and export the route tree
 
+interface NavbarAuthedRouteChildren {
+  NavbarAuthedModulesIndexRoute: typeof NavbarAuthedModulesIndexRoute
+  NavbarAuthedModulesModuleIndexRoute: typeof NavbarAuthedModulesModuleIndexRoute
+  NavbarAuthedModulesModuleActivityIndexRoute: typeof NavbarAuthedModulesModuleActivityIndexRoute
+  NavbarAuthedModulesModuleActivityIdBeginRoute: typeof NavbarAuthedModulesModuleActivityIdBeginRoute
+  NavbarAuthedModulesModuleActivityIdIndexRoute: typeof NavbarAuthedModulesModuleActivityIdIndexRoute
+}
+
+const NavbarAuthedRouteChildren: NavbarAuthedRouteChildren = {
+  NavbarAuthedModulesIndexRoute: NavbarAuthedModulesIndexRoute,
+  NavbarAuthedModulesModuleIndexRoute: NavbarAuthedModulesModuleIndexRoute,
+  NavbarAuthedModulesModuleActivityIndexRoute:
+    NavbarAuthedModulesModuleActivityIndexRoute,
+  NavbarAuthedModulesModuleActivityIdBeginRoute:
+    NavbarAuthedModulesModuleActivityIdBeginRoute,
+  NavbarAuthedModulesModuleActivityIdIndexRoute:
+    NavbarAuthedModulesModuleActivityIdIndexRoute,
+}
+
+const NavbarAuthedRouteWithChildren = NavbarAuthedRoute._addFileChildren(
+  NavbarAuthedRouteChildren,
+)
+
 interface NavbarRouteChildren {
+  NavbarAuthedRoute: typeof NavbarAuthedRouteWithChildren
   NavbarIndexRoute: typeof NavbarIndexRoute
-  NavbarModulesIndexRoute: typeof NavbarModulesIndexRoute
-  NavbarModulesModuleIndexRoute: typeof NavbarModulesModuleIndexRoute
-  NavbarModulesModuleActivityIdRoute: typeof NavbarModulesModuleActivityIdRoute
-  NavbarModulesModuleActivityIndexRoute: typeof NavbarModulesModuleActivityIndexRoute
+  NavbarLoginIndexRoute: typeof NavbarLoginIndexRoute
+  NavbarSignupIndexRoute: typeof NavbarSignupIndexRoute
 }
 
 const NavbarRouteChildren: NavbarRouteChildren = {
+  NavbarAuthedRoute: NavbarAuthedRouteWithChildren,
   NavbarIndexRoute: NavbarIndexRoute,
-  NavbarModulesIndexRoute: NavbarModulesIndexRoute,
-  NavbarModulesModuleIndexRoute: NavbarModulesModuleIndexRoute,
-  NavbarModulesModuleActivityIdRoute: NavbarModulesModuleActivityIdRoute,
-  NavbarModulesModuleActivityIndexRoute: NavbarModulesModuleActivityIndexRoute,
+  NavbarLoginIndexRoute: NavbarLoginIndexRoute,
+  NavbarSignupIndexRoute: NavbarSignupIndexRoute,
 }
 
 const NavbarRouteWithChildren =
   NavbarRoute._addFileChildren(NavbarRouteChildren)
 
 export interface FileRoutesByFullPath {
-  '': typeof NavbarRouteWithChildren
+  '': typeof NavbarAuthedRouteWithChildren
   '/original_index': typeof OriginalindexRoute
   '/': typeof NavbarIndexRoute
-  '/modules': typeof NavbarModulesIndexRoute
-  '/modules/$module': typeof NavbarModulesModuleIndexRoute
-  '/modules/$module/activity/$id': typeof NavbarModulesModuleActivityIdRoute
-  '/modules/$module/activity': typeof NavbarModulesModuleActivityIndexRoute
+  '/login': typeof NavbarLoginIndexRoute
+  '/signup': typeof NavbarSignupIndexRoute
+  '/modules': typeof NavbarAuthedModulesIndexRoute
+  '/modules/$module': typeof NavbarAuthedModulesModuleIndexRoute
+  '/modules/$module/activity': typeof NavbarAuthedModulesModuleActivityIndexRoute
+  '/modules/$module/activity/$id/begin': typeof NavbarAuthedModulesModuleActivityIdBeginRoute
+  '/modules/$module/activity/$id': typeof NavbarAuthedModulesModuleActivityIdIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/original_index': typeof OriginalindexRoute
+  '': typeof NavbarAuthedRouteWithChildren
   '/': typeof NavbarIndexRoute
-  '/modules': typeof NavbarModulesIndexRoute
-  '/modules/$module': typeof NavbarModulesModuleIndexRoute
-  '/modules/$module/activity/$id': typeof NavbarModulesModuleActivityIdRoute
-  '/modules/$module/activity': typeof NavbarModulesModuleActivityIndexRoute
+  '/login': typeof NavbarLoginIndexRoute
+  '/signup': typeof NavbarSignupIndexRoute
+  '/modules': typeof NavbarAuthedModulesIndexRoute
+  '/modules/$module': typeof NavbarAuthedModulesModuleIndexRoute
+  '/modules/$module/activity': typeof NavbarAuthedModulesModuleActivityIndexRoute
+  '/modules/$module/activity/$id/begin': typeof NavbarAuthedModulesModuleActivityIdBeginRoute
+  '/modules/$module/activity/$id': typeof NavbarAuthedModulesModuleActivityIdIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/_navbar': typeof NavbarRouteWithChildren
   '/original_index': typeof OriginalindexRoute
+  '/_navbar/_authed': typeof NavbarAuthedRouteWithChildren
   '/_navbar/': typeof NavbarIndexRoute
-  '/_navbar/modules/': typeof NavbarModulesIndexRoute
-  '/_navbar/modules/$module/': typeof NavbarModulesModuleIndexRoute
-  '/_navbar/modules/$module/activity/$id': typeof NavbarModulesModuleActivityIdRoute
-  '/_navbar/modules/$module/activity/': typeof NavbarModulesModuleActivityIndexRoute
+  '/_navbar/login/': typeof NavbarLoginIndexRoute
+  '/_navbar/signup/': typeof NavbarSignupIndexRoute
+  '/_navbar/_authed/modules/': typeof NavbarAuthedModulesIndexRoute
+  '/_navbar/_authed/modules/$module/': typeof NavbarAuthedModulesModuleIndexRoute
+  '/_navbar/_authed/modules/$module/activity/': typeof NavbarAuthedModulesModuleActivityIndexRoute
+  '/_navbar/_authed/modules/$module/activity/$id/begin': typeof NavbarAuthedModulesModuleActivityIdBeginRoute
+  '/_navbar/_authed/modules/$module/activity/$id/': typeof NavbarAuthedModulesModuleActivityIdIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -171,27 +257,38 @@ export interface FileRouteTypes {
     | ''
     | '/original_index'
     | '/'
+    | '/login'
+    | '/signup'
     | '/modules'
     | '/modules/$module'
-    | '/modules/$module/activity/$id'
     | '/modules/$module/activity'
+    | '/modules/$module/activity/$id/begin'
+    | '/modules/$module/activity/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/original_index'
+    | ''
     | '/'
+    | '/login'
+    | '/signup'
     | '/modules'
     | '/modules/$module'
-    | '/modules/$module/activity/$id'
     | '/modules/$module/activity'
+    | '/modules/$module/activity/$id/begin'
+    | '/modules/$module/activity/$id'
   id:
     | '__root__'
     | '/_navbar'
     | '/original_index'
+    | '/_navbar/_authed'
     | '/_navbar/'
-    | '/_navbar/modules/'
-    | '/_navbar/modules/$module/'
-    | '/_navbar/modules/$module/activity/$id'
-    | '/_navbar/modules/$module/activity/'
+    | '/_navbar/login/'
+    | '/_navbar/signup/'
+    | '/_navbar/_authed/modules/'
+    | '/_navbar/_authed/modules/$module/'
+    | '/_navbar/_authed/modules/$module/activity/'
+    | '/_navbar/_authed/modules/$module/activity/$id/begin'
+    | '/_navbar/_authed/modules/$module/activity/$id/'
   fileRoutesById: FileRoutesById
 }
 
@@ -224,35 +321,57 @@ export const routeTree = rootRoute
     "/_navbar": {
       "filePath": "_navbar.tsx",
       "children": [
+        "/_navbar/_authed",
         "/_navbar/",
-        "/_navbar/modules/",
-        "/_navbar/modules/$module/",
-        "/_navbar/modules/$module/activity/$id",
-        "/_navbar/modules/$module/activity/"
+        "/_navbar/login/",
+        "/_navbar/signup/"
       ]
     },
     "/original_index": {
       "filePath": "original_index.tsx"
     },
+    "/_navbar/_authed": {
+      "filePath": "_navbar/_authed.tsx",
+      "parent": "/_navbar",
+      "children": [
+        "/_navbar/_authed/modules/",
+        "/_navbar/_authed/modules/$module/",
+        "/_navbar/_authed/modules/$module/activity/",
+        "/_navbar/_authed/modules/$module/activity/$id/begin",
+        "/_navbar/_authed/modules/$module/activity/$id/"
+      ]
+    },
     "/_navbar/": {
       "filePath": "_navbar/index.tsx",
       "parent": "/_navbar"
     },
-    "/_navbar/modules/": {
-      "filePath": "_navbar/modules/index.tsx",
+    "/_navbar/login/": {
+      "filePath": "_navbar/login/index.tsx",
       "parent": "/_navbar"
     },
-    "/_navbar/modules/$module/": {
-      "filePath": "_navbar/modules/$module/index.tsx",
+    "/_navbar/signup/": {
+      "filePath": "_navbar/signup/index.tsx",
       "parent": "/_navbar"
     },
-    "/_navbar/modules/$module/activity/$id": {
-      "filePath": "_navbar/modules/$module/activity/$id.tsx",
-      "parent": "/_navbar"
+    "/_navbar/_authed/modules/": {
+      "filePath": "_navbar/_authed/modules/index.tsx",
+      "parent": "/_navbar/_authed"
     },
-    "/_navbar/modules/$module/activity/": {
-      "filePath": "_navbar/modules/$module/activity/index.tsx",
-      "parent": "/_navbar"
+    "/_navbar/_authed/modules/$module/": {
+      "filePath": "_navbar/_authed/modules/$module/index.tsx",
+      "parent": "/_navbar/_authed"
+    },
+    "/_navbar/_authed/modules/$module/activity/": {
+      "filePath": "_navbar/_authed/modules/$module/activity/index.tsx",
+      "parent": "/_navbar/_authed"
+    },
+    "/_navbar/_authed/modules/$module/activity/$id/begin": {
+      "filePath": "_navbar/_authed/modules/$module/activity/$id/begin.tsx",
+      "parent": "/_navbar/_authed"
+    },
+    "/_navbar/_authed/modules/$module/activity/$id/": {
+      "filePath": "_navbar/_authed/modules/$module/activity/$id/index.tsx",
+      "parent": "/_navbar/_authed"
     }
   }
 }

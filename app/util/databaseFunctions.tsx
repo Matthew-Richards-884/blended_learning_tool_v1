@@ -1,9 +1,21 @@
 import { PrismaClient } from '@prisma/client';
-import { useQuery } from '@tanstack/react-query';
+import crypto from 'node:crypto';
 
 import { createServerFn } from '@tanstack/start';
 
 const prisma = new PrismaClient();
+
+export function hashPassword(password: string) {
+  return new Promise<string>((resolve, reject) => {
+    crypto.pbkdf2(password, 'salt', 100000, 64, 'sha256', (err, derivedKey) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(derivedKey.toString('hex'));
+      }
+    });
+  });
+}
 
 export const getActivities = createServerFn('GET', async () => {
   return await prisma.activities.findMany({
@@ -18,6 +30,87 @@ export const getActivity = createServerFn('GET', async (id: number) => {
     },
   });
 });
+
+export const getAllQuizMCQInfo = createServerFn('GET', async (quiz: number) => {
+  return await prisma.quizQuestions.findMany({
+    where: {
+      quiz: quiz,
+      type: 'radio',
+    },
+    include: {
+      QuizQuestionAnswers: {
+        select: {
+          id: true,
+          title: true,
+          description: true,
+          question: true,
+          correct: false,
+        },
+      },
+    },
+  });
+});
+
+export const getQuizQuestionOrder = createServerFn(
+  'GET',
+  async (quiz: number) => {
+    return await prisma.quizQuestionOrder.findMany({
+      where: {
+        quizID: quiz
+      },
+    });
+  }
+);
+
+export const getAllQuizTextInfo = createServerFn(
+  'GET',
+  async (quiz: number) => {
+    return await prisma.quizQuestions.findMany({
+      where: {
+        quiz: quiz,
+        type: 'text',
+      },
+    });
+  }
+);
+
+export const getQuizzesByActivity = createServerFn(
+  'GET',
+  async (activity: number) => {
+    return await prisma.quizzes.findMany({
+      where: {
+        activity: activity,
+      },
+    });
+  }
+);
+
+export const getQuizQuestion = createServerFn('GET', async (id: number) => {
+  return await prisma.quizQuestions.findFirst({
+    where: {
+      id: id,
+    },
+  });
+});
+
+export const getQuizQuestions = createServerFn('GET', async (quiz: number) => {
+  return await prisma.quizQuestions.findMany({
+    where: {
+      quiz: quiz,
+    },
+  });
+});
+
+export const getQuizQuestionAnswers = createServerFn(
+  'GET',
+  async (question: number) => {
+    return await prisma.quizQuestionAnswers.findMany({
+      where: {
+        question: question,
+      },
+    });
+  }
+);
 
 export const getModules = createServerFn('GET', async () => {
   return await prisma.modules.findMany();

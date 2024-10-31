@@ -1,25 +1,28 @@
-import { createFileRoute } from '@tanstack/react-router';
-import { createServerFn } from '@tanstack/start';
-import { PrismaClient } from '@prisma/client';
-import { useQuery } from '@tanstack/react-query';
-import { getActivitiesByModule, getModule } from '../../../../util/databaseFunctions';
+import { createFileRoute } from '@tanstack/react-router'
+import { createServerFn } from '@tanstack/start'
+import { PrismaClient } from '@prisma/client'
+import { useQuery } from '@tanstack/react-query'
+import {
+  getActivitiesByModule,
+  getModule,
+} from '../../../../../util/databaseFunctions'
 
-export const Route = createFileRoute('/_navbar/modules/$module/')({
+export const Route = createFileRoute('/_navbar/_authed/modules/$module/')({
   component: ModuleComponent,
-});
+})
 
 function ModuleComponent() {
-  const { module } = Route.useParams();
+  const { module } = Route.useParams()
 
   const moduleData = useQuery({
     queryKey: ['moduleData', module],
     queryFn: () => getModule(module),
-  }).data;
+  }).data
 
   const activities = useQuery({
     queryKey: ['activitiesByModule', module],
     queryFn: () => getActivitiesByModule(module),
-  }).data;
+  }).data
 
   return (
     <div className="w-screen overflow-auto bg-slate-700 p-2 text-white">
@@ -45,5 +48,5 @@ function ModuleComponent() {
         </div>
       ))}
     </div>
-  );
+  )
 }

@@ -9,8 +9,8 @@ datasource db {
 
 model Media {
   id          Int         @id @default(autoincrement())
-  name        String?     @db.VarChar(100)
-  description String?     @db.VarChar(1000)
+  name        String?
+  description String?
   url         String      @unique
   duration    Int? // video-only
   body        String? // article-only
@@ -24,22 +24,104 @@ enum MediaType {
   Image
 }
 
-model Activities {
-  id          Int   @id @default(autoincrement())
-  title       String   @db.VarChar(100)
-  description String?  @db.VarChar(1000)
-  duration    Int?
-  deadline    DateTime @db.Date
-  module      String?  @db.VarChar(100)
-  Modules     Modules? @relation(fields: [module], references: [code], onDelete: NoAction, onUpdate: NoAction, map: "fk_module")
-  Media       Media[]
+model Users {
+  email           String            @id @unique
+  username        String
+  password        String
+  type            UserType
+  modules         Modules[]
+  QuizSubmissions QuizSubmissions[]
 }
 
-/// This table has subclasses and requires additional setup for migrations. Visit https://pris.ly/d/table-inheritance for more info.
-model Modules {
+enum UserType {
+  Student
+  Teacher
+  Admin
+}
+
+model Activities {
   id          Int       @id @default(autoincrement())
-  title       String       @db.VarChar(100)
-  code        String       @unique @db.VarChar(20)
-  description String?      @db.VarChar(1000)
+  title       String
+  description String?
+  duration    Int?
+  deadline    DateTime  @db.Date
+  module      String?
+  Modules     Modules?  @relation(fields: [module], references: [code], onDelete: NoAction, onUpdate: NoAction, map: "fk_module")
+  Media       Media[]
+  Quizzes     Quizzes[]
+}
+
+model Modules {
+  id          Int          @id @default(autoincrement())
+  title       String
+  code        String       @unique
+  description String?
   activities  Activities[]
+  Users       Users[]
+}
+
+model QuizSubmissions {
+  id           Int      @id @default(autoincrement())
+  quizID       Int
+  Quizzes      Quizzes  @relation(fields: [quizID], references: [id])
+  userID       String
+  Users        Users    @relation(fields: [userID], references: [email])
+  completeDate DateTime @db.Date
+
+  QuizResponses QuizResponses[]
+}
+
+model QuizResponses {
+  submissionID        Int
+  QuizSubmissions     QuizSubmissions     @relation(fields: [submissionID], references: [id])
+  questionID          Int
+  QuizQuestions       QuizQuestions       @relation(fields: [questionID], references: [id])
+  answerID            Int
+  QuizQuestionAnswers QuizQuestionAnswers @relation(fields: [answerID], references: [id])
+
+  @@id([submissionID, questionID])
+}
+
+model QuizQuestionAnswers {
+  id            Int             @id @default(autoincrement())
+  title         String
+  description   String?
+  correct       Boolean
+  question      Int?
+  QuizQuestions QuizQuestions?  @relation(fields: [question], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_question")
+  QuizResponses QuizResponses[]
+}
+
+model QuizQuestionOrder {
+  quizID        Int
+  Quizzes       Quizzes       @relation(fields: [quizID], references: [id])
+  questionID    Int
+  QuizQuestions QuizQuestions @relation(fields: [questionID], references: [id])
+  position      Int
+
+  @@id([quizID, questionID])
+}
+
+model QuizQuestions {
+  id                  Int                   @id @default(autoincrement())
+  title               String
+  description         String?
+  type                String
+  quiz                Int?
+  Quizzes             Quizzes?              @relation(fields: [quiz], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_quiz")
+  QuizQuestionAnswers QuizQuestionAnswers[]
+
+  QuizResponses     QuizResponses[]
+  QuizQuestionOrder QuizQuestionOrder[]
+}
+
+model Quizzes {
+  id                Int                 @id @default(autoincrement())
+  title             String              @db.VarChar(100)
+  description       String?             @db.VarChar(1000)
+  activity          Int?
+  Activities        Activities?         @relation(fields: [activity], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_activity")
+  questions         QuizQuestions[]
+  QuizSubmissions   QuizSubmissions[]
+  QuizQuestionOrder QuizQuestionOrder[]
 }
