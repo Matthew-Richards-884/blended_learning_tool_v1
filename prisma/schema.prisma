@@ -71,13 +71,40 @@ model QuizSubmissions {
   QuizResponses QuizResponses[]
 }
 
+enum QuestionType {
+  button
+  checkbox
+  color
+  date
+  datetime_local
+  email
+  file
+  hidden
+  image
+  month
+  number
+  password
+  radio
+  range
+  reset
+  search
+  submit
+  tel
+  text
+  time
+  url
+  week
+}
+
 model QuizResponses {
   submissionID        Int
-  QuizSubmissions     QuizSubmissions     @relation(fields: [submissionID], references: [id])
+  QuizSubmissions     QuizSubmissions      @relation(fields: [submissionID], references: [id])
   questionID          Int
-  QuizQuestions       QuizQuestions       @relation(fields: [questionID], references: [id])
-  answerID            Int
-  QuizQuestionAnswers QuizQuestionAnswers @relation(fields: [answerID], references: [id])
+  QuizQuestions       QuizQuestions        @relation(fields: [questionID], references: [id])
+  type                QuestionType
+  answerID            Int?
+  QuizQuestionAnswers QuizQuestionAnswers? @relation(fields: [answerID], references: [id])
+  answer              String?
 
   @@id([submissionID, questionID])
 }
@@ -106,7 +133,7 @@ model QuizQuestions {
   id                  Int                   @id @default(autoincrement())
   title               String
   description         String?
-  type                String
+  type                QuestionType
   quiz                Int?
   Quizzes             Quizzes?              @relation(fields: [quiz], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_quiz")
   QuizQuestionAnswers QuizQuestionAnswers[]

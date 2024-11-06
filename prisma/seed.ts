@@ -1,4 +1,4 @@
-import { PrismaClient, MediaType } from '@prisma/client';
+import { PrismaClient, MediaType, QuestionType } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -122,7 +122,7 @@ async function main() {
     data: {
       title: 'Quiz Question 1',
       description: 'The first quiz question',
-      type: 'radio',
+      type: QuestionType.radio,
       quiz: 1,
     },
   });
@@ -170,7 +170,7 @@ async function main() {
     data: {
       title: 'Quiz Question 2',
       description: 'The second quiz question',
-      type: 'text',
+      type: QuestionType.text,
       quiz: 1,
     },
   });
@@ -194,7 +194,7 @@ async function main() {
     data: {
       title: 'Quiz Question 3',
       description: 'The third quiz question',
-      type: 'radio',
+      type: QuestionType.radio,
       quiz: 1,
     },
   });
@@ -226,7 +226,7 @@ async function main() {
     data: {
       title: 'Quiz Question 4',
       description: 'The fourth quiz question',
-      type: 'text',
+      type: QuestionType.text,
       quiz: 1,
     },
   });

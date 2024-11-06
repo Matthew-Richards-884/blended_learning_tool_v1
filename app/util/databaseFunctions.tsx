@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import crypto from 'node:crypto';
 
 import { createServerFn } from '@tanstack/start';
@@ -56,7 +56,7 @@ export const getQuizQuestionOrder = createServerFn(
   async (quiz: number) => {
     return await prisma.quizQuestionOrder.findMany({
       where: {
-        quizID: quiz
+        quizID: quiz,
       },
     });
   }
@@ -100,6 +100,28 @@ export const getQuizQuestions = createServerFn('GET', async (quiz: number) => {
     },
   });
 });
+
+export const createQuizSubmission = createServerFn(
+  'GET',
+  async (params: { quizID: number; userID: string; completeDate: Date }) => {
+    return await prisma.quizSubmissions.create({
+      data: {
+        quizID: params.quizID,
+        userID: params.userID,
+        completeDate: params.completeDate,
+      },
+    });
+  }
+);
+
+export type responseType = { data: Prisma.QuizResponsesGetPayload<{}>[] };
+
+export const createQuizResponse = createServerFn(
+  'GET',
+  async (data: responseType) => {
+    return await prisma.quizResponses.createMany(data);
+  }
+);
 
 export const getQuizQuestionAnswers = createServerFn(
   'GET',

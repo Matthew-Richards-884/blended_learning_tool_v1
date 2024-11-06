@@ -1,11 +1,6 @@
 import { FieldApi } from '@tanstack/react-form';
 import { FieldInfo } from './FieldInfo';
 import { z } from 'zod';
-import { skipToken, useQuery } from '@tanstack/react-query';
-import {
-  getQuizQuestion,
-  getQuizQuestionAnswers,
-} from '../util/databaseFunctions';
 
 export type formType =
   | 'button'
@@ -82,7 +77,7 @@ export function QuizQuestion({
                 <input
                   id={field.name}
                   name={field.name}
-                  value={field.state.value}
+                  value={field.state.value ?? ''}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                   className="flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
@@ -91,14 +86,14 @@ export function QuizQuestion({
               <FieldInfo field={field} />
             </>
           ) : (
-            <fieldset>
+            <>
               <legend className="text-sm font-semibold leading-6 text-gray-900">
                 {questionInfo.title}
               </legend>
               <p className="mt-1 text-sm leading-6 text-gray-600">
                 {questionInfo.description}
               </p>
-              <div className="mt-6 space-y-6">
+              <div className="mt-6 space-y-6" role="radiogroup">
                 {questionInfo.QuizQuestionAnswers.map((answer) => (
                   <div
                     className="flex items-center gap-x-3"
@@ -108,6 +103,8 @@ export function QuizQuestion({
                       id={
                         'question-' + questionInfo.id + ':answer-' + answer.id
                       }
+                      value={answer.id}
+                      onChange={(e) => field.handleChange(e.target.value)}
                       name={questionInfo.title}
                       type="radio"
                       className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
@@ -122,11 +119,12 @@ export function QuizQuestion({
                     </label>
                   </div>
                 ))}
+                <FieldInfo field={field} />
               </div>
-            </fieldset>
+            </>
           )
         }
-      ></form.Field>
+      />
     </div>
   );
 }
