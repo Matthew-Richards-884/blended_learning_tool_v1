@@ -2,9 +2,11 @@ import { useForm } from '@tanstack/react-form';
 import { zodValidator } from '@tanstack/zod-form-adapter';
 import { QuizQuestion } from './QuizQuestion';
 import { skipToken, useMutation, useQuery } from '@tanstack/react-query';
+import { QuestionType } from '@prisma/client';
 import {
   createQuizResponse,
   createQuizSubmission,
+  getAllQuizInfo,
   getAllQuizMCQInfo,
   getAllQuizTextInfo,
   getQuizQuestionOrder,
@@ -14,10 +16,11 @@ import {
 import { Suspense } from 'react';
 import { getAppSession } from './Navbar';
 import { Prisma, PrismaClient } from '@prisma/client';
+import { EditQuizQuestion } from './EditQuizQuestion';
 
 const prisma = new PrismaClient();
 
-export const ActivityForm = ({ activityID }) => {
+export const EditQuizForm = ({ activityID }) => {
   const quizSubmissionMutation = useMutation({
     mutationFn: (params: { quizIDT; sessionT; dateT }) =>
       createQuizSubmission({
@@ -43,19 +46,11 @@ export const ActivityForm = ({ activityID }) => {
 
   const quizID = quizzes && quizzes.length > 0 ? quizzes[0].id : undefined;
 
-  const radioInfo = useQuery({
+  const quizInfo = useQuery({
     queryKey: ['quizInfo', 'radio', activityID, 'activityForm', quizID],
-    queryFn: quizID ? () => getAllQuizMCQInfo(quizID) : skipToken,
+    queryFn: quizID ? () => getAllQuizInfo(quizID) : skipToken,
     enabled: !!(quizzes && quizzes.length > 0),
   }).data;
-  console.log('INFO', radioInfo);
-
-  const textInfo = useQuery({
-    queryKey: ['quizInfo', 'text', activityID, 'activityForm', quizID],
-    queryFn: quizID ? () => getAllQuizTextInfo(quizID) : skipToken,
-    enabled: !!(quizzes && quizzes.length > 0),
-  }).data;
-  console.log('INFO 2', textInfo);
 
   const questionOrder = useQuery({
     queryKey: ['questionOrder', activityID, 'activityForm', quizID],
@@ -65,8 +60,7 @@ export const ActivityForm = ({ activityID }) => {
   questionOrder?.reverse();
   console.log('INFO', questionOrder);
 
-  const questions =
-    radioInfo && textInfo ? radioInfo.concat(textInfo as any) : [];
+  const questions = quizInfo ?? [];
 
   type questionsObject = {
     [id: number]: (typeof questions)[0];
@@ -144,11 +138,11 @@ export const ActivityForm = ({ activityID }) => {
           <Suspense fallback={<div>Loading!</div>}>
             {orderedQuestionArray?.map((question) => {
               return question ? (
-                <QuizQuestion
+                <EditQuizQuestion
                   form={form}
                   questionInfo={question}
                   key={question.id}
-                ></QuizQuestion>
+                ></EditQuizQuestion>
               ) : (
                 <div>Something Went Wrong</div>
               );

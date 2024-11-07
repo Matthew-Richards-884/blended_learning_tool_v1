@@ -19,8 +19,6 @@ export const loginFn = createServerFn(
     payload: {
       email: string;
       password: string;
-      username: string;
-      userType: UserType;
     },
     { request }
   ) => {
@@ -56,6 +54,7 @@ export const loginFn = createServerFn(
     // Store the user's email in the session
     await session.update({
       userEmail: user.email,
+      userType: user.type
     });
   }
 );
@@ -87,8 +86,6 @@ function LoginComponent() {
         loginMutation.mutate({
           email: formData.get('email') as string,
           password: formData.get('password') as string,
-          username: formData.get('username') as string,
-          userType: UserType.Student,
         });
       }}
       afterSubmit={

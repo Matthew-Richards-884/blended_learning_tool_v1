@@ -1,27 +1,27 @@
-import { createFileRoute } from '@tanstack/react-router';
-import { SidebarElement } from '../../components/SidebarElement';
-import { ActivityCard } from '../../components/ActivityCard';
-import { NAVBAR_HEIGHT } from '../_navbar';
-import { ActivityForm } from '../../components/ActivityForm';
+import { createFileRoute } from '@tanstack/react-router'
+import { SidebarElement } from '../../../components/SidebarElement'
+import { ActivityCard } from '../../../components/ActivityCard'
+import { NAVBAR_HEIGHT } from '../../_navbar'
+import { ActivityForm } from '../../../components/ActivityForm'
 
-import { getActivities, getModules } from '../../util/databaseFunctions';
-import { useQuery } from '@tanstack/react-query';
-import { Suspense } from 'react';
+import { getActivities, getModules } from '../../../util/databaseFunctions'
+import { useQuery } from '@tanstack/react-query'
+import { Suspense } from 'react'
 
-export const Route = createFileRoute('/_navbar/')({
+export const Route = createFileRoute('/_navbar/_authed/')({
   component: HomeComponent,
-});
+})
 
 function HomeComponent() {
   const activities = useQuery({
     queryKey: ['activities'],
     queryFn: () => getActivities(),
-  }).data;
+  }).data
 
   const modules = useQuery({
     queryKey: ['modules'],
     queryFn: () => getModules(),
-  }).data;
+  }).data
 
   return (
     <Suspense>
@@ -70,5 +70,5 @@ function HomeComponent() {
         </div>
       </div>
     </Suspense>
-  );
+  )
 }

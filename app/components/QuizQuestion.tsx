@@ -1,6 +1,7 @@
 import { FieldApi } from '@tanstack/react-form';
 import { FieldInfo } from './FieldInfo';
 import { z } from 'zod';
+import { UUID } from 'crypto';
 
 export type formType =
   | 'button'
@@ -26,18 +27,18 @@ export type formType =
   | 'url'
   | 'week';
 
-type questionInfo = {
+export type QuestionInfo = {
   QuizQuestionAnswers: {
-    id: number;
+    id: string;
     title: string;
     description: string | null;
-    question: number | null;
+    question: string | null;
   }[];
-  id: number;
+  id: string;
   title: string;
   description: string | null;
   type: string;
-  quiz: number | null;
+  quiz: string | null;
 };
 
 export function QuizQuestion({
@@ -45,7 +46,7 @@ export function QuizQuestion({
   questionInfo,
 }: {
   form: any;
-  questionInfo: questionInfo;
+  questionInfo: QuestionInfo;
 }) {
   return (
     <div className="mt-3 p-2" key={'Question:' + questionInfo.id}>

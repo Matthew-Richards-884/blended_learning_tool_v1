@@ -4,9 +4,10 @@ import { getActivity } from '../../../../../../../util/databaseFunctions';
 import { ActivityForm } from '../../../../../../../components/ActivityForm';
 import { Suspense } from 'react';
 import { getAppSession } from '../../../../../../../components/Navbar';
+import { EditQuizForm } from '../../../../../../../components/EditQuizForm';
 
 export const Route = createFileRoute(
-  '/_navbar/_authed/modules/$module/activity/$id/begin'
+  '/_navbar/_authed/modules/$module/activity/$id/edit'
 )({
   component: ActivityComponent,
 });
@@ -30,7 +31,7 @@ function ActivityComponent() {
           <p>{state?.module}</p>
         </div>
 
-        <ActivityForm activityID={id}></ActivityForm>
+        <EditQuizForm activityID={id}></EditQuizForm>
       </Suspense>
     </div>
   );

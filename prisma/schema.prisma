@@ -8,14 +8,14 @@ datasource db {
 }
 
 model Media {
-  id          Int         @id @default(autoincrement())
+  id          String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name        String?
   description String?
   url         String      @unique
   duration    Int? // video-only
   body        String? // article-only
   type        MediaType // discriminator
-  activity    Int?
+  activity    String?     @db.Uuid
   Activities  Activities? @relation(fields: [activity], references: [id], map: "activity_fk")
 }
 
@@ -40,7 +40,7 @@ enum UserType {
 }
 
 model Activities {
-  id          Int       @id @default(autoincrement())
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   title       String
   description String?
   duration    Int?
@@ -52,7 +52,7 @@ model Activities {
 }
 
 model Modules {
-  id          Int          @id @default(autoincrement())
+  id          String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   title       String
   code        String       @unique
   description String?
@@ -61,8 +61,8 @@ model Modules {
 }
 
 model QuizSubmissions {
-  id           Int      @id @default(autoincrement())
-  quizID       Int
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  quizID       String   @db.Uuid
   Quizzes      Quizzes  @relation(fields: [quizID], references: [id])
   userID       String
   Users        Users    @relation(fields: [userID], references: [email])
@@ -97,12 +97,12 @@ enum QuestionType {
 }
 
 model QuizResponses {
-  submissionID        Int
+  submissionID        String               @db.Uuid
   QuizSubmissions     QuizSubmissions      @relation(fields: [submissionID], references: [id])
-  questionID          Int
+  questionID          String               @db.Uuid
   QuizQuestions       QuizQuestions        @relation(fields: [questionID], references: [id])
   type                QuestionType
-  answerID            Int?
+  answerID            String?              @db.Uuid
   QuizQuestionAnswers QuizQuestionAnswers? @relation(fields: [answerID], references: [id])
   answer              String?
 
@@ -110,19 +110,19 @@ model QuizResponses {
 }
 
 model QuizQuestionAnswers {
-  id            Int             @id @default(autoincrement())
+  id            String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   title         String
   description   String?
   correct       Boolean
-  question      Int?
+  question      String?         @db.Uuid
   QuizQuestions QuizQuestions?  @relation(fields: [question], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_question")
   QuizResponses QuizResponses[]
 }
 
 model QuizQuestionOrder {
-  quizID        Int
+  quizID        String        @db.Uuid
   Quizzes       Quizzes       @relation(fields: [quizID], references: [id])
-  questionID    Int
+  questionID    String        @db.Uuid
   QuizQuestions QuizQuestions @relation(fields: [questionID], references: [id])
   position      Int
 
@@ -130,11 +130,11 @@ model QuizQuestionOrder {
 }
 
 model QuizQuestions {
-  id                  Int                   @id @default(autoincrement())
+  id                  String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   title               String
   description         String?
   type                QuestionType
-  quiz                Int?
+  quiz                String?               @db.Uuid
   Quizzes             Quizzes?              @relation(fields: [quiz], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_quiz")
   QuizQuestionAnswers QuizQuestionAnswers[]
 
@@ -143,10 +143,10 @@ model QuizQuestions {
 }
 
 model Quizzes {
-  id                Int                 @id @default(autoincrement())
+  id                String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   title             String              @db.VarChar(100)
   description       String?             @db.VarChar(1000)
-  activity          Int?
+  activity          String?             @db.Uuid
   Activities        Activities?         @relation(fields: [activity], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_activity")
   questions         QuizQuestions[]
   QuizSubmissions   QuizSubmissions[]

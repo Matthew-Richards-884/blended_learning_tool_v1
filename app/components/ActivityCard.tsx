@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link } from '@tanstack/react-router';
 import { getModule } from '../util/databaseFunctions';
+import { UUID } from 'crypto';
 
 export const ActivityCard = ({
   name,
@@ -9,7 +10,7 @@ export const ActivityCard = ({
   deadline,
 }: {
   name: string;
-  action: number;
+  action: string;
   moduleCode: string;
   deadline: Date;
 }) => (
