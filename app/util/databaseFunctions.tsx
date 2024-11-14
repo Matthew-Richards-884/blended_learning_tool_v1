@@ -1,27 +1,24 @@
 import { Prisma, PrismaClient } from '@prisma/client';
-import crypto, { UUID } from 'node:crypto';
 
 import { createServerFn } from '@tanstack/start';
 
 const prisma = new PrismaClient();
-
-export function hashPassword(password: string) {
-  return new Promise<string>((resolve, reject) => {
-    crypto.pbkdf2(password, 'salt', 100000, 64, 'sha256', (err, derivedKey) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(derivedKey.toString('hex'));
-      }
-    });
-  });
-}
 
 export const getActivities = createServerFn('GET', async () => {
   return await prisma.activities.findMany({
     orderBy: { deadline: 'asc' },
   });
 });
+
+export const getUserActivities = createServerFn(
+  'GET',
+  async (email: string) => {
+    return await prisma.activities.findMany({
+      where: { Modules: { Users: { some: { email: email } } } },
+      orderBy: { deadline: 'asc' },
+    });
+  }
+);
 
 export const getActivity = createServerFn('GET', async (id: string) => {
   return await prisma.activities.findFirst({
@@ -159,6 +156,12 @@ export const getModules = createServerFn('GET', async () => {
 
 export const getModule = createServerFn('GET', async (code: string) => {
   return await prisma.modules.findFirst({ where: { code: code } });
+});
+
+export const getUserModules = createServerFn('GET', async (email: string) => {
+  return await prisma.modules.findMany({
+    where: { Users: { some: { email: email } } },
+  });
 });
 
 export const getActivitiesByModule = createServerFn(

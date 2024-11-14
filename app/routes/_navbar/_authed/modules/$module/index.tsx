@@ -29,13 +29,15 @@ function ModuleComponent() {
     queryKey: ['session', 'navbar'],
     queryFn: () => getAppSession(),
   }).data;
-
+  activities ? console.log('DATE', activities[0].deadline) : null;
   return (
-    <div className="w-screen overflow-auto bg-slate-700 p-2 text-white">
-      <h1>{module}</h1>
-      <h2>{moduleData?.title}</h2>
-      <p>{moduleData?.description}</p>
-      {/* <h2>Lectures</h2>
+    <div className="w-screen overflow-auto bg-violet-200 p-2 text-black">
+      <div className="my-2 flex flex-row rounded-md bg-slate-50 p-2">
+        <div className="flex-grow">
+          <h1>{module}</h1>
+          <h2>{moduleData?.title}</h2>
+          <p>{moduleData?.description}</p>
+          {/* <h2>Lectures</h2>
       {Object.values(moduleData?.lectures).map((v: any) => (
         <div className="my-2 rounded-md bg-slate-500 p-2">
           <p>{v.name}</p>
@@ -43,14 +45,36 @@ function ModuleComponent() {
           <p>{v.link}</p>
         </div>
       ))} */}
-      <h2>Activities</h2>
+          <h2>Activities</h2>
+        </div>
+        <Link
+          className="flex flex-initial items-center"
+          to="/modules/$module/activity/new"
+          params={{ module: module }}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="size-6"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+            />
+          </svg>
+        </Link>
+      </div>
       {activities?.map((v) => (
-        <div key={v.title} className="my-2 flex rounded-md bg-slate-500 p-2">
+        <div key={v.title} className="my-2 flex rounded-md bg-slate-50 p-2">
           <div className="flex-grow">
             <div>{v.title}</div>
             <div>{v.description}</div>
             <div>{v.duration} minutes</div>
-            <div>{v.deadline as any}</div>
+            <div>Due: {(v.deadline as Date).toString()}</div>
           </div>
           <div className="flex flex-none flex-col items-center justify-around align-middle">
             {session?.data.userType == UserType.Teacher ? (

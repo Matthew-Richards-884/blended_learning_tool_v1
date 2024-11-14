@@ -1,6 +1,6 @@
 import { useForm } from '@tanstack/react-form';
 import { zodValidator } from '@tanstack/zod-form-adapter';
-import { QuizQuestion } from './QuizQuestion';
+import { QuestionInfo, QuizQuestion } from './QuizQuestion';
 import { skipToken, useMutation, useQuery } from '@tanstack/react-query';
 import { QuestionType } from '@prisma/client';
 import {
@@ -13,7 +13,7 @@ import {
   getQuizzesByActivity,
   responseType,
 } from '../util/databaseFunctions';
-import { Suspense } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { getAppSession } from './Navbar';
 import { Prisma, PrismaClient } from '@prisma/client';
 import { EditQuizQuestion } from './EditQuizQuestion';
@@ -60,20 +60,20 @@ export const EditQuizForm = ({ activityID }) => {
   questionOrder?.reverse();
   console.log('INFO', questionOrder);
 
-  const questions = quizInfo ?? [];
+  const questionInfo = quizInfo ?? [];
 
   type questionsObject = {
-    [id: number]: (typeof questions)[0];
+    [id: number]: (typeof questionInfo)[0];
   };
   const orderedQuestions: questionsObject = {};
   questionOrder?.forEach((element) => {
-    const question = questions.filter((v) => v.id == element.questionID)[0];
+    const question = questionInfo.filter((v) => v.id == element.questionID)[0];
     orderedQuestions[element.position] = question;
   });
-  console.log('UNORDERED', questions);
+  console.log('UNORDERED', questionInfo);
   const orderedQuestionArray = Object.values(orderedQuestions);
   console.log('QUESTIONS', orderedQuestionArray);
-  console.log(questions);
+  console.log(questionInfo);
 
   const form = useForm({
     defaultValues: {},
@@ -95,7 +95,7 @@ export const EditQuizForm = ({ activityID }) => {
       const responses: responseType = { data: [] };
       if (submissionID) {
         Object.entries(value).forEach(async ([k, v]: [k: string, v: any]) => {
-          const question = questions.filter((e) => e.title == k)[0];
+          const question = questionInfo.filter((e) => e.title == k)[0];
           question.type == 'text'
             ? responses.data.push({
                 questionID: question.id,
@@ -122,8 +122,17 @@ export const EditQuizForm = ({ activityID }) => {
     validatorAdapter: zodValidator(),
   });
 
+  let tempuuid = '';
+  const setgetUUID = (uuid?: string) => {
+    uuid ? (tempuuid = uuid) : null;
+    return tempuuid;
+  };
+
+  const [questions, setQuestions] = useState(orderedQuestionArray);
+
+  useEffect(() => setQuestions(orderedQuestionArray), [quizInfo, questionInfo]);
   return (
-    <div className="bg-slate-200 text-black">
+    <div className="bg-violet-200 text-black">
       <h1>Quiz</h1>
       <form
         onSubmit={(e) => {
@@ -136,7 +145,7 @@ export const EditQuizForm = ({ activityID }) => {
       >
         <div className="p-2">
           <Suspense fallback={<div>Loading!</div>}>
-            {orderedQuestionArray?.map((question) => {
+            {questions.map((question) => {
               return question ? (
                 <EditQuizQuestion
                   form={form}
@@ -147,6 +156,35 @@ export const EditQuizForm = ({ activityID }) => {
                 <div>Something Went Wrong</div>
               );
             })}
+            {quizID ? (
+              <button
+                onClick={() =>
+                  setQuestions([
+                    ...questions,
+                    {
+                      id: setgetUUID(crypto.randomUUID()),
+                      title: '',
+                      description: '',
+                      quiz: quizID,
+                      type: 'text',
+                      QuizQuestionAnswers: [
+                        {
+                          id: crypto.randomUUID(),
+                          title: '',
+                          description: '',
+                          question: setgetUUID(),
+                          correct: true,
+                        },
+                      ],
+                    },
+                  ])
+                }
+              >
+                ADD QUESTION
+              </button>
+            ) : (
+              <div>QuizID is not defined</div>
+            )}
           </Suspense>
         </div>
         <form.Subscribe

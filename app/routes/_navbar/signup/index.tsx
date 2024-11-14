@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { createServerFn, useServerFn } from '@tanstack/start';
-import { hashPassword } from '../../../util/databaseFunctions';
+import { hashPassword } from '../../../util/hashPassword';
 import { UserType } from '@prisma/client';
 import { useAppSession } from '../../../util/session';
 import { useMutation } from '../../../hooks/useMutation';

@@ -1,17 +1,18 @@
 import { PrismaClient, MediaType, QuestionType } from '@prisma/client';
+import { hashPassword } from '../app/util/hashPassword';
 
 const prisma = new PrismaClient();
 
 async function main() {
   console.log('INTIALISING DATABASE');
-  await prisma.modules.create({
+  const module1 = await prisma.modules.create({
     data: {
       title: 'Third Year Project',
       code: 'COMP30020',
       description: 'The third year project module',
     },
   });
-  await prisma.modules.create({
+  const module2 = await prisma.modules.create({
     data: {
       title: 'Fifth Year Project',
       code: 'COMP50020',
@@ -242,6 +243,21 @@ async function main() {
       description: 'The answer to the fourth question',
       correct: true,
       question: qq4.id,
+    },
+  });
+
+  await prisma.users.create({
+    data: {
+      email: 't@t.com',
+      username: 't',
+      password: await hashPassword('t'),
+      type: 'Teacher',
+      modules: {
+        connectOrCreate: [
+          { where: { id: module1.id }, create: module1 },
+          { where: { id: module2.id }, create: module2 },
+        ],
+      },
     },
   });
 

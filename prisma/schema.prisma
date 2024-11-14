@@ -44,7 +44,7 @@ model Activities {
   title       String
   description String?
   duration    Int?
-  deadline    DateTime  @db.Date
+  deadline    DateTime  @db.Timestamp() @default(now())
   module      String?
   Modules     Modules?  @relation(fields: [module], references: [code], onDelete: NoAction, onUpdate: NoAction, map: "fk_module")
   Media       Media[]
@@ -66,7 +66,7 @@ model QuizSubmissions {
   Quizzes      Quizzes  @relation(fields: [quizID], references: [id])
   userID       String
   Users        Users    @relation(fields: [userID], references: [email])
-  completeDate DateTime @db.Date
+  completeDate DateTime @db.Timestamp() @default(now())
 
   QuizResponses QuizResponses[]
 }

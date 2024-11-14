@@ -12,29 +12,32 @@ export function EditQuizQuestion({
   form: any;
   questionInfo: QuestionInfo;
 }) {
+  const questionClass =
+    'flex focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 transition-all';
+
   const [question, setQuestion] = useState(questionInfo);
   return (
-    <div className="mt-3 p-2" key={'Question:' + question.id}>
+    <div
+      className="mt-3 rounded-md bg-slate-50 p-3"
+      key={'Question:' + question.id}
+    >
       <form.Field
         name={question.id.toString() + '-question'}
         children={(field: FieldApi<any, any, any, any, any>) => (
           <div>
-            {/* <label
-              htmlFor={field.name}
-              className="block text-sm font-medium leading-6 text-gray-900"
+            <div
+              className={`${questionClass} w-3/5 border-b border-gray-300 drop-shadow-sm`}
             >
-              {question.title}
-            </label> */}
-            <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
               <input
                 id={field.name}
                 name={field.name}
-                value={question.title}
+                value={question.title ?? ''}
+                placeholder="Question"
                 onBlur={field.handleBlur}
                 onChange={(e) =>
                   setQuestion({ ...question, title: e.target.value })
                 }
-                className="flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                className="w-full flex-1 border-0 bg-transparent py-3 pl-1 text-lg text-gray-900 outline-none placeholder:text-gray-400 focus:ring-0 sm:leading-6"
               />
             </div>
             <FieldInfo field={field} />
@@ -45,22 +48,19 @@ export function EditQuizQuestion({
         name={question.id + '-question-description'}
         children={(field: FieldApi<any, any, any, any, any>) => (
           <div>
-            <label
-              htmlFor={field.name}
-              className="block text-sm font-medium leading-6 text-gray-900"
+            <div
+              className={`${questionClass} w-full border-b border-gray-300 drop-shadow-sm`}
             >
-              Description
-            </label>
-            <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
               <input
                 id={field.name}
                 name={field.name}
                 value={question.description ?? ''}
+                placeholder="Description"
                 onBlur={field.handleBlur}
                 onChange={(e) =>
                   setQuestion({ ...question, description: e.target.value })
                 }
-                className="flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                className="flex-grow border-0 bg-transparent py-1 pl-1 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
               />
             </div>
           </div>
@@ -77,13 +77,7 @@ export function EditQuizQuestion({
             }
             children={(field: FieldApi<any, any, any, any, any>) => (
               <div>
-                <label
-                  htmlFor={field.name}
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
-                  Answer
-                </label>
-                <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
+                <div className={questionClass}>
                   <input
                     id={field.name}
                     name={field.name}
@@ -100,7 +94,7 @@ export function EditQuizQuestion({
                         ],
                       })
                     }
-                    className="flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                    className="flex-1 border-0 bg-transparent py-1 pl-1 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                   />
                 </div>
                 <FieldInfo field={field} />
@@ -116,13 +110,7 @@ export function EditQuizQuestion({
             }
             children={(field: FieldApi<any, any, any, any, any>) => (
               <div>
-                <label
-                  htmlFor={field.name}
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
-                  Answer Description
-                </label>
-                <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
+                <div className={questionClass}>
                   <input
                     id={field.name}
                     name={field.name}
@@ -139,7 +127,7 @@ export function EditQuizQuestion({
                         ],
                       })
                     }
-                    className="flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                    className="flex-1 border-0 bg-transparent py-1 pl-1 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
@@ -151,52 +139,66 @@ export function EditQuizQuestion({
           {question.QuizQuestionAnswers.map((v) => (
             <div
               key={question.id + '-question-' + v.id + '-answer-key'}
-              className="bg-slate-500 p-2"
+              className="p-2"
             >
               <form.Field
                 name={question.id + '-question-' + v.id + '-answer'}
                 children={(field: FieldApi<any, any, any, any, any>) => (
-                  <div>
-                    <label
-                      htmlFor={field.name}
-                      className="block text-sm font-medium leading-6 text-gray-900"
-                    >
-                      Answer Title
-                    </label>
-                    <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
-                      <input
-                        id={field.name}
-                        name={field.name}
-                        value={v.title}
-                        onBlur={field.handleBlur}
-                        onChange={(e) =>
-                          setQuestion({
-                            ...question,
-                            QuizQuestionAnswers: [
-                              ...question.QuizQuestionAnswers.slice(
-                                0,
-                                question.QuizQuestionAnswers.findIndex(
-                                  (e) => e.id == v.id
-                                )
-                              ),
-                              {
-                                ...question.QuizQuestionAnswers.find(
-                                  (e) => e.id == v.id
-                                )!,
-                                title: e.target.value,
-                              },
-                              ...question.QuizQuestionAnswers.slice(
-                                question.QuizQuestionAnswers.findIndex(
-                                  (e) => e.id == v.id
-                                ) + 1
-                              ),
-                            ],
-                          })
-                        }
-                        className="flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                      />
+                  <div className="flex flex-row align-middle">
+                    <div className="flex-initial flex">
+                      <div className='self-center'>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="currentColor"
+                          className="size-5"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                          />
+                        </svg>
+                      </div>
                     </div>
-                    <FieldInfo field={field} />
+                    <div>
+                      <div className={`${questionClass} w-full`}>
+                        <input
+                          id={field.name}
+                          name={field.name}
+                          value={v.title}
+                          onBlur={field.handleBlur}
+                          onChange={(e) =>
+                            setQuestion({
+                              ...question,
+                              QuizQuestionAnswers: [
+                                ...question.QuizQuestionAnswers.slice(
+                                  0,
+                                  question.QuizQuestionAnswers.findIndex(
+                                    (e) => e.id == v.id
+                                  )
+                                ),
+                                {
+                                  ...question.QuizQuestionAnswers.find(
+                                    (e) => e.id == v.id
+                                  )!,
+                                  title: e.target.value,
+                                },
+                                ...question.QuizQuestionAnswers.slice(
+                                  question.QuizQuestionAnswers.findIndex(
+                                    (e) => e.id == v.id
+                                  ) + 1
+                                ),
+                              ],
+                            })
+                          }
+                          className="flex-1 border-0 bg-transparent py-1 pl-1 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                        />
+                      </div>
+                      <FieldInfo field={field} />
+                    </div>
                   </div>
                 )}
               ></form.Field>
@@ -204,13 +206,7 @@ export function EditQuizQuestion({
                 name={question.id + '-question-' + v.id + '-answer-description'}
                 children={(field: FieldApi<any, any, any, any, any>) => (
                   <div>
-                    <label
-                      htmlFor={field.name}
-                      className="block text-sm font-medium leading-6 text-gray-900"
-                    >
-                      Answer Description
-                    </label>
-                    <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
+                    <div className={questionClass}>
                       <input
                         id={field.name}
                         name={field.name}
@@ -240,7 +236,7 @@ export function EditQuizQuestion({
                             ],
                           })
                         }
-                        className="flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                        className="flex-1 border-0 bg-transparent py-1 pl-1 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-0 sm:text-xs sm:leading-6"
                       />
                     </div>
                   </div>

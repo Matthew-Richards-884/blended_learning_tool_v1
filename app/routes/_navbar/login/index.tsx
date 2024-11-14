@@ -2,7 +2,7 @@ import { createFileRoute, useRouter } from '@tanstack/react-router';
 import { useMutation } from '../../../hooks/useMutation';
 import { createServerFn, useServerFn } from '@tanstack/start';
 import { PrismaClient, UserType } from '@prisma/client';
-import { hashPassword } from '../../../util/databaseFunctions';
+import { hashPassword } from '../../../util/hashPassword';
 import { useAppSession } from '../../../util/session';
 import { signupFn } from '../signup';
 import { Auth } from '../../../components/Auth';
