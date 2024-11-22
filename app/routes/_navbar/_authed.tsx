@@ -1,4 +1,4 @@
-import { createFileRoute, Link, redirect } from '@tanstack/react-router';
+import { createFileRoute, Link} from '@tanstack/react-router';
 
 export const Route = createFileRoute('/_navbar/_authed')({
   beforeLoad: ({ context }: { context: any }) => {

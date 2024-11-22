@@ -1,9 +1,10 @@
 import { FieldApi } from '@tanstack/react-form';
 import { FieldInfo } from './FieldInfo';
-import { z } from 'zod';
 import { QuestionInfo } from './QuizQuestion';
-import { QuestionType } from '@prisma/client';
 import { useState } from 'react';
+
+export const questionClass =
+  'flex focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 transition-all';
 
 export function EditQuizQuestion({
   form,
@@ -12,9 +13,6 @@ export function EditQuizQuestion({
   form: any;
   questionInfo: QuestionInfo;
 }) {
-  const questionClass =
-    'flex focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 transition-all';
-
   const [question, setQuestion] = useState(questionInfo);
   return (
     <div
@@ -145,8 +143,8 @@ export function EditQuizQuestion({
                 name={question.id + '-question-' + v.id + '-answer'}
                 children={(field: FieldApi<any, any, any, any, any>) => (
                   <div className="flex flex-row align-middle">
-                    <div className="flex-initial flex">
-                      <div className='self-center'>
+                    <div className="flex flex-initial">
+                      <div className="self-center">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"

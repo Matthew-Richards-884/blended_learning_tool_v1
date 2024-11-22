@@ -20,7 +20,7 @@ import { EditQuizQuestion } from './EditQuizQuestion';
 
 const prisma = new PrismaClient();
 
-export const EditQuizForm = ({ activityID }) => {
+export const EditQuizForm = ({ quizID }) => {
   const quizSubmissionMutation = useMutation({
     mutationFn: (params: { quizIDT; sessionT; dateT }) =>
       createQuizSubmission({
@@ -30,172 +30,159 @@ export const EditQuizForm = ({ activityID }) => {
       }),
   });
 
-  const quizResponseMutation = useMutation({
-    mutationFn: (response: responseType) => createQuizResponse(response),
-  });
+  // const quizResponseMutation = useMutation({
+  //   mutationFn: (response: responseType) => createQuizResponse(response),
+  // });
 
   const session = useQuery({
-    queryKey: ['session', 'navbar'],
+    queryKey: ['session', 'editQuizForm'],
     queryFn: () => getAppSession(),
   }).data;
 
-  const quizzes = useQuery({
-    queryKey: ['quizzes', activityID, 'activityForm'],
-    queryFn: () => getQuizzesByActivity(activityID),
-  }).data;
-
-  const quizID = quizzes && quizzes.length > 0 ? quizzes[0].id : undefined;
-
-  const quizInfo = useQuery({
-    queryKey: ['quizInfo', 'radio', activityID, 'activityForm', quizID],
-    queryFn: quizID ? () => getAllQuizInfo(quizID) : skipToken,
-    enabled: !!(quizzes && quizzes.length > 0),
-  }).data;
-
-  const questionOrder = useQuery({
-    queryKey: ['questionOrder', activityID, 'activityForm', quizID],
-    queryFn: quizID ? () => getQuizQuestionOrder(quizID) : skipToken,
-    enabled: !!(quizzes && quizzes.length > 0),
-  }).data;
-  questionOrder?.reverse();
-  console.log('INFO', questionOrder);
-
-  const questionInfo = quizInfo ?? [];
-
-  type questionsObject = {
-    [id: number]: (typeof questionInfo)[0];
-  };
-  const orderedQuestions: questionsObject = {};
-  questionOrder?.forEach((element) => {
-    const question = questionInfo.filter((v) => v.id == element.questionID)[0];
-    orderedQuestions[element.position] = question;
+  const quizData = useQuery({
+    queryKey: ['quizInfo', 'radio', 'editQuizForm', quizID],
+    queryFn: () => getAllQuizInfo(quizID),
   });
-  console.log('UNORDERED', questionInfo);
-  const orderedQuestionArray = Object.values(orderedQuestions);
-  console.log('QUESTIONS', orderedQuestionArray);
-  console.log(questionInfo);
 
-  const form = useForm({
-    defaultValues: {},
-    onSubmit: async ({ value, formApi }) => {
-      // Do something with form data
-      console.log('THIS IS THE ANSWER', value);
-      console.log('THIS IS THE FORMAPI', formApi);
-      console.log('SOMETHING HERE');
-      console.log(quizID, session);
-      const date = new Date();
-      const submission = await quizSubmissionMutation.mutateAsync({
-        quizIDT: quizID,
-        sessionT: session,
-        dateT: date,
-      });
-      console.log('MUTATE', submission);
-      // const submission = { id: 2 };
-      const submissionID = submission.id;
-      const responses: responseType = { data: [] };
-      if (submissionID) {
-        Object.entries(value).forEach(async ([k, v]: [k: string, v: any]) => {
-          const question = questionInfo.filter((e) => e.title == k)[0];
-          question.type == 'text'
-            ? responses.data.push({
-                questionID: question.id,
-                submissionID: submissionID,
-                type: question.type,
-                answer: v,
-                answerID: null,
-              })
-            : responses.data.push({
-                questionID: question.id,
-                submissionID: submissionID,
-                type: question.type,
-                answer: null,
-                answerID: v,
-              });
+  if (quizData.isSuccess && quizData.data) {
+    type questionsObject = {
+      [id: number]: (typeof quizData.data.questions)[0];
+    };
+    const orderedQuestions: questionsObject = {};
+    quizData.data?.QuizQuestionOrder?.forEach((element) => {
+      const question = quizData.data?.questions.filter(
+        (v) => v.id == element.questionID
+      )[0];
+      question ? (orderedQuestions[element.position] = question) : null;
+    });
+    const orderedQuestionArray = Object.values(orderedQuestions);
+    quizData.data.questions = orderedQuestionArray;
+
+    const form = useForm({
+      defaultValues: {},
+      onSubmit: async ({ value, formApi }) => {
+        console.log(quizID, session);
+        const date = new Date();
+        const submission = await quizSubmissionMutation.mutateAsync({
+          quizIDT: quizID,
+          sessionT: session,
+          dateT: date,
         });
-      }
-      console.log('RESPONSE', responses);
-      const responseQuery = await quizResponseMutation.mutateAsync(responses);
+        console.log('MUTATE', submission);
+        // const submission = { id: 2 };
+        const submissionID = submission.id;
+        const responses: responseType = { data: [] };
+        if (submissionID) {
+          Object.entries(value).forEach(async ([k, v]: [k: string, v: any]) => {
+            const question = quizInfo.questions.filter((e) => e.title == k)[0];
+            question.type == 'text'
+              ? responses.data.push({
+                  questionID: question.id,
+                  submissionID: submissionID,
+                  type: question.type,
+                  answer: v,
+                  answerID: null,
+                })
+              : responses.data.push({
+                  questionID: question.id,
+                  submissionID: submissionID,
+                  type: question.type,
+                  answer: null,
+                  answerID: v,
+                });
+          });
+        }
+        // console.log('RESPONSE', responses);
+        // const responseQuery = await quizResponseMutation.mutateAsync(responses);
 
-      console.log('RESPONSE QUERY: ', responseQuery);
-    },
-    // Add a validator to support Zod usage in Form and Field
-    validatorAdapter: zodValidator(),
-  });
+        // console.log('RESPONSE QUERY: ', responseQuery);
+      },
+      // Add a validator to support Zod usage in Form and Field
+      validatorAdapter: zodValidator(),
+    });
 
-  let tempuuid = '';
-  const setgetUUID = (uuid?: string) => {
-    uuid ? (tempuuid = uuid) : null;
-    return tempuuid;
-  };
+    let tempuuid = '';
+    const setgetUUID = (uuid?: string) => {
+      uuid ? (tempuuid = uuid) : null;
+      return tempuuid;
+    };
 
-  const [questions, setQuestions] = useState(orderedQuestionArray);
+    const [quizInfo, setQuizInfo] = useState(quizData.data);
+    console.log('QUIZ INFO', quizInfo);
 
-  useEffect(() => setQuestions(orderedQuestionArray), [quizInfo, questionInfo]);
-  return (
-    <div className="bg-violet-200 text-black">
-      <h1>Quiz</h1>
-      <form
-        onSubmit={(e) => {
-          console.log('E', e);
-          e.preventDefault();
-          e.stopPropagation();
-          console.log('FIELD INFO', form.fieldInfo);
-          form.handleSubmit();
-        }}
-      >
-        <div className="p-2">
-          <Suspense fallback={<div>Loading!</div>}>
-            {questions.map((question) => {
-              return question ? (
-                <EditQuizQuestion
-                  form={form}
-                  questionInfo={question}
-                  key={question.id}
-                ></EditQuizQuestion>
-              ) : (
-                <div>Something Went Wrong</div>
-              );
-            })}
-            {quizID ? (
-              <button
-                onClick={() =>
-                  setQuestions([
-                    ...questions,
-                    {
-                      id: setgetUUID(crypto.randomUUID()),
-                      title: '',
-                      description: '',
-                      quiz: quizID,
-                      type: 'text',
-                      QuizQuestionAnswers: [
+    // useEffect(
+    //   () => setQuizInfo(orderedQuestionArray),
+    //   [quizData]
+    // );
+    return (
+      <div className="bg-violet-200 text-black">
+        <h1>Quiz</h1>
+        <form
+          onSubmit={(e) => {
+            console.log('E', e);
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('FIELD INFO', form.fieldInfo);
+            form.handleSubmit();
+          }}
+        >
+          <div className="p-2">
+            <Suspense fallback={<div>Loading!</div>}>
+              {quizInfo.questions.map((question) => {
+                return question ? (
+                  <EditQuizQuestion
+                    form={form}
+                    questionInfo={question}
+                    key={question.id}
+                  ></EditQuizQuestion>
+                ) : (
+                  <div>Something Went Wrong</div>
+                );
+              })}
+              {quizID ? (
+                <button
+                  onClick={() =>
+                    setQuizInfo({
+                      ...quizInfo,
+                      questions: [
+                        ...quizInfo.questions,
                         {
-                          id: crypto.randomUUID(),
+                          id: setgetUUID(crypto.randomUUID()),
                           title: '',
                           description: '',
-                          question: setgetUUID(),
-                          correct: true,
+                          quiz: quizID,
+                          type: 'text',
+                          QuizQuestionAnswers: [
+                            {
+                              id: crypto.randomUUID(),
+                              title: '',
+                              description: '',
+                              question: setgetUUID(),
+                              correct: true,
+                            },
+                          ],
                         },
                       ],
-                    },
-                  ])
-                }
-              >
-                ADD QUESTION
+                    })
+                  }
+                >
+                  ADD QUESTION
+                </button>
+              ) : (
+                <div>Something went wrong. QuizID is invalid or missing.</div>
+              )}
+            </Suspense>
+          </div>
+          <form.Subscribe
+            selector={(state) => [state.canSubmit, state.isSubmitting]}
+            children={([canSubmit, isSubmitting]) => (
+              <button type="submit" disabled={!canSubmit}>
+                {isSubmitting ? '...' : 'Submit'}
               </button>
-            ) : (
-              <div>QuizID is not defined</div>
             )}
-          </Suspense>
-        </div>
-        <form.Subscribe
-          selector={(state) => [state.canSubmit, state.isSubmitting]}
-          children={([canSubmit, isSubmitting]) => (
-            <button type="submit" disabled={!canSubmit}>
-              {isSubmitting ? '...' : 'Submit'}
-            </button>
-          )}
-        />
-      </form>
-    </div>
-  );
+          />
+        </form>
+      </div>
+    );
+  }
 };

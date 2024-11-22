@@ -1,4 +1,13 @@
-import { Prisma, PrismaClient } from '@prisma/client';
+import {
+  Activities,
+  Prisma,
+  PrismaClient,
+  QuizQuestionAnswers,
+  QuizQuestionOrder,
+  QuizQuestions,
+  Quizzes,
+} from '@prisma/client';
+import { redirect } from '@tanstack/react-router';
 
 import { createServerFn } from '@tanstack/start';
 
@@ -29,18 +38,27 @@ export const getActivity = createServerFn('GET', async (id: string) => {
 });
 
 export const getAllQuizInfo = createServerFn('GET', async (quiz: string) => {
-  return await prisma.quizQuestions.findMany({
+  return await prisma.quizzes.findUnique({
     where: {
-      quiz: quiz,
+      id: quiz,
     },
     include: {
-      QuizQuestionAnswers: {
-        select: {
-          id: true,
-          title: true,
-          description: true,
-          question: true,
-          correct: true,
+      questions: {
+        include: {
+          QuizQuestionAnswers: {
+            select: {
+              id: true,
+              title: true,
+              description: true,
+              question: true,
+              correct: true,
+            },
+          },
+        },
+      },
+      QuizQuestionOrder: {
+        where: {
+          quizID: quiz,
         },
       },
     },
@@ -136,6 +154,43 @@ export const createQuizResponse = createServerFn(
   'GET',
   async (data: responseType) => {
     return await prisma.quizResponses.createMany(data);
+  }
+);
+
+export const createActivity = createServerFn(
+  'GET',
+  async (data: Activities) => {
+    return await prisma.activities.create({ data: data });
+  }
+);
+
+export type createQuizType = Quizzes & {
+  questions: {
+    create: (Prisma.QuizQuestionsUncheckedCreateWithoutQuizzesInput & {
+      QuizQuestionAnswers: {
+        create: Prisma.QuizQuestionAnswersCreateWithoutQuizQuestionsInput[];
+      };
+    })[];
+  };
+  QuizQuestionOrder: {
+    create: Prisma.QuizQuestionOrderUncheckedCreateWithoutQuizzesInput[];
+  };
+};
+
+export const createQuiz = createServerFn(
+  'GET',
+  async (data: createQuizType) => {
+    return await prisma.quizzes.create({ data: data });
+  }
+);
+
+export const updateActivity = createServerFn(
+  'GET',
+  async (data: Activities) => {
+    return await prisma.activities.update({
+      where: { id: data.id },
+      data: data,
+    });
   }
 );
 
