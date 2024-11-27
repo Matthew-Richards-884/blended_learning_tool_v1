@@ -1,4 +1,4 @@
-import { createFileRoute, Link} from '@tanstack/react-router';
+import { createFileRoute, Link, useRouter } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/_navbar/_authed')({
   beforeLoad: ({ context }: { context: any }) => {
@@ -9,21 +9,25 @@ export const Route = createFileRoute('/_navbar/_authed')({
   },
   errorComponent: ({ error }) => {
     if (error.message === 'Not authenticated') {
-      return (
-        <div className="w-screen p-5">
-          <div>You are not authenticated</div>
+      const router = useRouter();
+      router.navigate({
+        to: '/login',
+      });
+      // return (
+      //   <div className="w-screen p-5">
+      //     <div>You are not authenticated</div>
 
-          <Link
-            to="/login"
-            activeProps={{
-              className: 'text-sky-400',
-            }}
-            className="items-center justify-center p-3 font-bold hover:text-sky-400"
-          >
-            Log In
-          </Link>
-        </div>
-      );
+      //     <Link
+      //       to="/login"
+      //       activeProps={{
+      //         className: 'text-sky-400',
+      //       }}
+      //       className="items-center justify-center p-3 font-bold hover:text-sky-400"
+      //     >
+      //       Log In
+      //     </Link>
+      //   </div>
+      // );
     }
 
     throw error;

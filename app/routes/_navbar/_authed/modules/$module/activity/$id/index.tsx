@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useQuery } from '@tanstack/react-query';
 import { getActivity } from '../../../../../../../util/databaseFunctions';
-import { ActivityDisplay } from '../../../../../../../components/ActivityDisplay';
+import { ActivityDisplay } from '../../../../../../../components/Activity/ActivityDisplay';
 
 export const Route = createFileRoute(
   '/_navbar/_authed/modules/$module/activity/$id/'

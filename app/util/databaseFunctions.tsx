@@ -7,7 +7,6 @@ import {
   QuizQuestions,
   Quizzes,
 } from '@prisma/client';
-import { redirect } from '@tanstack/react-router';
 
 import { createServerFn } from '@tanstack/start';
 
@@ -119,6 +118,24 @@ export const getQuizzesByActivity = createServerFn(
   }
 );
 
+export const getQuizCardsInfo = createServerFn(
+  'GET',
+  async (activityID: string) => {
+    return await prisma.quizzes.findMany({
+      where: {
+        activity: activityID,
+      },
+      include: {
+        _count: {
+          select: {
+            questions: true,
+          },
+        },
+      },
+    });
+  }
+);
+
 export const getQuizQuestion = createServerFn('GET', async (id: string) => {
   return await prisma.quizQuestions.findFirst({
     where: {
@@ -134,6 +151,51 @@ export const getQuizQuestions = createServerFn('GET', async (quiz: string) => {
     },
   });
 });
+
+export const updateQuiz = createServerFn(
+  'GET',
+  async (
+    quizInfo: Quizzes & {
+      questions: (QuizQuestions & {
+        QuizQuestionAnswers: QuizQuestionAnswers[];
+      })[];
+      QuizQuestionOrder: QuizQuestionOrder[];
+    }
+  ) => {
+    return await prisma.quizzes.update({
+      where: {
+        id: quizInfo.id,
+      },
+      data: {
+        id: quizInfo.id,
+        title: quizInfo.title,
+        description: quizInfo.description,
+        activity: quizInfo.activity,
+        questions: {
+          deleteMany: {},
+          create: [
+            ...quizInfo.questions.map(({ quiz, ...questionInfo }) => {
+              return {
+                ...questionInfo,
+                QuizQuestionAnswers: {
+                  create: questionInfo.QuizQuestionAnswers.map(
+                    ({ question, ...answer }) => answer
+                  ),
+                },
+              };
+            }),
+          ],
+        },
+        QuizQuestionOrder: {
+          deleteMany: {},
+          create: quizInfo.QuizQuestionOrder.map(
+            ({ quizID, ...order }) => order
+          ),
+        },
+      },
+    });
+  }
+);
 
 export const createQuizSubmission = createServerFn(
   'GET',

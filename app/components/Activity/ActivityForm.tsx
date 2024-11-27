@@ -1,6 +1,6 @@
 import { useForm } from '@tanstack/react-form';
 import { zodValidator } from '@tanstack/zod-form-adapter';
-import { QuizQuestion } from './QuizQuestion';
+import { QuizQuestion } from '../Form/QuizQuestion';
 import { skipToken, useMutation, useQuery } from '@tanstack/react-query';
 import {
   createQuizResponse,
@@ -10,9 +10,9 @@ import {
   getQuizQuestionOrder,
   getQuizzesByActivity,
   responseType,
-} from '../util/databaseFunctions';
+} from '../../util/databaseFunctions';
 import { Suspense } from 'react';
-import { getAppSession } from './Navbar';
+import { getAppSession } from '../Navbar';
 import { Prisma, PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();

@@ -4,13 +4,15 @@ import {
   createQuiz,
   createQuizType,
   getActivity,
+  getQuizCardsInfo,
   updateActivity,
 } from '../../../../../../../util/databaseFunctions';
 import { Suspense, useEffect, useState } from 'react';
-import { EditActivityForm } from '../../../../../../../components/EditActivityForm';
+import { EditActivityForm } from '../../../../../../../components/Activity/EditActivityForm';
 import { useForm } from '@tanstack/react-form';
 import { Activities } from '@prisma/client';
 import { zodValidator } from '@tanstack/zod-form-adapter';
+import { QuizCard } from '../../../../../../../components/Form/QuizCard';
 
 export const Route = createFileRoute(
   '/_navbar/_authed/modules/$module/activity/$id/edit'
@@ -22,7 +24,7 @@ function ActivityComponent() {
   const { module, id } = Route.useParams();
 
   const activity = useQuery({
-    queryKey: ['id', module, id, 'activityComponent'],
+    queryKey: ['id', module, id, 'ActivityEdit'],
     queryFn: () => getActivity(id),
   });
 
@@ -93,12 +95,17 @@ function ActivityComponent() {
         ],
       },
       QuizQuestionOrder: {
-        create: [{ position: 1, questionID: questionID}],
+        create: [{ position: 1, questionID: questionID }],
       },
     };
 
     return newQuizInfo;
   };
+
+  const quizInfo = useQuery({
+    queryKey: ['quizInfo', module, id, 'editActivity'],
+    queryFn: () => getQuizCardsInfo(id),
+  });
 
   return (
     <div className="w-screen overflow-auto bg-slate-700 p-2 text-white">
@@ -117,6 +124,13 @@ function ActivityComponent() {
             >
               Create Quiz
             </button>
+            {quizInfo.isSuccess ? (
+              quizInfo.data.map((quiz) => (
+                <QuizCard moduleCode={module} activity={id} quizInfo={quiz} />
+              ))
+            ) : (
+              <div>Loading Quizzes</div>
+            )}
           </div>
         ) : (
           <div>Loading...</div>

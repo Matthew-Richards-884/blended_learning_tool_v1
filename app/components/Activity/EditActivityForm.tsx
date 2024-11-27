@@ -1,6 +1,6 @@
 import { FieldApi } from '@tanstack/react-form';
-import { FieldInfo } from './FieldInfo';
-import { questionClass } from './EditQuizQuestion';
+import { FieldInfo } from '../FieldInfo';
+import { questionClass } from '../Form/EditQuizQuestion';
 
 export const EditActivityForm = ({ activityInfo, form, setActivityInfo }) => (
   <div className="my-2 rounded-md bg-slate-500 p-2">

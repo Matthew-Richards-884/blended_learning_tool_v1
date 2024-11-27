@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useQuery } from '@tanstack/react-query';
 import { getActivity } from '../../../../../../../util/databaseFunctions';
-import { ActivityForm } from '../../../../../../../components/ActivityForm';
+import { ActivityForm } from '../../../../../../../components/Activity/ActivityForm';
 import { Suspense } from 'react';
 import { getAppSession } from '../../../../../../../components/Navbar';
 

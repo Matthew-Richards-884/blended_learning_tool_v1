@@ -7,8 +7,8 @@ import {
   getModule,
 } from '../../../../../util/databaseFunctions';
 import { getAppSession } from '../../../../../components/Navbar';
-import { ActivityDisplay } from '../../../../../components/ActivityDisplay';
-import { ActivityTooltip } from '../../../../../components/ActivityTooltip';
+import { ActivityDisplay } from '../../../../../components/Activity/ActivityDisplay';
+import { ActivityTooltip } from '../../../../../components/Activity/ActivityTooltip';
 
 export const Route = createFileRoute('/_navbar/_authed/modules/$module/')({
   component: ModuleComponent,

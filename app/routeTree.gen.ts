@@ -25,6 +25,7 @@ import { Route as NavbarAuthedModulesModuleActivityNewImport } from './routes/_n
 import { Route as NavbarAuthedModulesModuleActivityIdIndexImport } from './routes/_navbar/_authed/modules/$module/activity/$id/index'
 import { Route as NavbarAuthedModulesModuleActivityIdEditImport } from './routes/_navbar/_authed/modules/$module/activity/$id/edit'
 import { Route as NavbarAuthedModulesModuleActivityIdBeginImport } from './routes/_navbar/_authed/modules/$module/activity/$id/begin'
+import { Route as NavbarAuthedModulesModuleActivityIdQuizQuizEditImport } from './routes/_navbar/_authed/modules/$module/activity/$id/quiz.$quiz/edit'
 
 // Create/Update Routes
 
@@ -101,6 +102,12 @@ const NavbarAuthedModulesModuleActivityIdEditRoute =
 const NavbarAuthedModulesModuleActivityIdBeginRoute =
   NavbarAuthedModulesModuleActivityIdBeginImport.update({
     path: '/modules/$module/activity/$id/begin',
+    getParentRoute: () => NavbarAuthedRoute,
+  } as any)
+
+const NavbarAuthedModulesModuleActivityIdQuizQuizEditRoute =
+  NavbarAuthedModulesModuleActivityIdQuizQuizEditImport.update({
+    path: '/modules/$module/activity/$id/quiz/$quiz/edit',
     getParentRoute: () => NavbarAuthedRoute,
   } as any)
 
@@ -206,6 +213,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NavbarAuthedModulesModuleActivityIdIndexImport
       parentRoute: typeof NavbarAuthedImport
     }
+    '/_navbar/_authed/modules/$module/activity/$id/quiz/$quiz/edit': {
+      id: '/_navbar/_authed/modules/$module/activity/$id/quiz/$quiz/edit'
+      path: '/modules/$module/activity/$id/quiz/$quiz/edit'
+      fullPath: '/modules/$module/activity/$id/quiz/$quiz/edit'
+      preLoaderRoute: typeof NavbarAuthedModulesModuleActivityIdQuizQuizEditImport
+      parentRoute: typeof NavbarAuthedImport
+    }
   }
 }
 
@@ -220,6 +234,7 @@ interface NavbarAuthedRouteChildren {
   NavbarAuthedModulesModuleActivityIdBeginRoute: typeof NavbarAuthedModulesModuleActivityIdBeginRoute
   NavbarAuthedModulesModuleActivityIdEditRoute: typeof NavbarAuthedModulesModuleActivityIdEditRoute
   NavbarAuthedModulesModuleActivityIdIndexRoute: typeof NavbarAuthedModulesModuleActivityIdIndexRoute
+  NavbarAuthedModulesModuleActivityIdQuizQuizEditRoute: typeof NavbarAuthedModulesModuleActivityIdQuizQuizEditRoute
 }
 
 const NavbarAuthedRouteChildren: NavbarAuthedRouteChildren = {
@@ -236,6 +251,8 @@ const NavbarAuthedRouteChildren: NavbarAuthedRouteChildren = {
     NavbarAuthedModulesModuleActivityIdEditRoute,
   NavbarAuthedModulesModuleActivityIdIndexRoute:
     NavbarAuthedModulesModuleActivityIdIndexRoute,
+  NavbarAuthedModulesModuleActivityIdQuizQuizEditRoute:
+    NavbarAuthedModulesModuleActivityIdQuizQuizEditRoute,
 }
 
 const NavbarAuthedRouteWithChildren = NavbarAuthedRoute._addFileChildren(
@@ -273,6 +290,7 @@ export interface FileRoutesByFullPath {
   '/modules/$module/activity/$id/begin': typeof NavbarAuthedModulesModuleActivityIdBeginRoute
   '/modules/$module/activity/$id/edit': typeof NavbarAuthedModulesModuleActivityIdEditRoute
   '/modules/$module/activity/$id': typeof NavbarAuthedModulesModuleActivityIdIndexRoute
+  '/modules/$module/activity/$id/quiz/$quiz/edit': typeof NavbarAuthedModulesModuleActivityIdQuizQuizEditRoute
 }
 
 export interface FileRoutesByTo {
@@ -289,6 +307,7 @@ export interface FileRoutesByTo {
   '/modules/$module/activity/$id/begin': typeof NavbarAuthedModulesModuleActivityIdBeginRoute
   '/modules/$module/activity/$id/edit': typeof NavbarAuthedModulesModuleActivityIdEditRoute
   '/modules/$module/activity/$id': typeof NavbarAuthedModulesModuleActivityIdIndexRoute
+  '/modules/$module/activity/$id/quiz/$quiz/edit': typeof NavbarAuthedModulesModuleActivityIdQuizQuizEditRoute
 }
 
 export interface FileRoutesById {
@@ -307,6 +326,7 @@ export interface FileRoutesById {
   '/_navbar/_authed/modules/$module/activity/$id/begin': typeof NavbarAuthedModulesModuleActivityIdBeginRoute
   '/_navbar/_authed/modules/$module/activity/$id/edit': typeof NavbarAuthedModulesModuleActivityIdEditRoute
   '/_navbar/_authed/modules/$module/activity/$id/': typeof NavbarAuthedModulesModuleActivityIdIndexRoute
+  '/_navbar/_authed/modules/$module/activity/$id/quiz/$quiz/edit': typeof NavbarAuthedModulesModuleActivityIdQuizQuizEditRoute
 }
 
 export interface FileRouteTypes {
@@ -325,6 +345,7 @@ export interface FileRouteTypes {
     | '/modules/$module/activity/$id/begin'
     | '/modules/$module/activity/$id/edit'
     | '/modules/$module/activity/$id'
+    | '/modules/$module/activity/$id/quiz/$quiz/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | ''
@@ -340,6 +361,7 @@ export interface FileRouteTypes {
     | '/modules/$module/activity/$id/begin'
     | '/modules/$module/activity/$id/edit'
     | '/modules/$module/activity/$id'
+    | '/modules/$module/activity/$id/quiz/$quiz/edit'
   id:
     | '__root__'
     | '/_navbar'
@@ -356,6 +378,7 @@ export interface FileRouteTypes {
     | '/_navbar/_authed/modules/$module/activity/$id/begin'
     | '/_navbar/_authed/modules/$module/activity/$id/edit'
     | '/_navbar/_authed/modules/$module/activity/$id/'
+    | '/_navbar/_authed/modules/$module/activity/$id/quiz/$quiz/edit'
   fileRoutesById: FileRoutesById
 }
 
@@ -408,7 +431,8 @@ export const routeTree = rootRoute
         "/_navbar/_authed/modules/$module/activity/",
         "/_navbar/_authed/modules/$module/activity/$id/begin",
         "/_navbar/_authed/modules/$module/activity/$id/edit",
-        "/_navbar/_authed/modules/$module/activity/$id/"
+        "/_navbar/_authed/modules/$module/activity/$id/",
+        "/_navbar/_authed/modules/$module/activity/$id/quiz/$quiz/edit"
       ]
     },
     "/_navbar/_authed/": {
@@ -453,6 +477,10 @@ export const routeTree = rootRoute
     },
     "/_navbar/_authed/modules/$module/activity/$id/": {
       "filePath": "_navbar/_authed/modules/$module/activity/$id/index.tsx",
+      "parent": "/_navbar/_authed"
+    },
+    "/_navbar/_authed/modules/$module/activity/$id/quiz/$quiz/edit": {
+      "filePath": "_navbar/_authed/modules/$module/activity/$id/quiz.$quiz/edit.tsx",
       "parent": "/_navbar/_authed"
     }
   }

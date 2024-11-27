@@ -31,6 +31,7 @@ model Users {
   type            UserType
   modules         Modules[]
   QuizSubmissions QuizSubmissions[]
+  Message         Message[]
 }
 
 enum UserType {
@@ -46,7 +47,7 @@ model Activities {
   duration    Int?
   deadline    DateTime  @default(now()) @db.Timestamp()
   module      String?
-  Modules     Modules?  @relation(fields: [module], references: [code], onDelete: NoAction, onUpdate: NoAction, map: "fk_module")
+  Modules     Modules?  @relation(fields: [module], references: [code], onDelete: Cascade, onUpdate: NoAction, map: "fk_module")
   Media       Media[]
   Quizzes     Quizzes[]
 }
@@ -115,15 +116,15 @@ model QuizQuestionAnswers {
   description   String?
   correct       Boolean
   question      String?         @db.Uuid
-  QuizQuestions QuizQuestions?  @relation(fields: [question], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_question")
+  QuizQuestions QuizQuestions?  @relation(fields: [question], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_question")
   QuizResponses QuizResponses[]
 }
 
 model QuizQuestionOrder {
   quizID        String        @db.Uuid
-  Quizzes       Quizzes       @relation(fields: [quizID], references: [id])
+  Quizzes       Quizzes       @relation(fields: [quizID], onDelete: Cascade, references: [id])
   questionID    String        @db.Uuid
-  QuizQuestions QuizQuestions @relation(fields: [questionID], references: [id])
+  QuizQuestions QuizQuestions @relation(fields: [questionID], onDelete: Cascade, references: [id])
   position      Int
 
   @@id([quizID, questionID])
@@ -135,7 +136,7 @@ model QuizQuestions {
   description         String?
   type                QuestionType
   quiz                String?               @db.Uuid
-  Quizzes             Quizzes?              @relation(fields: [quiz], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_quiz")
+  Quizzes             Quizzes?              @relation(fields: [quiz], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_quiz")
   QuizQuestionAnswers QuizQuestionAnswers[]
 
   QuizResponses     QuizResponses[]
@@ -147,8 +148,25 @@ model Quizzes {
   title             String              @db.VarChar(100)
   description       String?             @db.VarChar(1000)
   activity          String?             @db.Uuid
-  Activities        Activities?         @relation(fields: [activity], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_activity")
+  Activities        Activities?         @relation(fields: [activity], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_activity")
   questions         QuizQuestions[]
   QuizSubmissions   QuizSubmissions[]
   QuizQuestionOrder QuizQuestionOrder[]
+}
+
+model Board {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title       String
+  description String
+  Message     Message[]
+}
+
+model Message {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  content   String
+  createdAt DateTime @default(now()) @db.Timestamp()
+  boardID   String
+  Board     Board    @relation(fields: [boardID], references: [id])
+  userEmail String
+  User      Users  @relation(fields: [userEmail], references: [email])
 }

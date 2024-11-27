@@ -5,7 +5,7 @@ import { Activities } from '@prisma/client';
 import { useForm } from '@tanstack/react-form';
 import { useMutation } from '@tanstack/react-query';
 import { createActivity } from '../../../../../../util/databaseFunctions';
-import { EditActivityForm } from '../../../../../../components/EditActivityForm';
+import { EditActivityForm } from '../../../../../../components/Activity/EditActivityForm';
 
 export const Route = createFileRoute(
   '/_navbar/_authed/modules/$module/activity/new'

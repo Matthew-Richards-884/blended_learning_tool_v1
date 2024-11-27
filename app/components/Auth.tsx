@@ -4,33 +4,22 @@ export function Auth({
   status,
   afterSubmit,
 }: {
-  actionText: string
-  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void
-  status: 'pending' | 'idle' | 'success' | 'error'
-  afterSubmit?: React.ReactNode
+  actionText: string;
+  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  status: 'pending' | 'idle' | 'success' | 'error';
+  afterSubmit?: React.ReactNode;
 }) {
   return (
-    <div className="fixed inset-0 bg-white dark:bg-black flex items-start justify-center p-8">
-      <div className="bg-white dark:bg-gray-900 p-8 rounded-lg shadow-lg">
-        <h1 className="text-2xl font-bold mb-4">{actionText}</h1>
+    <div className="fixed inset-0 flex items-start justify-center bg-white p-8 text-black dark:bg-black dark:text-white">
+      <div className="rounded-lg bg-white p-8 shadow-lg dark:bg-gray-900">
+        <h1 className="mb-4 text-2xl font-bold">{actionText}</h1>
         <form
           onSubmit={(e) => {
-            e.preventDefault()
-            onSubmit(e)
+            e.preventDefault();
+            onSubmit(e);
           }}
           className="space-y-4"
         >
-          <div>
-            <label htmlFor="username" className="block text-xs">
-              Username
-            </label>
-            <input
-              type="username"
-              name="username"
-              id="username"
-              className="px-2 py-1 w-full rounded border border-gray-500/20 bg-white dark:bg-gray-800"
-            />
-          </div>
           <div>
             <label htmlFor="email" className="block text-xs">
               Email
@@ -39,7 +28,7 @@ export function Auth({
               type="email"
               name="email"
               id="email"
-              className="px-2 py-1 w-full rounded border border-gray-500/20 bg-white dark:bg-gray-800"
+              className="w-full rounded border border-gray-500/20 bg-white px-2 py-1 dark:bg-gray-800"
             />
           </div>
           <div>
@@ -50,12 +39,12 @@ export function Auth({
               type="password"
               name="password"
               id="password"
-              className="px-2 py-1 w-full rounded border border-gray-500/20 bg-white dark:bg-gray-800"
+              className="w-full rounded border border-gray-500/20 bg-white px-2 py-1 dark:bg-gray-800"
             />
           </div>
           <button
             type="submit"
-            className="w-full bg-cyan-600 text-white rounded py-2 font-black uppercase"
+            className="w-full rounded bg-cyan-600 py-2 font-black uppercase text-white"
             disabled={status === 'pending'}
           >
             {status === 'pending' ? '...' : actionText}
@@ -64,5 +53,5 @@ export function Auth({
         </form>
       </div>
     </div>
-  )
+  );
 }

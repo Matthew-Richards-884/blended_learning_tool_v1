@@ -35,7 +35,11 @@ export const Navbar = () => {
       >
         {session?.data.userEmail ? <>Log Out</> : <>Log In</>}
       </Link>
-      <div>Hello {session?.data.userEmail}</div>
+      {session && session.data.userEmail ? (
+        <div>Hello {session?.data.userEmail}</div>
+      ) : (
+        <></>
+      )}
     </div>
   );
 };

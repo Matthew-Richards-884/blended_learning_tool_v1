@@ -1,15 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link } from '@tanstack/react-router';
-import { getModule } from '../util/databaseFunctions';
+import { getModule } from '../../util/databaseFunctions';
 import { UUID } from 'crypto';
 
-export const QuizCard = ({
-  title,
+export const ActivityCard = ({
+  name,
   action,
   moduleCode,
   deadline,
 }: {
-  title: string;
+  name: string;
   action: string;
   moduleCode: string;
   deadline: Date;
@@ -34,7 +34,7 @@ export const QuizCard = ({
       Due Date: {deadline.toDateString()}
     </div>
     <div className="flex h-min flex-auto self-end">
-      <p className="flex-auto">{title}</p>
+      <p className="flex-auto">{name}</p>
       <span>Details</span>
       {/* <Link
         to="/modules/$module/activity/$id"

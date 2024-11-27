@@ -1,8 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { SidebarElement } from '../../../components/SidebarElement';
-import { ActivityCard } from '../../../components/ActivityCard';
+import { ActivityCard } from '../../../components/Activity/ActivityCard';
 import { NAVBAR_HEIGHT } from '../../_navbar';
-import { ActivityForm } from '../../../components/ActivityForm';
+import { ActivityForm } from '../../../components/Activity/ActivityForm';
 
 import {
   getActivities,

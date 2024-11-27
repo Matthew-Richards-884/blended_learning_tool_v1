@@ -1,5 +1,5 @@
 import { FieldApi } from '@tanstack/react-form';
-import { FieldInfo } from './FieldInfo';
+import { FieldInfo } from '../FieldInfo';
 import { z } from 'zod';
 import { UUID } from 'crypto';
 
