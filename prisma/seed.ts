@@ -246,7 +246,7 @@ async function main() {
     },
   });
 
-  await prisma.users.create({
+  const teacher = await prisma.users.create({
     data: {
       email: 't@t.com',
       username: 't',
@@ -258,6 +258,69 @@ async function main() {
           { where: { id: module2.id }, create: module2 },
         ],
       },
+    },
+  });
+
+  const student1 = await prisma.users.create({
+    data: {
+      email: 'u@u.com',
+      username: 'u',
+      password: await hashPassword('u'),
+      type: 'Student',
+      modules: {
+        connectOrCreate: [
+          { where: { id: module1.id }, create: module1 },
+          { where: { id: module2.id }, create: module2 },
+        ],
+      },
+    },
+  });
+
+  const board = await prisma.board.create({
+    data: {
+      title: 'Test board',
+      description: 'Description of test board',
+    },
+  });
+
+  await prisma.boardLocation.create({
+    data: {
+      type: 'Activities',
+      activitiesId: activityA.id,
+      boardId: board.id,
+    },
+  });
+
+  const messages = await prisma.post.createManyAndReturn({
+    data: [
+      {
+        content: 'Message 1',
+        createdAt: new Date('2024-10-21 18:00').toISOString(),
+        userEmail: teacher.email,
+        boardID: board.id,
+      },
+      {
+        content: 'Message 2',
+        createdAt: new Date('2024-10-21 19:00').toISOString(),
+        userEmail: student1.email,
+        boardID: board.id,
+      },
+      {
+        content: 'Message 3',
+        createdAt: new Date('2024-10-21 20:00').toISOString(),
+        userEmail: teacher.email,
+        boardID: board.id,
+      },
+    ],
+  });
+
+  await prisma.post.create({
+    data: {
+      content: 'Reply 1',
+      createdAt: new Date('2024-10-21 21:00').toISOString(),
+      userEmail: teacher.email,
+      boardID: board.id,
+      postID: messages[0].id,
     },
   });
 

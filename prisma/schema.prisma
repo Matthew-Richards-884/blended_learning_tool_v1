@@ -31,7 +31,7 @@ model Users {
   type            UserType
   modules         Modules[]
   QuizSubmissions QuizSubmissions[]
-  Message         Message[]
+  Message         Post[]
 }
 
 enum UserType {
@@ -41,24 +41,26 @@ enum UserType {
 }
 
 model Activities {
-  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  title       String
-  description String?
-  duration    Int?
-  deadline    DateTime  @default(now()) @db.Timestamp()
-  module      String?
-  Modules     Modules?  @relation(fields: [module], references: [code], onDelete: Cascade, onUpdate: NoAction, map: "fk_module")
-  Media       Media[]
-  Quizzes     Quizzes[]
+  id            String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title         String
+  description   String?
+  duration      Int?
+  deadline      DateTime        @default(now()) @db.Timestamp()
+  module        String?
+  Modules       Modules?        @relation(fields: [module], references: [code], onDelete: Cascade, onUpdate: NoAction, map: "fk_module")
+  Media         Media[]
+  Quizzes       Quizzes[]
+  BoardLocation BoardLocation[]
 }
 
 model Modules {
-  id          String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  title       String
-  code        String       @unique
-  description String?
-  activities  Activities[]
-  Users       Users[]
+  id            String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title         String
+  code          String          @unique
+  description   String?
+  activities    Activities[]
+  Users         Users[]
+  BoardLocation BoardLocation[]
 }
 
 model QuizSubmissions {
@@ -152,21 +154,45 @@ model Quizzes {
   questions         QuizQuestions[]
   QuizSubmissions   QuizSubmissions[]
   QuizQuestionOrder QuizQuestionOrder[]
+  BoardLocation     BoardLocation[]
+}
+
+enum LocationType {
+  Activities
+  Modules
+  Quizzes
+}
+
+model BoardLocation {
+  id           String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  type         LocationType
+  boardId      String       @db.Uuid
+  Board        Board        @relation(fields: [boardId], references: [id])
+  activitiesId String?      @db.Uuid
+  Activity     Activities?  @relation(fields: [activitiesId], references: [id])
+  modulesId    String?      @db.Uuid
+  Modules      Modules?     @relation(fields: [modulesId], references: [id])
+  quizzesId    String?      @db.Uuid
+  Quizzes      Quizzes?     @relation(fields: [quizzesId], references: [id])
 }
 
 model Board {
-  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  title       String
-  description String
-  Message     Message[]
+  id            String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title         String
+  description   String?
+  Post          Post[]
+  BoardLocation BoardLocation[]
 }
 
-model Message {
+model Post {
   id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   content   String
   createdAt DateTime @default(now()) @db.Timestamp()
-  boardID   String
+  boardID   String   @db.Uuid
   Board     Board    @relation(fields: [boardID], references: [id])
   userEmail String
-  User      Users  @relation(fields: [userEmail], references: [email])
+  User      Users    @relation(fields: [userEmail], references: [email])
+  postID    String?  @db.Uuid
+  Post      Post?    @relation("PostReply", fields: [postID], references: [id])
+  Replies   Post[]   @relation("PostReply")
 }

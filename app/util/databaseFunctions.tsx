@@ -8,7 +8,7 @@ import {
   Quizzes,
 } from '@prisma/client';
 
-import { createServerFn } from '@tanstack/start';
+import { createServerFn, Fetcher } from '@tanstack/start';
 
 const prisma = new PrismaClient();
 
@@ -197,6 +197,57 @@ export const updateQuiz = createServerFn(
   }
 );
 
+export const getBoard = createServerFn('GET', async (boardCode: string) => {
+  return await prisma.board.findFirst({
+    where: {
+      id: boardCode,
+    },
+  });
+});
+
+export const getBoardByActivity = createServerFn(
+  'GET',
+  async (activity: string) => {
+    return await prisma.board.findFirst({
+      where: {
+        BoardLocation: { some: { activitiesId: activity } },
+      },
+    });
+  }
+);
+
+export const getBoardInfo = createServerFn('GET', async (boardCode: string) => {
+  return await prisma.board.findFirst({
+    where: {
+      id: boardCode,
+    },
+    include: {
+      Post: true,
+    },
+  });
+});
+
+export const createMessage = createServerFn(
+  'GET',
+  async ({
+    boardCode,
+    post,
+    userEmail,
+  }: {
+    boardCode: string;
+    post: string;
+    userEmail: string;
+  }) => {
+    return await prisma.post.create({
+      data: {
+        boardID: boardCode,
+        content: post,
+        userEmail: userEmail,
+      },
+    });
+  }
+);
+
 export const createQuizSubmission = createServerFn(
   'GET',
   async (params: { quizID: string; userID: string; completeDate: Date }) => {
@@ -281,7 +332,7 @@ export const getUserModules = createServerFn('GET', async (email: string) => {
   });
 });
 
-export const getActivitiesByModule = createServerFn(
+export const getActivitiesByModule: Fetcher<string, Activities[]> = createServerFn(
   'GET',
   async (module: string) => {
     return await prisma.activities.findMany({ where: { module: module } });

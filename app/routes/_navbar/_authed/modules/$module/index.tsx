@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/start';
-import { PrismaClient, UserType } from '@prisma/client';
+import { Activities, PrismaClient, UserType } from '@prisma/client';
 import { useQuery } from '@tanstack/react-query';
 import {
   getActivitiesByModule,
@@ -22,9 +22,9 @@ function ModuleComponent() {
     queryFn: () => getModule(module),
   }).data;
 
-  const activities = useQuery({
+  const activities: Activities[] | undefined = useQuery({
     queryKey: ['activitiesByModule', module],
-    queryFn: () => getActivitiesByModule(module),
+    queryFn: () => getActivitiesByModule(module) as any as Activities[],
   }).data;
 
   activities ? console.log('DATE', activities[0].deadline) : null;
@@ -68,9 +68,7 @@ function ModuleComponent() {
           <ActivityTooltip id="create-activity" text={'Create Activity'} />
         </Link>
       </div>
-      {activities?.map((v) => (
-        <ActivityDisplay module={module} v={v} />
-      ))}
+      {activities?.map((v) => <ActivityDisplay module={module} v={v} />)}
     </div>
   );
 }

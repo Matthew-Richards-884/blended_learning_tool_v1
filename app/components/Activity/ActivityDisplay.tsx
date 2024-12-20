@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router';
-import { UserType } from '@prisma/client';
+import { Activities, UserType } from '@prisma/client';
 import { ActivityTooltip } from './ActivityTooltip';
 import { useQuery } from '@tanstack/react-query';
 import { getAppSession } from '../Navbar';
@@ -8,7 +8,7 @@ export const ActivityDisplay = ({
   v,
   module,
 }: {
-  v: any;
+  v: Activities;
   module: string;
 }) => {
   const session = useQuery({
