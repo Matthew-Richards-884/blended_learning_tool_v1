@@ -24,6 +24,7 @@ export const getUserActivities = createServerFn(
     return await prisma.activities.findMany({
       where: { Modules: { Users: { some: { email: email } } } },
       orderBy: { deadline: 'asc' },
+      include: { Modules: true },
     });
   }
 );
@@ -233,16 +234,19 @@ export const createMessage = createServerFn(
     boardCode,
     post,
     userEmail,
+    postID,
   }: {
     boardCode: string;
     post: string;
     userEmail: string;
+    postID?: string;
   }) => {
     return await prisma.post.create({
       data: {
         boardID: boardCode,
         content: post,
         userEmail: userEmail,
+        postID: postID,
       },
     });
   }
@@ -332,9 +336,7 @@ export const getUserModules = createServerFn('GET', async (email: string) => {
   });
 });
 
-export const getActivitiesByModule: Fetcher<string, Activities[]> = createServerFn(
-  'GET',
-  async (module: string) => {
+export const getActivitiesByModule: Fetcher<string, Activities[]> =
+  createServerFn('GET', async (module: string) => {
     return await prisma.activities.findMany({ where: { module: module } });
-  }
-);
+  });

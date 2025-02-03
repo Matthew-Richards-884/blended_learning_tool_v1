@@ -27,6 +27,15 @@ export const Navbar = () => {
         Home
       </Link>
       <Link
+        to="/calendar"
+        activeProps={{
+          className: 'text-sky-400',
+        }}
+        className="items-center justify-center p-3 font-bold hover:text-sky-400"
+      >
+        Calendar
+      </Link>
+      <Link
         to={session?.data.userEmail ? '/logout' : '/login'}
         activeProps={{
           className: 'text-sky-400',

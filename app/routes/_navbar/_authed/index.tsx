@@ -13,6 +13,7 @@ import {
 import { skipToken, useQuery } from '@tanstack/react-query';
 import { Suspense } from 'react';
 import { getAppSession } from '../../../components/Navbar';
+import { Activities, Modules } from '@prisma/client';
 
 export const Route = createFileRoute('/_navbar/_authed/')({
   component: HomeComponent,
@@ -20,7 +21,7 @@ export const Route = createFileRoute('/_navbar/_authed/')({
 
 function HomeComponent() {
   const session = useQuery({
-    queryKey: ['session', 'main'],
+    queryKey: ['session'],
     queryFn: () => getAppSession(),
   }).data;
 
@@ -43,7 +44,10 @@ function HomeComponent() {
   const activities = useQuery({
     queryKey: ['userActivities'],
     queryFn: session
-      ? () => getUserActivities(session.data.userEmail)
+      ? () =>
+          getUserActivities(session.data.userEmail) as any as (Activities & {
+            Modules: Modules;
+          })[]
       : skipToken,
     enabled: !!session,
   });
@@ -59,7 +63,7 @@ function HomeComponent() {
                 <SidebarElement key={v.id} module={v.code}></SidebarElement>
               ))
             ) : (
-              <div className='col-span-1'>Loading...</div>
+              <div className="col-span-1">Loading...</div>
             )}
           </div>
         </div>
@@ -75,16 +79,10 @@ function HomeComponent() {
           >
             {activities.isSuccess ? (
               activities.data.map((v) => (
-                <ActivityCard
-                  key={v.id}
-                  name={v.title}
-                  action={v.id}
-                  moduleCode={v.module ? v.module : 'ERROR'}
-                  deadline={new Date(v.deadline as any)}
-                ></ActivityCard>
+                <ActivityCard key={v.id} info={v}></ActivityCard>
               ))
             ) : (
-              <div className='col-span-3'>Loading...</div>
+              <div className="col-span-3">Loading...</div>
             )}
           </div>
         </div>

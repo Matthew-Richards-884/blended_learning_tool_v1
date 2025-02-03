@@ -2,39 +2,29 @@ import { useQuery } from '@tanstack/react-query';
 import { Link } from '@tanstack/react-router';
 import { getModule } from '../../util/databaseFunctions';
 import { UUID } from 'crypto';
+import { Activities, Modules } from '@prisma/client';
 
 export const ActivityCard = ({
-  name,
-  action,
-  moduleCode,
-  deadline,
+  info
 }: {
-  name: string;
-  action: string;
-  moduleCode: string;
-  deadline: Date;
+  info: Activities & {Modules: Modules}
 }) => (
   <Link
     to="/modules/$module/activity/$id"
-    params={{ module: moduleCode, id: action.toString() }}
-    className="relative m-1 flex h-14 rounded-md bg-slate-400 p-1 text-black"
+    params={{ module: info.module ?? '/module-not-found', id: info.id}}
+    className="relative m-1 flex h-14 mx-2 border-b border-black p-1 text-black"
   >
     <div className="absolute inset-1 h-min w-fit text-[0.5rem]">
-      <span className="">{moduleCode}</span>&nbsp;
+      <span className="">{info.module}</span>&nbsp;
       <span className="">
-        {
-          useQuery({
-            queryKey: ['moduleData', moduleCode, 'ActivityCard'],
-            queryFn: () => getModule(moduleCode),
-          }).data?.title
-        }
+        {info.Modules.title}
       </span>
     </div>
     <div className="absolute right-1 top-1 h-min w-fit text-[0.5rem]">
-      Due Date: {deadline.toDateString()}
+      Due Date: {info.deadline as any as string}
     </div>
     <div className="flex h-min flex-auto self-end">
-      <p className="flex-auto">{name}</p>
+      <p className="flex-auto">{info.title}</p>
       <span>Details</span>
       {/* <Link
         to="/modules/$module/activity/$id"

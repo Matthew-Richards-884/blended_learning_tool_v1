@@ -18,6 +18,7 @@ import { Route as NavbarSignupIndexImport } from './routes/_navbar/signup/index'
 import { Route as NavbarLogoutIndexImport } from './routes/_navbar/logout/index'
 import { Route as NavbarLoginIndexImport } from './routes/_navbar/login/index'
 import { Route as NavbarAuthedIndexImport } from './routes/_navbar/_authed/index'
+import { Route as NavbarAuthedCalendarImport } from './routes/_navbar/_authed/calendar'
 import { Route as NavbarAuthedModulesIndexImport } from './routes/_navbar/_authed/modules/index'
 import { Route as NavbarAuthedModulesModuleIndexImport } from './routes/_navbar/_authed/modules/$module/index'
 import { Route as NavbarAuthedModulesModuleActivityIndexImport } from './routes/_navbar/_authed/modules/$module/activity/index'
@@ -61,6 +62,11 @@ const NavbarLoginIndexRoute = NavbarLoginIndexImport.update({
 
 const NavbarAuthedIndexRoute = NavbarAuthedIndexImport.update({
   path: '/',
+  getParentRoute: () => NavbarAuthedRoute,
+} as any)
+
+const NavbarAuthedCalendarRoute = NavbarAuthedCalendarImport.update({
+  path: '/calendar',
   getParentRoute: () => NavbarAuthedRoute,
 } as any)
 
@@ -135,6 +141,13 @@ declare module '@tanstack/react-router' {
       fullPath: ''
       preLoaderRoute: typeof NavbarAuthedImport
       parentRoute: typeof NavbarImport
+    }
+    '/_navbar/_authed/calendar': {
+      id: '/_navbar/_authed/calendar'
+      path: '/calendar'
+      fullPath: '/calendar'
+      preLoaderRoute: typeof NavbarAuthedCalendarImport
+      parentRoute: typeof NavbarAuthedImport
     }
     '/_navbar/_authed/': {
       id: '/_navbar/_authed/'
@@ -226,6 +239,7 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 interface NavbarAuthedRouteChildren {
+  NavbarAuthedCalendarRoute: typeof NavbarAuthedCalendarRoute
   NavbarAuthedIndexRoute: typeof NavbarAuthedIndexRoute
   NavbarAuthedModulesIndexRoute: typeof NavbarAuthedModulesIndexRoute
   NavbarAuthedModulesModuleIndexRoute: typeof NavbarAuthedModulesModuleIndexRoute
@@ -238,6 +252,7 @@ interface NavbarAuthedRouteChildren {
 }
 
 const NavbarAuthedRouteChildren: NavbarAuthedRouteChildren = {
+  NavbarAuthedCalendarRoute: NavbarAuthedCalendarRoute,
   NavbarAuthedIndexRoute: NavbarAuthedIndexRoute,
   NavbarAuthedModulesIndexRoute: NavbarAuthedModulesIndexRoute,
   NavbarAuthedModulesModuleIndexRoute: NavbarAuthedModulesModuleIndexRoute,
@@ -279,6 +294,7 @@ const NavbarRouteWithChildren =
 export interface FileRoutesByFullPath {
   '': typeof NavbarAuthedRouteWithChildren
   '/original_index': typeof OriginalindexRoute
+  '/calendar': typeof NavbarAuthedCalendarRoute
   '/': typeof NavbarAuthedIndexRoute
   '/login': typeof NavbarLoginIndexRoute
   '/logout': typeof NavbarLogoutIndexRoute
@@ -296,6 +312,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '': typeof NavbarRouteWithChildren
   '/original_index': typeof OriginalindexRoute
+  '/calendar': typeof NavbarAuthedCalendarRoute
   '/': typeof NavbarAuthedIndexRoute
   '/login': typeof NavbarLoginIndexRoute
   '/logout': typeof NavbarLogoutIndexRoute
@@ -315,6 +332,7 @@ export interface FileRoutesById {
   '/_navbar': typeof NavbarRouteWithChildren
   '/original_index': typeof OriginalindexRoute
   '/_navbar/_authed': typeof NavbarAuthedRouteWithChildren
+  '/_navbar/_authed/calendar': typeof NavbarAuthedCalendarRoute
   '/_navbar/_authed/': typeof NavbarAuthedIndexRoute
   '/_navbar/login/': typeof NavbarLoginIndexRoute
   '/_navbar/logout/': typeof NavbarLogoutIndexRoute
@@ -334,6 +352,7 @@ export interface FileRouteTypes {
   fullPaths:
     | ''
     | '/original_index'
+    | '/calendar'
     | '/'
     | '/login'
     | '/logout'
@@ -350,6 +369,7 @@ export interface FileRouteTypes {
   to:
     | ''
     | '/original_index'
+    | '/calendar'
     | '/'
     | '/login'
     | '/logout'
@@ -367,6 +387,7 @@ export interface FileRouteTypes {
     | '/_navbar'
     | '/original_index'
     | '/_navbar/_authed'
+    | '/_navbar/_authed/calendar'
     | '/_navbar/_authed/'
     | '/_navbar/login/'
     | '/_navbar/logout/'
@@ -424,6 +445,7 @@ export const routeTree = rootRoute
       "filePath": "_navbar/_authed.tsx",
       "parent": "/_navbar",
       "children": [
+        "/_navbar/_authed/calendar",
         "/_navbar/_authed/",
         "/_navbar/_authed/modules/",
         "/_navbar/_authed/modules/$module/",
@@ -434,6 +456,10 @@ export const routeTree = rootRoute
         "/_navbar/_authed/modules/$module/activity/$id/",
         "/_navbar/_authed/modules/$module/activity/$id/quiz/$quiz/edit"
       ]
+    },
+    "/_navbar/_authed/calendar": {
+      "filePath": "_navbar/_authed/calendar.tsx",
+      "parent": "/_navbar/_authed"
     },
     "/_navbar/_authed/": {
       "filePath": "_navbar/_authed/index.tsx",
