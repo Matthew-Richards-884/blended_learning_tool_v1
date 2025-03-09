@@ -6,6 +6,8 @@ import {
   QuizQuestionOrder,
   QuizQuestions,
   Quizzes,
+  UserGroups,
+  Users,
 } from '@prisma/client';
 
 import { createServerFn, Fetcher } from '@tanstack/start';
@@ -217,6 +219,18 @@ export const getBoardByActivity = createServerFn(
   }
 );
 
+export const getBoardByActivityGroup = createServerFn(
+  'GET',
+  async (params: { activity: string; group: string }) => {
+    return await prisma.board.findFirst({
+      where: {
+        group: params.group,
+        BoardLocation: { some: { activitiesId: params.activity } },
+      },
+    });
+  }
+);
+
 export const getBoardInfo = createServerFn('GET', async (boardCode: string) => {
   return await prisma.board.findFirst({
     where: {
@@ -254,11 +268,11 @@ export const createMessage = createServerFn(
 
 export const createQuizSubmission = createServerFn(
   'GET',
-  async (params: { quizID: string; userID: string; completeDate: Date }) => {
+  async (params: { quizID: string; users: Users[]; completeDate: Date }) => {
     return await prisma.quizSubmissions.create({
       data: {
         quizID: params.quizID,
-        userID: params.userID,
+        Users: { connect: params.users },
         completeDate: params.completeDate,
       },
     });
@@ -301,6 +315,24 @@ export const createQuiz = createServerFn(
   }
 );
 
+export type createGroupsType = (UserGroups & {
+  participants: {
+    connect: { email: string }[];
+  };
+})[];
+
+export const createGroups = createServerFn(
+  'GET',
+  async (data: createGroupsType) => {
+    return await prisma.$transaction([
+      prisma.userGroups.deleteMany({
+        where: { id: { in: data.map((v) => v.id) } },
+      }),
+      prisma.userGroups.createMany({ data: data }),
+    ]);
+  }
+);
+
 export const updateActivity = createServerFn(
   'GET',
   async (data: Activities) => {
@@ -330,6 +362,12 @@ export const getModule = createServerFn('GET', async (code: string) => {
   return await prisma.modules.findFirst({ where: { code: code } });
 });
 
+export const getUserByEmail = createServerFn('GET', async (email: string) => {
+  return await prisma.users.findFirst({
+    where: { email: email },
+  });
+});
+
 export const getUserModules = createServerFn('GET', async (email: string) => {
   return await prisma.modules.findMany({
     where: { Users: { some: { email: email } } },
@@ -340,3 +378,50 @@ export const getActivitiesByModule: Fetcher<string, Activities[]> =
   createServerFn('GET', async (module: string) => {
     return await prisma.activities.findMany({ where: { module: module } });
   });
+
+export const getGroup = createServerFn('GET', async (id: string) => {
+  return await prisma.userGroups.findFirst({ where: { id: id } });
+});
+
+export const getGroupByUserActivity = createServerFn(
+  'GET',
+  async (params: { activity: string; email: string }) => {
+    return await prisma.userGroups.findFirst({
+      where: {
+        participants: { some: { email: params.email } },
+        Activities: { some: { id: params.activity } },
+      },
+    });
+  }
+);
+
+export const getGroups = createServerFn('GET', async (activityId: string) => {
+  return await prisma.userGroups.findMany({
+    where: { Activities: { some: { id: activityId } } },
+  });
+});
+
+export const getGroupInfo = createServerFn(
+  'GET',
+  async (activityId: string) => {
+    return await prisma.userGroups.findMany({
+      where: { Activities: { some: { id: activityId } } },
+      include: { participants: { orderBy: { email: 'asc' } } },
+    });
+  }
+);
+
+export const getGroupUsers = createServerFn('GET', async (group: string) => {
+  return await prisma.users.findMany({
+    where: { UserGroup: { some: { id: group } } },
+  });
+});
+
+export const getActivityUsers = createServerFn(
+  'GET',
+  async (activity: string) => {
+    return await prisma.users.findMany({
+      where: { modules: { some: { activities: { some: { id: activity } } } } },
+    });
+  }
+);

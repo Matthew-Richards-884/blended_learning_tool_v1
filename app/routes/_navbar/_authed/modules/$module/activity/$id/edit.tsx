@@ -13,6 +13,7 @@ import { useForm } from '@tanstack/react-form';
 import { Activities } from '@prisma/client';
 import { zodValidator } from '@tanstack/zod-form-adapter';
 import { QuizCard } from '../../../../../../../components/Form/QuizCard';
+import { EditGroups } from '../../../../../../../components/Groups/EditGroups';
 
 export const Route = createFileRoute(
   '/_navbar/_authed/modules/$module/activity/$id/edit'
@@ -108,7 +109,7 @@ function ActivityComponent() {
   });
 
   return (
-    <div className="w-screen overflow-auto bg-slate-700 p-2 text-white">
+    <div className="w-screen overflow-auto bg-slate-200 p-2 h-full text-black">
       <Suspense>
         {activityInfo ? (
           <div className="my-2 rounded-md bg-violet-200 p-2">
@@ -117,20 +118,30 @@ function ActivityComponent() {
               form={form}
               setActivityInfo={setActivityInfo}
             ></EditActivityForm>
-            <button
-              onClick={async () =>
-                await createQuizMutation.mutateAsync(newQuiz())
-              }
-            >
-              Create Quiz
-            </button>
-            {quizInfo.isSuccess ? (
-              quizInfo.data.map((quiz) => (
-                <QuizCard moduleCode={module} activity={id} quizInfo={quiz} />
-              ))
-            ) : (
-              <div>Loading Quizzes</div>
-            )}
+            <div className="grid grid-cols-2">
+              <EditGroups activityID={id} />
+              <div>
+                <button
+                  onClick={async () =>
+                    await createQuizMutation.mutateAsync(newQuiz())
+                  }
+                  className="cursor-pointer"
+                >
+                  Create Quiz
+                </button>
+                {quizInfo.isSuccess ? (
+                  quizInfo.data.map((quiz) => (
+                    <QuizCard
+                      moduleCode={module}
+                      activity={id}
+                      quizInfo={quiz}
+                    />
+                  ))
+                ) : (
+                  <div>Loading Quizzes</div>
+                )}
+              </div>
+            </div>
           </div>
         ) : (
           <div>Loading...</div>

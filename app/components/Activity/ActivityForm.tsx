@@ -7,34 +7,69 @@ import {
   createQuizSubmission,
   getAllQuizMCQInfo,
   getAllQuizTextInfo,
+  getGroupUsers,
   getQuizQuestionOrder,
   getQuizzesByActivity,
+  getUserByEmail,
   responseType,
 } from '../../util/databaseFunctions';
 import { Suspense } from 'react';
 import { getAppSession } from '../Navbar';
 import { Prisma, PrismaClient } from '@prisma/client';
+import { redirect, useRouter } from '@tanstack/react-router';
 
 const prisma = new PrismaClient();
 
-export const ActivityForm = ({ activityID }) => {
+export const ActivityForm = ({
+  module,
+  activityID,
+  group,
+}: {
+  module: string;
+  activityID: string;
+  group?: string;
+}) => {
+  const router = useRouter();
+
+  const groupUsers = useQuery({
+    queryKey: ['activity', activityID, 'group', group],
+    queryFn: group ? () => getGroupUsers(group) : skipToken,
+    enabled: !!group,
+  }).data;
+
+  const session = useQuery({
+    queryKey: ['session'],
+    queryFn: () => getAppSession(),
+  }).data;
+
+  const user = useQuery({
+    queryKey: ['user'],
+    queryFn: session
+      ? () => getUserByEmail(session!.data.userEmail)
+      : skipToken,
+    enabled: !!session,
+  }).data;
+
   const quizSubmissionMutation = useMutation({
-    mutationFn: (params: { quizIDT; sessionT; dateT }) =>
+    mutationFn: (params: { quizIDT; dateT }) =>
       createQuizSubmission({
         quizID: params.quizIDT,
-        userID: params.sessionT.data.userEmail,
+        users: group ? groupUsers! : [user!],
         completeDate: params.dateT,
       }),
+    onSuccess: async () => {
+      await router.invalidate();
+      router.navigate({
+        to: '/modules/$module/activity/$id',
+        params: { id: activityID, module: module },
+      });
+      return;
+    },
   });
 
   const quizResponseMutation = useMutation({
     mutationFn: (response: responseType) => createQuizResponse(response),
   });
-
-  const session = useQuery({
-    queryKey: ['session', 'navbar'],
-    queryFn: () => getAppSession(),
-  }).data;
 
   const quizzes = useQuery({
     queryKey: ['quizzes', activityID, 'activityForm'],
@@ -92,7 +127,6 @@ export const ActivityForm = ({ activityID }) => {
       const date = new Date();
       const submission = await quizSubmissionMutation.mutateAsync({
         quizIDT: quizID,
-        sessionT: session,
         dateT: date,
       });
       console.log('MUTATE', submission);
@@ -118,6 +152,8 @@ export const ActivityForm = ({ activityID }) => {
                 answerID: v,
               });
         });
+        if (groupUsers) {
+        }
       }
       console.log('RESPONSE', responses);
       const responseQuery = await quizResponseMutation.mutateAsync(responses);
@@ -129,7 +165,7 @@ export const ActivityForm = ({ activityID }) => {
   });
 
   return (
-    <div className="bg-slate-200 text-black">
+    <div className="h-full overflow-auto bg-slate-200 text-black">
       <h1>Quiz</h1>
       <form
         onSubmit={(e) => {

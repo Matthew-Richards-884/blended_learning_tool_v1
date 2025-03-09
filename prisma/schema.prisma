@@ -32,6 +32,7 @@ model Users {
   modules         Modules[]
   QuizSubmissions QuizSubmissions[]
   Message         Post[]
+  UserGroup       UserGroups[]
 }
 
 enum UserType {
@@ -51,6 +52,15 @@ model Activities {
   Media         Media[]
   Quizzes       Quizzes[]
   BoardLocation BoardLocation[]
+  UserGroups    UserGroups[]
+}
+
+model UserGroups {
+  id           String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title        String
+  participants Users[]
+  Activities   Activities[]
+  Board        Board[]
 }
 
 model Modules {
@@ -64,13 +74,11 @@ model Modules {
 }
 
 model QuizSubmissions {
-  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  quizID       String   @db.Uuid
-  Quizzes      Quizzes  @relation(fields: [quizID], references: [id])
-  userID       String
-  Users        Users    @relation(fields: [userID], references: [email])
-  completeDate DateTime @default(now()) @db.Timestamp()
-
+  id            String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  quizID        String          @db.Uuid
+  Quizzes       Quizzes         @relation(fields: [quizID], references: [id])
+  Users         Users[]
+  completeDate  DateTime        @default(now()) @db.Timestamp()
   QuizResponses QuizResponses[]
 }
 
@@ -180,8 +188,10 @@ model Board {
   id            String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   title         String
   description   String?
+  group         String?         @db.Uuid
   Post          Post[]
   BoardLocation BoardLocation[]
+  UserGroups    UserGroups?     @relation(fields: [group], references: [id])
 }
 
 model Post {

@@ -1,5 +1,14 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { createMessage, getBoardInfo } from '../../util/databaseFunctions';
+import {
+  skipToken,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
+import {
+  createMessage,
+  getBoardInfo,
+  getGroup,
+} from '../../util/databaseFunctions';
 import { useForm } from '@tanstack/react-form';
 import { zodValidator } from '@tanstack/zod-form-adapter';
 import { innerQuestionClass, questionClass } from '../Form/EditQuizQuestion';
@@ -7,7 +16,13 @@ import { getAppSession } from '../Navbar';
 import { Post } from '@prisma/client';
 import { useState } from 'react';
 
-export const DiscussionBoard = ({ boardCode }: { boardCode: string }) => {
+export const DiscussionBoard = ({
+  boardCode,
+  group,
+}: {
+  boardCode: string;
+  group?: string;
+}) => {
   const queryClient = useQueryClient();
   console.log('Board Code: ', boardCode);
   const session = useQuery({
@@ -62,14 +77,23 @@ export const DiscussionBoard = ({ boardCode }: { boardCode: string }) => {
 
   const [replyTo, setReplyTo] = useState<{ id: string; email: string }>();
 
+  const groupInfo = useQuery({
+    queryKey: [boardCode, 'group', session?.data.userEmail],
+    queryFn: group ? () => getGroup(group) : skipToken,
+    enabled: !!group,
+  });
+
+  console.log('Group', group);
+
   return (
     <div className="flex h-[30rem] w-full p-1">
       {boardInfo.isSuccess && boardInfo.data ? (
         <div className="grid w-full grid-rows-4 bg-gray-200 text-black">
           <div className="row-span-3 w-full overflow-auto">
-            <div className="bg-gray-200 p-3 m-1 border border-gray-300 shadow">
+            <div className="m-1 border border-gray-300 bg-gray-200 p-3 shadow">
               <div>{boardInfo.data.title}</div>
               <div>{boardInfo.data.description}</div>
+              <div>Group: {groupInfo.data?.title}</div>
             </div>
             <div>
               {boardInfo.data.Post.map((message) => (
@@ -112,7 +136,7 @@ export const DiscussionBoard = ({ boardCode }: { boardCode: string }) => {
               ))}
             </div>
           </div>
-          <div className="m-2 p-2 bg-gray-100">
+          <div className="m-2 bg-gray-100 p-2">
             <form
               onSubmit={(e) => {
                 e.preventDefault();

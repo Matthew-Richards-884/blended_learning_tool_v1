@@ -12,17 +12,20 @@ export const ActivityDisplay = ({
   module: string;
 }) => {
   const session = useQuery({
-    queryKey: ['session', 'activityDisplay'],
+    queryKey: ['session'],
     queryFn: () => getAppSession(),
   }).data;
 
   return (
-    <div key={v.title} className="my-2 flex rounded-md bg-slate-50 p-2 text-black">
+    <div
+      key={v.title}
+      className="my-2 flex rounded-sm bg-slate-50 p-2 text-black"
+    >
       <div className="flex-grow">
         <div>{v.title}</div>
         <div>{v.description}</div>
         <div>{v.duration} minutes</div>
-        <div>Due: {(v.deadline as Date).toString()}</div>
+        <div>Due: {new Date(v.deadline).toUTCString()}</div>
       </div>
       <div className="flex flex-none flex-col items-center justify-around align-middle">
         {session?.data.userType == UserType.Teacher ? (

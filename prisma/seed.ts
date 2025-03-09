@@ -19,6 +19,85 @@ async function main() {
       description: 'The fifth year project module',
     },
   });
+
+  const teacher = await prisma.users.create({
+    data: {
+      email: 't@t.com',
+      username: 't',
+      password: await hashPassword('t'),
+      type: 'Teacher',
+      modules: {
+        connectOrCreate: [
+          { where: { id: module1.id }, create: module1 },
+          { where: { id: module2.id }, create: module2 },
+        ],
+      },
+    },
+  });
+
+  const student1 = await prisma.users.create({
+    data: {
+      email: 'u@u.com',
+      username: 'u',
+      password: await hashPassword('u'),
+      type: 'Student',
+      modules: {
+        connectOrCreate: [
+          { where: { id: module1.id }, create: module1 },
+          { where: { id: module2.id }, create: module2 },
+        ],
+      },
+    },
+  });
+
+  const student2 = await prisma.users.create({
+    data: {
+      email: 'b@b.com',
+      username: 'b',
+      password: await hashPassword('b'),
+      type: 'Student',
+      modules: {
+        connectOrCreate: [
+          { where: { id: module1.id }, create: module1 },
+          { where: { id: module2.id }, create: module2 },
+        ],
+      },
+    },
+  });
+
+  const student3 = await prisma.users.create({
+    data: {
+      email: 'c@c.com',
+      username: 'c',
+      password: await hashPassword('c'),
+      type: 'Student',
+      modules: {
+        connectOrCreate: [
+          { where: { id: module1.id }, create: module1 },
+          { where: { id: module2.id }, create: module2 },
+        ],
+      },
+    },
+  });
+
+  const activityGroup1 = await prisma.userGroups.create({
+    data: {
+      title: 'group 1',
+      participants: {
+        connect: [student1, student2],
+      },
+    },
+  });
+
+  const activityGroup2 = await prisma.userGroups.create({
+    data: {
+      title: 'group 2',
+      participants: {
+        connect: [student2, student3],
+      },
+    },
+  });
+
   const activityA = await prisma.activities.create({
     data: {
       title: 'Activity A',
@@ -26,6 +105,7 @@ async function main() {
       duration: 10,
       deadline: new Date('2024-10-11 18:00').toISOString(),
       module: 'COMP30020',
+      UserGroups: { connect: [activityGroup1] },
     },
   });
   const activityB = await prisma.activities.create({
@@ -35,6 +115,7 @@ async function main() {
       duration: 15,
       deadline: new Date('2024-10-17 18:00').toISOString(),
       module: 'COMP30020',
+      UserGroups: { connect: [activityGroup2] },
     },
   });
   const activityC = await prisma.activities.create({
@@ -246,40 +327,11 @@ async function main() {
     },
   });
 
-  const teacher = await prisma.users.create({
-    data: {
-      email: 't@t.com',
-      username: 't',
-      password: await hashPassword('t'),
-      type: 'Teacher',
-      modules: {
-        connectOrCreate: [
-          { where: { id: module1.id }, create: module1 },
-          { where: { id: module2.id }, create: module2 },
-        ],
-      },
-    },
-  });
-
-  const student1 = await prisma.users.create({
-    data: {
-      email: 'u@u.com',
-      username: 'u',
-      password: await hashPassword('u'),
-      type: 'Student',
-      modules: {
-        connectOrCreate: [
-          { where: { id: module1.id }, create: module1 },
-          { where: { id: module2.id }, create: module2 },
-        ],
-      },
-    },
-  });
-
   const board = await prisma.board.create({
     data: {
       title: 'Test board',
       description: 'Description of test board',
+      group: activityGroup1.id,
     },
   });
 
