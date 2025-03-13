@@ -9,43 +9,42 @@ export const getAppSession = createServerFn('GET', async () => {
 
 export const Navbar = () => {
   const session = useQuery({
-    queryKey: ['session', 'navbar'],
+    queryKey: ['session'],
     queryFn: () => getAppSession(),
-  }).data;
+  });
+
+  console.log(session);
+
+  const navbarLinkClass =
+    'items-center justify-center p-3 font-bold hover:bg-gray-700';
+
+  const NavbarLink = ({ to, text }) => (
+    <Link
+      to={to}
+      activeProps={{
+        className: 'bg-gray-600',
+      }}
+      className={navbarLinkClass}
+    >
+      {text}
+    </Link>
+  );
 
   return (
     <div
-      className={`absolute flex h-[var(--navbar-height)] w-screen items-center bg-slate-800 text-white`}
+      className={`absolute flex h-[var(--navbar-height)] w-screen items-center bg-gray-800 text-white`}
     >
-      <Link
-        to="/"
-        activeProps={{
-          className: 'text-sky-400',
-        }}
-        className="items-center justify-center p-3 font-bold hover:text-sky-400"
-      >
-        Home
-      </Link>
-      <Link
-        to="/calendar"
-        activeProps={{
-          className: 'text-sky-400',
-        }}
-        className="items-center justify-center p-3 font-bold hover:text-sky-400"
-      >
-        Calendar
-      </Link>
-      <Link
-        to={session?.data.userEmail ? '/logout' : '/login'}
-        activeProps={{
-          className: 'text-sky-400',
-        }}
-        className="ms-auto items-center justify-center p-3 font-bold hover:text-sky-400"
-      >
-        {session?.data.userEmail ? <>Log Out</> : <>Log In</>}
-      </Link>
-      {session && session.data.userEmail ? (
-        <div>Hello {session?.data.userEmail}</div>
+      <NavbarLink to={'/'} text={'Home'} />
+      <NavbarLink to={'/calendar'} text={'Calendar'} />
+      <NavbarLink to={'/options'} text={'Options'} />
+      {session.isSuccess && session.data.data.userEmail ? (
+        <div className="ms-auto">
+          <NavbarLink
+            to={session.data.data.userEmail ? '/logout' : '/login'}
+            text={session.data.data.userEmail ? <>Log Out</> : <>Log In</>}
+          />
+          <div>{session.data.data.userEmail}</div>
+        </div>
       ) : (
         <></>
       )}

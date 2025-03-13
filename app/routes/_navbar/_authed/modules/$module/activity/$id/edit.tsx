@@ -109,10 +109,10 @@ function ActivityComponent() {
   });
 
   return (
-    <div className="w-screen overflow-auto bg-slate-200 p-2 h-full text-black">
+    <div className="w-screen overflow-auto bg-violet-200 p-2 h-full text-black">
       <Suspense>
         {activityInfo ? (
-          <div className="my-2 rounded-md bg-violet-200 p-2">
+          <div className="">
             <EditActivityForm
               activityInfo={activityInfo}
               form={form}

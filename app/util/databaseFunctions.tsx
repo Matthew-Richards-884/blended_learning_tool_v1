@@ -1,5 +1,6 @@
 import {
   Activities,
+  LocationType,
   Prisma,
   PrismaClient,
   QuizQuestionAnswers,
@@ -208,6 +209,31 @@ export const getBoard = createServerFn('GET', async (boardCode: string) => {
   });
 });
 
+export const getBoardByModule = createServerFn(
+  'GET',
+  async (module: string) => {
+    return await prisma.board.findFirst({
+      where: {
+        BoardLocation: { some: { modulesId: module } },
+      },
+    });
+  }
+);
+
+export const getBoardInfoByModule = createServerFn(
+  'GET',
+  async (module: string) => {
+    return await prisma.board.findFirst({
+      where: {
+        BoardLocation: { some: { modulesId: module } },
+      },
+      include: {
+        Post: true,
+      },
+    });
+  }
+);
+
 export const getBoardByActivity = createServerFn(
   'GET',
   async (activity: string) => {
@@ -249,11 +275,13 @@ export const createMessage = createServerFn(
     post,
     userEmail,
     postID,
+    privateMessage,
   }: {
     boardCode: string;
     post: string;
     userEmail: string;
     postID?: string;
+    privateMessage: boolean;
   }) => {
     return await prisma.post.create({
       data: {
@@ -261,6 +289,45 @@ export const createMessage = createServerFn(
         content: post,
         userEmail: userEmail,
         postID: postID,
+        private: privateMessage,
+      },
+    });
+  }
+);
+
+export const createBoard = createServerFn(
+  'GET',
+  async ({
+    id,
+    title,
+    description,
+    defaultPrivate,
+    locationType,
+    locationID,
+  }: {
+    id: string;
+    title: string;
+    description: string;
+    defaultPrivate: boolean;
+    locationType: LocationType;
+    locationID: string;
+  }) => {
+    return await prisma.board.create({
+      data: {
+        id: id,
+        title: title,
+        description: description,
+        defaultPrivate: defaultPrivate,
+        BoardLocation: {
+          create: {
+            type: locationType,
+            [locationType === 'Activities'
+              ? 'activitiesId'
+              : locationType === 'Modules'
+                ? 'modulesId'
+                : 'quizzesId']: locationID,
+          },
+        },
       },
     });
   }

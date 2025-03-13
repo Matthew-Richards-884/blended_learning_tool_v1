@@ -19,13 +19,17 @@ export const SidebarElement = ({ module }: { module: string }) => {
     <Link
       to={'/modules/$module'}
       params={{ module: module }}
-      className="relative flex h-10 border-b border-slate-300 py-1 text-black hover:opacity-100 opacity-80 mx-3"
+      className="relative mx-2 my-0.5 flex min-h-10 bg-gray-50 py-1 text-black opacity-80 shadow-md hover:opacity-100"
     >
-      <div className="absolute inset-1 h-min w-fit text-[0.5rem]">
-        <span className="">{module}</span>&nbsp;
-      </div>
-      <div className="flex h-min flex-auto self-end">
-        <span className="rounded-md px-1 text-sm">{moduleData?.title}</span>
+      <div className="flex flex-col">
+        <div className="flex w-full">
+          <div className="absolute inset-1 h-min w-fit text-[0.5rem]">
+            <span className="">{module}</span>&nbsp;
+          </div>
+        </div>
+        <div className="mt-3 flex h-min flex-auto self-end">
+          <span className="rounded-md px-1 text-sm">{moduleData?.title}</span>
+        </div>
       </div>
     </Link>
   );

@@ -18,6 +18,7 @@ import { Route as NavbarSignupIndexImport } from './routes/_navbar/signup/index'
 import { Route as NavbarLogoutIndexImport } from './routes/_navbar/logout/index'
 import { Route as NavbarLoginIndexImport } from './routes/_navbar/login/index'
 import { Route as NavbarAuthedIndexImport } from './routes/_navbar/_authed/index'
+import { Route as NavbarAuthedOptionsImport } from './routes/_navbar/_authed/options'
 import { Route as NavbarAuthedCalendarImport } from './routes/_navbar/_authed/calendar'
 import { Route as NavbarAuthedModulesIndexImport } from './routes/_navbar/_authed/modules/index'
 import { Route as NavbarAuthedModulesModuleIndexImport } from './routes/_navbar/_authed/modules/$module/index'
@@ -27,6 +28,7 @@ import { Route as NavbarAuthedModulesModuleActivityIdIndexImport } from './route
 import { Route as NavbarAuthedModulesModuleActivityIdEditImport } from './routes/_navbar/_authed/modules/$module/activity/$id/edit'
 import { Route as NavbarAuthedModulesModuleActivityIdBeginImport } from './routes/_navbar/_authed/modules/$module/activity/$id/begin'
 import { Route as NavbarAuthedModulesModuleActivityIdQuizQuizEditImport } from './routes/_navbar/_authed/modules/$module/activity/$id/quiz.$quiz/edit'
+import { Route as NavbarAuthedModulesModuleActivityIdQuizQuizBeginImport } from './routes/_navbar/_authed/modules/$module/activity/$id/quiz.$quiz/begin'
 
 // Create/Update Routes
 
@@ -62,6 +64,11 @@ const NavbarLoginIndexRoute = NavbarLoginIndexImport.update({
 
 const NavbarAuthedIndexRoute = NavbarAuthedIndexImport.update({
   path: '/',
+  getParentRoute: () => NavbarAuthedRoute,
+} as any)
+
+const NavbarAuthedOptionsRoute = NavbarAuthedOptionsImport.update({
+  path: '/options',
   getParentRoute: () => NavbarAuthedRoute,
 } as any)
 
@@ -117,6 +124,12 @@ const NavbarAuthedModulesModuleActivityIdQuizQuizEditRoute =
     getParentRoute: () => NavbarAuthedRoute,
   } as any)
 
+const NavbarAuthedModulesModuleActivityIdQuizQuizBeginRoute =
+  NavbarAuthedModulesModuleActivityIdQuizQuizBeginImport.update({
+    path: '/modules/$module/activity/$id/quiz/$quiz/begin',
+    getParentRoute: () => NavbarAuthedRoute,
+  } as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -147,6 +160,13 @@ declare module '@tanstack/react-router' {
       path: '/calendar'
       fullPath: '/calendar'
       preLoaderRoute: typeof NavbarAuthedCalendarImport
+      parentRoute: typeof NavbarAuthedImport
+    }
+    '/_navbar/_authed/options': {
+      id: '/_navbar/_authed/options'
+      path: '/options'
+      fullPath: '/options'
+      preLoaderRoute: typeof NavbarAuthedOptionsImport
       parentRoute: typeof NavbarAuthedImport
     }
     '/_navbar/_authed/': {
@@ -226,6 +246,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NavbarAuthedModulesModuleActivityIdIndexImport
       parentRoute: typeof NavbarAuthedImport
     }
+    '/_navbar/_authed/modules/$module/activity/$id/quiz/$quiz/begin': {
+      id: '/_navbar/_authed/modules/$module/activity/$id/quiz/$quiz/begin'
+      path: '/modules/$module/activity/$id/quiz/$quiz/begin'
+      fullPath: '/modules/$module/activity/$id/quiz/$quiz/begin'
+      preLoaderRoute: typeof NavbarAuthedModulesModuleActivityIdQuizQuizBeginImport
+      parentRoute: typeof NavbarAuthedImport
+    }
     '/_navbar/_authed/modules/$module/activity/$id/quiz/$quiz/edit': {
       id: '/_navbar/_authed/modules/$module/activity/$id/quiz/$quiz/edit'
       path: '/modules/$module/activity/$id/quiz/$quiz/edit'
@@ -240,6 +267,7 @@ declare module '@tanstack/react-router' {
 
 interface NavbarAuthedRouteChildren {
   NavbarAuthedCalendarRoute: typeof NavbarAuthedCalendarRoute
+  NavbarAuthedOptionsRoute: typeof NavbarAuthedOptionsRoute
   NavbarAuthedIndexRoute: typeof NavbarAuthedIndexRoute
   NavbarAuthedModulesIndexRoute: typeof NavbarAuthedModulesIndexRoute
   NavbarAuthedModulesModuleIndexRoute: typeof NavbarAuthedModulesModuleIndexRoute
@@ -248,11 +276,13 @@ interface NavbarAuthedRouteChildren {
   NavbarAuthedModulesModuleActivityIdBeginRoute: typeof NavbarAuthedModulesModuleActivityIdBeginRoute
   NavbarAuthedModulesModuleActivityIdEditRoute: typeof NavbarAuthedModulesModuleActivityIdEditRoute
   NavbarAuthedModulesModuleActivityIdIndexRoute: typeof NavbarAuthedModulesModuleActivityIdIndexRoute
+  NavbarAuthedModulesModuleActivityIdQuizQuizBeginRoute: typeof NavbarAuthedModulesModuleActivityIdQuizQuizBeginRoute
   NavbarAuthedModulesModuleActivityIdQuizQuizEditRoute: typeof NavbarAuthedModulesModuleActivityIdQuizQuizEditRoute
 }
 
 const NavbarAuthedRouteChildren: NavbarAuthedRouteChildren = {
   NavbarAuthedCalendarRoute: NavbarAuthedCalendarRoute,
+  NavbarAuthedOptionsRoute: NavbarAuthedOptionsRoute,
   NavbarAuthedIndexRoute: NavbarAuthedIndexRoute,
   NavbarAuthedModulesIndexRoute: NavbarAuthedModulesIndexRoute,
   NavbarAuthedModulesModuleIndexRoute: NavbarAuthedModulesModuleIndexRoute,
@@ -266,6 +296,8 @@ const NavbarAuthedRouteChildren: NavbarAuthedRouteChildren = {
     NavbarAuthedModulesModuleActivityIdEditRoute,
   NavbarAuthedModulesModuleActivityIdIndexRoute:
     NavbarAuthedModulesModuleActivityIdIndexRoute,
+  NavbarAuthedModulesModuleActivityIdQuizQuizBeginRoute:
+    NavbarAuthedModulesModuleActivityIdQuizQuizBeginRoute,
   NavbarAuthedModulesModuleActivityIdQuizQuizEditRoute:
     NavbarAuthedModulesModuleActivityIdQuizQuizEditRoute,
 }
@@ -295,6 +327,7 @@ export interface FileRoutesByFullPath {
   '': typeof NavbarAuthedRouteWithChildren
   '/original_index': typeof OriginalindexRoute
   '/calendar': typeof NavbarAuthedCalendarRoute
+  '/options': typeof NavbarAuthedOptionsRoute
   '/': typeof NavbarAuthedIndexRoute
   '/login': typeof NavbarLoginIndexRoute
   '/logout': typeof NavbarLogoutIndexRoute
@@ -306,6 +339,7 @@ export interface FileRoutesByFullPath {
   '/modules/$module/activity/$id/begin': typeof NavbarAuthedModulesModuleActivityIdBeginRoute
   '/modules/$module/activity/$id/edit': typeof NavbarAuthedModulesModuleActivityIdEditRoute
   '/modules/$module/activity/$id': typeof NavbarAuthedModulesModuleActivityIdIndexRoute
+  '/modules/$module/activity/$id/quiz/$quiz/begin': typeof NavbarAuthedModulesModuleActivityIdQuizQuizBeginRoute
   '/modules/$module/activity/$id/quiz/$quiz/edit': typeof NavbarAuthedModulesModuleActivityIdQuizQuizEditRoute
 }
 
@@ -313,6 +347,7 @@ export interface FileRoutesByTo {
   '': typeof NavbarRouteWithChildren
   '/original_index': typeof OriginalindexRoute
   '/calendar': typeof NavbarAuthedCalendarRoute
+  '/options': typeof NavbarAuthedOptionsRoute
   '/': typeof NavbarAuthedIndexRoute
   '/login': typeof NavbarLoginIndexRoute
   '/logout': typeof NavbarLogoutIndexRoute
@@ -324,6 +359,7 @@ export interface FileRoutesByTo {
   '/modules/$module/activity/$id/begin': typeof NavbarAuthedModulesModuleActivityIdBeginRoute
   '/modules/$module/activity/$id/edit': typeof NavbarAuthedModulesModuleActivityIdEditRoute
   '/modules/$module/activity/$id': typeof NavbarAuthedModulesModuleActivityIdIndexRoute
+  '/modules/$module/activity/$id/quiz/$quiz/begin': typeof NavbarAuthedModulesModuleActivityIdQuizQuizBeginRoute
   '/modules/$module/activity/$id/quiz/$quiz/edit': typeof NavbarAuthedModulesModuleActivityIdQuizQuizEditRoute
 }
 
@@ -333,6 +369,7 @@ export interface FileRoutesById {
   '/original_index': typeof OriginalindexRoute
   '/_navbar/_authed': typeof NavbarAuthedRouteWithChildren
   '/_navbar/_authed/calendar': typeof NavbarAuthedCalendarRoute
+  '/_navbar/_authed/options': typeof NavbarAuthedOptionsRoute
   '/_navbar/_authed/': typeof NavbarAuthedIndexRoute
   '/_navbar/login/': typeof NavbarLoginIndexRoute
   '/_navbar/logout/': typeof NavbarLogoutIndexRoute
@@ -344,6 +381,7 @@ export interface FileRoutesById {
   '/_navbar/_authed/modules/$module/activity/$id/begin': typeof NavbarAuthedModulesModuleActivityIdBeginRoute
   '/_navbar/_authed/modules/$module/activity/$id/edit': typeof NavbarAuthedModulesModuleActivityIdEditRoute
   '/_navbar/_authed/modules/$module/activity/$id/': typeof NavbarAuthedModulesModuleActivityIdIndexRoute
+  '/_navbar/_authed/modules/$module/activity/$id/quiz/$quiz/begin': typeof NavbarAuthedModulesModuleActivityIdQuizQuizBeginRoute
   '/_navbar/_authed/modules/$module/activity/$id/quiz/$quiz/edit': typeof NavbarAuthedModulesModuleActivityIdQuizQuizEditRoute
 }
 
@@ -353,6 +391,7 @@ export interface FileRouteTypes {
     | ''
     | '/original_index'
     | '/calendar'
+    | '/options'
     | '/'
     | '/login'
     | '/logout'
@@ -364,12 +403,14 @@ export interface FileRouteTypes {
     | '/modules/$module/activity/$id/begin'
     | '/modules/$module/activity/$id/edit'
     | '/modules/$module/activity/$id'
+    | '/modules/$module/activity/$id/quiz/$quiz/begin'
     | '/modules/$module/activity/$id/quiz/$quiz/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | ''
     | '/original_index'
     | '/calendar'
+    | '/options'
     | '/'
     | '/login'
     | '/logout'
@@ -381,6 +422,7 @@ export interface FileRouteTypes {
     | '/modules/$module/activity/$id/begin'
     | '/modules/$module/activity/$id/edit'
     | '/modules/$module/activity/$id'
+    | '/modules/$module/activity/$id/quiz/$quiz/begin'
     | '/modules/$module/activity/$id/quiz/$quiz/edit'
   id:
     | '__root__'
@@ -388,6 +430,7 @@ export interface FileRouteTypes {
     | '/original_index'
     | '/_navbar/_authed'
     | '/_navbar/_authed/calendar'
+    | '/_navbar/_authed/options'
     | '/_navbar/_authed/'
     | '/_navbar/login/'
     | '/_navbar/logout/'
@@ -399,6 +442,7 @@ export interface FileRouteTypes {
     | '/_navbar/_authed/modules/$module/activity/$id/begin'
     | '/_navbar/_authed/modules/$module/activity/$id/edit'
     | '/_navbar/_authed/modules/$module/activity/$id/'
+    | '/_navbar/_authed/modules/$module/activity/$id/quiz/$quiz/begin'
     | '/_navbar/_authed/modules/$module/activity/$id/quiz/$quiz/edit'
   fileRoutesById: FileRoutesById
 }
@@ -446,6 +490,7 @@ export const routeTree = rootRoute
       "parent": "/_navbar",
       "children": [
         "/_navbar/_authed/calendar",
+        "/_navbar/_authed/options",
         "/_navbar/_authed/",
         "/_navbar/_authed/modules/",
         "/_navbar/_authed/modules/$module/",
@@ -454,11 +499,16 @@ export const routeTree = rootRoute
         "/_navbar/_authed/modules/$module/activity/$id/begin",
         "/_navbar/_authed/modules/$module/activity/$id/edit",
         "/_navbar/_authed/modules/$module/activity/$id/",
+        "/_navbar/_authed/modules/$module/activity/$id/quiz/$quiz/begin",
         "/_navbar/_authed/modules/$module/activity/$id/quiz/$quiz/edit"
       ]
     },
     "/_navbar/_authed/calendar": {
       "filePath": "_navbar/_authed/calendar.tsx",
+      "parent": "/_navbar/_authed"
+    },
+    "/_navbar/_authed/options": {
+      "filePath": "_navbar/_authed/options.tsx",
       "parent": "/_navbar/_authed"
     },
     "/_navbar/_authed/": {
@@ -503,6 +553,10 @@ export const routeTree = rootRoute
     },
     "/_navbar/_authed/modules/$module/activity/$id/": {
       "filePath": "_navbar/_authed/modules/$module/activity/$id/index.tsx",
+      "parent": "/_navbar/_authed"
+    },
+    "/_navbar/_authed/modules/$module/activity/$id/quiz/$quiz/begin": {
+      "filePath": "_navbar/_authed/modules/$module/activity/$id/quiz.$quiz/begin.tsx",
       "parent": "/_navbar/_authed"
     },
     "/_navbar/_authed/modules/$module/activity/$id/quiz/$quiz/edit": {

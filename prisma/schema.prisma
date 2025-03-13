@@ -33,6 +33,7 @@ model Users {
   QuizSubmissions QuizSubmissions[]
   Message         Post[]
   UserGroup       UserGroups[]
+  UserSettings    UserSettings?     @relation("User")
 }
 
 enum UserType {
@@ -185,13 +186,14 @@ model BoardLocation {
 }
 
 model Board {
-  id            String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  title         String
-  description   String?
-  group         String?         @db.Uuid
-  Post          Post[]
-  BoardLocation BoardLocation[]
-  UserGroups    UserGroups?     @relation(fields: [group], references: [id])
+  id             String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title          String
+  description    String?
+  group          String?         @db.Uuid
+  defaultPrivate Boolean         @default(false)
+  Post           Post[]
+  BoardLocation  BoardLocation[]
+  UserGroups     UserGroups?     @relation(fields: [group], references: [id])
 }
 
 model Post {
@@ -203,6 +205,13 @@ model Post {
   userEmail String
   User      Users    @relation(fields: [userEmail], references: [email])
   postID    String?  @db.Uuid
+  private   Boolean  @default(false)
   Post      Post?    @relation("PostReply", fields: [postID], references: [id])
   Replies   Post[]   @relation("PostReply")
+}
+
+model UserSettings {
+  id        String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userEmail String @unique
+  Users     Users  @relation("User", fields: [userEmail], references: [email])
 }

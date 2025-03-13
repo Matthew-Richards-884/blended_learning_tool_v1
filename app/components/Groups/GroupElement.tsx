@@ -58,16 +58,14 @@ export const GroupElement = ({ userInfo }: { userInfo: Users }) => {
           if (source.element === element) {
             return false;
           }
-          return (
-            source.data.email !== undefined || source.data.title !== undefined
-          );
+          return source.data.email !== undefined;
         },
         getData({ input }) {
           const data = userInfo;
           return attachClosestEdge(data, {
             element,
             input,
-            allowedEdges: ['top', 'bottom'],
+            allowedEdges: ['left', 'right'],
           });
         },
         getIsSticky() {
@@ -103,10 +101,13 @@ export const GroupElement = ({ userInfo }: { userInfo: Users }) => {
   }, []);
 
   return (
-    <div className="relative m-1 gap-2 rounded-sm bg-gray-100 p-1" ref={ref}>
-      Drop {userInfo.email}
+    <div
+      className="relative m-1 gap-2 rounded-sm bg-gray-100 px-2 shadow-md"
+      ref={ref}
+    >
+      <div className="text-bold text-gray-800">{userInfo.username}</div>
       {state['closestEdge'] && (
-        <DropIndicator edge={state['closestEdge']} gap="0.25rem" />
+        <DropIndicator edge={state['closestEdge']} gap="0.5rem" />
       )}
     </div>
   );

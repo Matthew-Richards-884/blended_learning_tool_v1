@@ -6,12 +6,15 @@ import {
   getBoardByActivityGroup,
   getGroup,
   getGroupByUserActivity,
+  getQuizCardsInfo,
+  getQuizzesByActivity,
 } from '../../../../../../../util/databaseFunctions';
 import { ActivityDisplay } from '../../../../../../../components/Activity/ActivityDisplay';
 import { DiscussionBoard } from '../../../../../../../components/Boards/DiscussionBoard';
 import { Activities, UserType } from '@prisma/client';
 import { getAppSession } from '../../../../../../../components/Navbar';
 import { ActivityTooltip } from '../../../../../../../components/Activity/ActivityTooltip';
+import { QuizCard } from '../../../../../../../components/Form/QuizCard';
 
 export const Route = createFileRoute(
   '/_navbar/_authed/modules/$module/activity/$id/'
@@ -53,16 +56,21 @@ function ActivityComponent() {
     enabled: !!group.data?.id,
   });
 
+  const quizInfo = useQuery({
+    queryKey: ['quizInfo', module, id, 'editActivity'],
+    queryFn: () => getQuizCardsInfo(id),
+  });
+
   console.log('Activity group', activity.data);
   console.log('Group', group.data);
-  console.log('Board', board.data);
+  console.log('Board', board);
 
   return (
-    <div className="w-screen overflow-auto bg-slate-400 p-2 text-white">
+    <div className="h-full w-screen overflow-auto bg-gray-200 p-2 text-black">
       {activity.isSuccess && activity.data ? (
         <div
           key={activity.data.title}
-          className="mx-1 my-2 flex rounded-sm bg-slate-50 p-2 text-black"
+          className="flex rounded-sm bg-gray-50 p-2 text-black shadow-md"
         >
           <div className="flex-grow">
             <div>{activity.data.title}</div>
@@ -77,7 +85,7 @@ function ActivityComponent() {
               <Link
                 to="/modules/$module/activity/$id/edit"
                 params={{ module: module, id: activity.data.id }}
-                className="relative flex w-full flex-row"
+                className="relative flex w-full flex-row hover:bg-gray-200"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -140,9 +148,28 @@ function ActivityComponent() {
           boardCode={board.data.id}
           group={group ? group.data!.id : undefined}
         />
+      ) : board.fetchStatus === 'idle' &&
+        session?.data.userType === 'Teacher' ? (
+        <button className="rounded-xs px-1 hover:cursor-pointer hover:bg-gray-100">
+          Create new board
+        </button>
       ) : (
         <div>Loading...</div>
       )}
+      <div className="flex flex-col">
+        {quizInfo.data ? (
+          quizInfo.data.map((q) => (
+            <QuizCard
+              moduleCode={module}
+              activity={id}
+              quizInfo={q}
+              key={q.id}
+            />
+          ))
+        ) : (
+          <div>Loading Quizzes...</div>
+        )}
+      </div>
     </div>
   );
 }

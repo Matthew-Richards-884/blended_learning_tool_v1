@@ -1,8 +1,9 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, Link } from '@tanstack/react-router';
 import { skipToken, useQuery } from '@tanstack/react-query';
 import {
   getActivity,
   getGroup,
+  getQuizzesByActivity,
 } from '../../../../../../../util/databaseFunctions';
 import { ActivityForm } from '../../../../../../../components/Activity/ActivityForm';
 import { Suspense } from 'react';
@@ -33,6 +34,11 @@ function ActivityComponent() {
     enabled: !!activity.data?.id,
   });
 
+  const quizzes = useQuery({
+    queryKey: ['quizzes', id],
+    queryFn: () => getQuizzesByActivity(id),
+  }).data;
+
   return (
     <div className="flex h-full w-screen flex-col bg-slate-200 p-1 text-black">
       <Suspense>
@@ -49,7 +55,16 @@ function ActivityComponent() {
           <p>{activity.data?.module}</p>
         </div>
 
-        <ActivityForm activityID={id} module={module} group={group.data?.id}></ActivityForm>
+        <div className="">
+          {quizzes?.map((q) => (
+            <Link
+              to="/modules/$module/activity/$id/quiz/$quiz/begin"
+              params={{ module: module, id: id, quiz: q.id }}
+            >
+              Begin Quiz {q.title}
+            </Link>
+          ))}
+        </div>
       </Suspense>
     </div>
   );

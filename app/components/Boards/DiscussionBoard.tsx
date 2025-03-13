@@ -13,8 +13,8 @@ import { useForm } from '@tanstack/react-form';
 import { zodValidator } from '@tanstack/zod-form-adapter';
 import { innerQuestionClass, questionClass } from '../Form/EditQuizQuestion';
 import { getAppSession } from '../Navbar';
-import { Post } from '@prisma/client';
-import { useState } from 'react';
+import { Post, UserType } from '@prisma/client';
+import { useEffect, useState } from 'react';
 
 export const DiscussionBoard = ({
   boardCode,
@@ -46,6 +46,7 @@ export const DiscussionBoard = ({
         boardCode: boardCode,
         userEmail: params.email,
         postID: params.postID,
+        privateMessage: privateMessage,
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['board', boardCode] });
@@ -76,6 +77,13 @@ export const DiscussionBoard = ({
     posts.find((post) => post.id == postID);
 
   const [replyTo, setReplyTo] = useState<{ id: string; email: string }>();
+  const [privateMessage, setPrivateMessage] = useState(false);
+
+  useEffect(() => {
+    boardInfo.data
+      ? setPrivateMessage(boardInfo.data.defaultPrivate)
+      : undefined;
+  }, [boardInfo.isSuccess]);
 
   const groupInfo = useQuery({
     queryKey: [boardCode, 'group', session?.data.userEmail],
@@ -96,44 +104,52 @@ export const DiscussionBoard = ({
               <div>Group: {groupInfo.data?.title}</div>
             </div>
             <div>
-              {boardInfo.data.Post.map((message) => (
-                <div className="m-1 bg-gray-100 p-3 shadow">
-                  <div className="flex flex-row">
-                    {message.postID ? (
-                      <div className="me-2 flex-auto pe-1">
-                        Reply to:{' '}
-                        {getMessage(
-                          boardInfo.data!.Post as Post[],
-                          message.postID
-                        )?.userEmail ?? <></>}
+              {boardInfo.data.Post.map((message) =>
+                !message.private ||
+                session?.data.userType === UserType.Teacher ||
+                session?.data.userType === UserType.Admin ||
+                session?.data.userEmail === message.userEmail ? (
+                  <div className="m-1 bg-gray-100 p-3 shadow">
+                    <div className="flex flex-row">
+                      {message.private ? <div>Private message</div> : <></>}
+                      {message.postID ? (
+                        <div className="me-2 flex-auto pe-1">
+                          Reply to:{' '}
+                          {getMessage(
+                            boardInfo.data!.Post as Post[],
+                            message.postID
+                          )?.userEmail ?? <></>}
+                        </div>
+                      ) : (
+                        <></>
+                      )}
+                      <div className="me-2 flex-grow justify-self-start pe-1">
+                        {message.userEmail}
                       </div>
-                    ) : (
-                      <></>
-                    )}
-                    <div className="me-2 flex-grow justify-self-start pe-1">
-                      {message.userEmail}
+                      <div className="ms-2 flex-initial ps-1">
+                        Created at:{' '}
+                        {new Date(
+                          message.createdAt as unknown as string
+                        ).toUTCString()}
+                      </div>
                     </div>
-                    <div className="ms-2 flex-initial ps-1">
-                      Created at:{' '}
-                      {new Date(
-                        message.createdAt as unknown as string
-                      ).toUTCString()}
-                    </div>
+                    <div>{message.content}</div>
+                    <button
+                      onClick={() =>
+                        setReplyTo({
+                          id: message.id ?? undefined,
+                          email: message.userEmail ?? undefined,
+                        })
+                      }
+                      className="cursor-pointer rounded-md bg-gray-300 px-1 hover:bg-gray-200"
+                    >
+                      Reply
+                    </button>
                   </div>
-                  <div>{message.content}</div>
-                  <button
-                    onClick={() =>
-                      setReplyTo({
-                        id: message.id ?? undefined,
-                        email: message.userEmail ?? undefined,
-                      })
-                    }
-                    className="cursor-pointer rounded-md bg-gray-300 px-1 hover:bg-gray-200"
-                  >
-                    Reply
-                  </button>
-                </div>
-              ))}
+                ) : (
+                  <></>
+                )
+              )}
             </div>
           </div>
           <div className="m-2 bg-gray-100 p-2">
@@ -145,7 +161,28 @@ export const DiscussionBoard = ({
               }}
             >
               {replyTo ? (
-                <div className="">Replying to: {replyTo.email}</div>
+                <div className="flex flex-row">
+                  Replying to: {replyTo.email}{' '}
+                  <button
+                    className="ms-auto hover:cursor-pointer hover:bg-slate-200"
+                    onClick={() => setReplyTo(undefined)}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="size-6"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M6 18 18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                </div>
               ) : (
                 <></>
               )}
@@ -179,6 +216,21 @@ export const DiscussionBoard = ({
                   </button>
                 )}
               />
+              <div>
+                <label className="inline-flex cursor-pointer items-center">
+                  <input
+                    type="checkbox"
+                    value=""
+                    className="peer sr-only"
+                    onClick={(e) => setPrivateMessage(e.currentTarget.checked)}
+                    checked={privateMessage}
+                  />
+                  <div className="peer relative h-6 w-11 rounded-full bg-gray-200 peer-checked:bg-green-600 after:absolute after:start-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:after:translate-x-full peer-checked:after:border-white rtl:peer-checked:after:-translate-x-full"></div>
+                  <span className="ms-3 text-sm font-medium text-gray-900">
+                    Private
+                  </span>
+                </label>
+              </div>
             </form>
           </div>
         </div>

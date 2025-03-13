@@ -53,11 +53,15 @@ function HomeComponent() {
   });
 
   return (
-    <div className="grid h-[var(--content-height)] w-screen grid-cols-6 bg-slate-200 text-black">
+    <div
+      className={`flex h-[var(--content-height)] w-screen flex-col overflow-auto sm:grid sm:grid-cols-6 sm:overflow-hidden ${session?.data.backgroundColour} text-black`}
+    >
       <Suspense>
-        <div className={`col-span-1 overflow-auto pb-20`}>
+        <div
+          className={`flex flex-col sm:col-span-1 sm:block sm:overflow-auto sm:pb-20`}
+        >
           <h1 className="p-1 text-center text-2xl">Modules</h1>
-          <div>
+          <div className="flex flex-col pt-0.5">
             {modules.isSuccess ? (
               modules.data.map((v) => (
                 <SidebarElement key={v.id} module={v.code}></SidebarElement>
@@ -67,10 +71,10 @@ function HomeComponent() {
             )}
           </div>
         </div>
-        <div className="col-span-3">
+        <div className="flex flex-col sm:col-span-3 sm:block">
           <h1 className="p-1 text-center text-2xl">Activities</h1>
           <div
-            className={`h-[var(--element-height)] overflow-auto`}
+            className={`sm:h-[var(--element-height)] sm:overflow-auto`}
             style={
               {
                 '--element-height': `calc(100vh - ${NAVBAR_HEIGHT}rem - 2.5rem)`,
@@ -86,7 +90,7 @@ function HomeComponent() {
             )}
           </div>
         </div>
-        <div className="col-span-2">
+        <div className="flex flex-col sm:col-span-2 sm:block">
           <h1 className="p-1 text-center text-2xl">Activity Manager</h1>
           <div
             className={`h-[var(--element-height)] overflow-auto`}

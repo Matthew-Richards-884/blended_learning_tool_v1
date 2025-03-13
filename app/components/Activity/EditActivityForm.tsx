@@ -3,13 +3,13 @@ import { FieldInfo } from '../FieldInfo';
 import { questionClass } from '../Form/EditQuizQuestion';
 
 export const EditActivityForm = ({ activityInfo, form, setActivityInfo }) => (
-  <div className="my-2 rounded-md bg-slate-500 p-2">
+  <div className="my-2 rounded-sm bg-slate-100 p-2 shadow-md">
     <form
       onSubmit={(e) => {
-        console.log('E', e);
+        // console.log('E', e);
         e.preventDefault();
         e.stopPropagation();
-        console.log('FIELD INFO', form.fieldInfo);
+        // console.log('FIELD INFO', form.fieldInfo);
         form.handleSubmit();
       }}
     >
@@ -132,9 +132,16 @@ export const EditActivityForm = ({ activityInfo, form, setActivityInfo }) => (
         />
       </div>
       <form.Subscribe
-        selector={(state) => [state.canSubmit, state.isSubmitting]}
+        selector={(state: { canSubmit: boolean; isSubmitting: boolean }) => [
+          state.canSubmit,
+          state.isSubmitting,
+        ]}
         children={([canSubmit, isSubmitting]) => (
-          <button type="submit" disabled={!canSubmit}>
+          <button
+            type="submit"
+            disabled={!canSubmit}
+            className="hover:cursor-pointer hover:bg-gray-200 px-1 rounded-xs mt-2"
+          >
             {isSubmitting ? '...' : 'Submit'}
           </button>
         )}

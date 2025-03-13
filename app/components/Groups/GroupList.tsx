@@ -7,13 +7,61 @@ import { extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/clo
 import { reorderWithEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/util/reorder-with-edge';
 import { triggerPostMoveFlash } from '@atlaskit/pragmatic-drag-and-drop-flourish/trigger-post-move-flash';
 import { randomGroups } from './randomGroups';
-import { useQuery } from '@tanstack/react-query';
-import { getActivityUsers, getGroupInfo } from '../../util/databaseFunctions';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import {
+  createGroups,
+  createGroupsType,
+  getActivityUsers,
+  getGroupInfo,
+} from '../../util/databaseFunctions';
+
+const UNGROUPED = 'UNGROUPED';
 
 export const GroupList = ({ groups, activityID }) => {
   const [tempGroups, setTempGroups] = useState<
     (UserGroups & { participants: Users[] })[] | undefined
   >(groups);
+  const [ungrouped, setUngrouped] = useState<
+    (UserGroups & { participants: Users[] }) | undefined
+  >({ id: UNGROUPED, title: 'Ungrouped students', participants: [] });
+
+  const createGroupsMutation = useMutation({
+    mutationFn: (groups: createGroupsType) => createGroups(groups),
+  });
+
+  const saveGroups = async () => {
+    if (!groups) {
+      return;
+    }
+    await createGroupsMutation.mutateAsync(
+      groups.map((v) => ({
+        ...v,
+        participants: {
+          connect: v.participants.map((u) => ({ email: u.email })),
+        },
+      }))
+    );
+  };
+
+  useEffect(() => {
+    if (
+      users.data &&
+      tempGroups &&
+      ungrouped &&
+      ungrouped.participants.length <= 1
+    ) {
+      setUngrouped({
+        id: UNGROUPED,
+        title: 'Ungrouped students',
+        participants: users.data.filter(
+          (u) =>
+            tempGroups
+              .flatMap((v) => v.participants.map((i) => i.email))
+              .includes(u.email) === false && u.type === 'Student'
+        ),
+      });
+    }
+  }, [tempGroups]);
 
   const users = useQuery({
     queryKey: ['activity', activityID, 'userList'],
@@ -25,6 +73,13 @@ export const GroupList = ({ groups, activityID }) => {
   const [groupSize, setGroupSize] = useState(2);
 
   console.log('Groups', groups);
+
+  const removeUngrouped = (
+    groupList: (UserGroups & { participants: Users[] })[]
+  ) => {
+    setUngrouped(groupList.find((g) => g.id === UNGROUPED));
+    return groupList.filter((g) => g.id !== UNGROUPED);
+  };
 
   useEffect(() => {
     return monitorForElements({
@@ -45,17 +100,31 @@ export const GroupList = ({ groups, activityID }) => {
         console.log('Source', source);
         console.log('Target', target);
 
-        if (!tempGroups) {
+        if (!tempGroups || !users.data) {
           return;
         }
+
+        /**
+         * Both the ungrouped users and the groups
+         */
+        const combinedTempGroups = [
+          ungrouped
+            ? ungrouped
+            : {
+                id: UNGROUPED,
+                title: 'Ungrouped students',
+                participants: [],
+              },
+          ...tempGroups,
+        ];
         // if (!isTaskData(sourceData) || !isTaskData(targetData)) {
         //   return;
         // }
         if (source.data.title !== undefined) {
-          const indexOfSource = tempGroups.findIndex(
+          const indexOfSource = combinedTempGroups.findIndex(
             (group) => group.id === sourceData.id
           );
-          const indexOfTarget = tempGroups.findIndex(
+          const indexOfTarget = combinedTempGroups.findIndex(
             (group) => group.id === targetData.id
           );
 
@@ -68,13 +137,15 @@ export const GroupList = ({ groups, activityID }) => {
           // Using `flushSync` so we can query the DOM straight after this line
           flushSync(() => {
             setTempGroups(
-              reorderWithEdge({
-                list: tempGroups,
-                startIndex: indexOfSource,
-                indexOfTarget,
-                closestEdgeOfTarget,
-                axis: 'vertical',
-              })
+              removeUngrouped(
+                reorderWithEdge({
+                  list: combinedTempGroups,
+                  startIndex: indexOfSource,
+                  indexOfTarget,
+                  closestEdgeOfTarget,
+                  axis: 'vertical',
+                })
+              )
             );
           });
           // Being simple and just querying for the task after the drop.
@@ -88,7 +159,7 @@ export const GroupList = ({ groups, activityID }) => {
             triggerPostMoveFlash(element);
           }
         } else if (source.data.email !== undefined) {
-          const sourceColumnIndex = tempGroups.findIndex(
+          const sourceColumnIndex = combinedTempGroups.findIndex(
             (group) =>
               group.participants
                 .map((u) => u.email)
@@ -96,31 +167,33 @@ export const GroupList = ({ groups, activityID }) => {
                   (email) => email === (source.data.email as string)
                 ) !== -1
           );
-          const sourceColumn = tempGroups[sourceColumnIndex].id;
+
+          const sourceColumn = combinedTempGroups[sourceColumnIndex].id;
           console.log(
             'Groups data',
             source.data.email,
-            tempGroups.map((group) => group.participants.map((u) => u.email))
+            combinedTempGroups.map((group) =>
+              group.participants.map((u) => u.email)
+            )
           );
 
           // Check if target is a group or another element
           if (target.data.id !== undefined) {
-            const targetColumnIndex = tempGroups.findIndex(
+            const targetColumnIndex = combinedTempGroups.findIndex(
               (group) => group.id === target.data.id
             );
             if (sourceColumnIndex < 0 || targetColumnIndex < 0) {
               return;
             }
 
-            const indexOfSource = tempGroups[
+            const indexOfSource = combinedTempGroups[
               sourceColumnIndex
             ].participants.findIndex((user) => user.email === sourceData.email);
-            const tempUser = tempGroups[sourceColumnIndex].participants.splice(
-              indexOfSource,
-              1
-            )[0];
+            const tempUser = combinedTempGroups[
+              sourceColumnIndex
+            ].participants.splice(indexOfSource, 1)[0];
 
-            let newTempGroups = tempGroups.map((v) => ({
+            let newTempGroups = combinedTempGroups.map((v) => ({
               id: v.id,
               title: v.title,
               participants:
@@ -136,9 +209,9 @@ export const GroupList = ({ groups, activityID }) => {
                   ? [...v.participants, tempUser]
                   : v.participants,
             }));
-            setTempGroups(newTempGroups);
+            setTempGroups(removeUngrouped(newTempGroups));
           } else {
-            const targetColumnIndex = tempGroups.findIndex(
+            const targetColumnIndex = combinedTempGroups.findIndex(
               (group) =>
                 group.participants
                   .map((u) => u.email)
@@ -146,16 +219,16 @@ export const GroupList = ({ groups, activityID }) => {
                     (email) => email === (target.data.email as string)
                   ) !== -1
             );
-            const targetColumn = tempGroups[targetColumnIndex].id;
+            const targetColumn = combinedTempGroups[targetColumnIndex].id;
             console.log('data', sourceColumnIndex, targetColumnIndex);
             if (sourceColumnIndex < 0 || targetColumnIndex < 0) {
               return;
             }
 
-            const indexOfSource = tempGroups[
+            const indexOfSource = combinedTempGroups[
               sourceColumnIndex
             ].participants.findIndex((user) => user.email === sourceData.email);
-            const indexOfTarget = tempGroups[
+            const indexOfTarget = combinedTempGroups[
               targetColumnIndex
             ].participants.findIndex((user) => user.email === targetData.email);
 
@@ -172,13 +245,12 @@ export const GroupList = ({ groups, activityID }) => {
 
             const closestEdgeOfTarget = extractClosestEdge(targetData);
 
-            const tempUser = tempGroups[sourceColumnIndex].participants.splice(
-              indexOfSource,
-              1
-            )[0];
-            console.log('temp groups', tempGroups);
+            const tempUser = combinedTempGroups[
+              sourceColumnIndex
+            ].participants.splice(indexOfSource, 1)[0];
+            console.log('temp groups', combinedTempGroups);
             const moveColumn = () => {
-              let newTempGroups = tempGroups.map((v) => ({
+              let newTempGroups = combinedTempGroups.map((v) => ({
                 id: v.id,
                 title: v.title,
                 participants:
@@ -199,7 +271,7 @@ export const GroupList = ({ groups, activityID }) => {
                         indexOfTarget:
                           sourceColumn === targetColumn &&
                           indexOfSource < indexOfTarget
-                            ? indexOfTarget - 1
+                            ? indexOfTarget
                             : indexOfTarget,
                         closestEdgeOfTarget: closestEdgeOfTarget,
                         axis: 'vertical',
@@ -209,15 +281,10 @@ export const GroupList = ({ groups, activityID }) => {
               return newTempGroups;
             };
 
-            console.log('STUFF');
-            console.log(moveColumn());
-            console.log('S, T:', sourceColumn, targetColumn);
-            console.log(moveColumn()[targetColumnIndex]);
-
             flushSync(() => {
-              setTempGroups(moveColumn());
+              setTempGroups(removeUngrouped(moveColumn()));
             });
-            console.log('AFTER', tempGroups);
+            console.log('AFTER', combinedTempGroups);
             // Being simple and just querying for the task after the drop.
             // We could use react context to register the element in a lookup,
             // and then we could retrieve that element after the drop and use
@@ -235,20 +302,68 @@ export const GroupList = ({ groups, activityID }) => {
   }, [tempGroups]);
 
   console.log('Temp groups', tempGroups);
+  console.log(
+    'Mapped',
+    tempGroups?.flatMap((v) => v.participants.map((i) => i.email))
+  );
+  console.log(
+    UNGROUPED,
+    users.data?.filter(
+      (u) =>
+        tempGroups
+          ?.flatMap((v) => v.participants.map((i) => i.email))
+          .includes(u.email) === false
+    )
+  );
   return (
-    <div className="mx-auto my-0 w-[420px] pt-6">
-      <button
-        className="cursor-pointer bg-gray-300 hover:bg-gray-200"
-        onClick={() =>
-          randomGroups(userList, groupSize, tempGroups, setTempGroups)
-        }
-      >
-        Random Groups
-      </button>
-      <div className="flex flex-col gap-2 rounded border border-solid p-2">
-        {tempGroups?.map((groupInfo) => (
-          <GroupContainer key={groupInfo.id} groupInfo={groupInfo} />
-        ))}
+    <div>
+      <div className="p-1">
+        Unassigned Users
+        <div className="grid">
+          {users.data && tempGroups && ungrouped ? (
+            <GroupContainer groupInfo={ungrouped} />
+          ) : (
+            <div>Loading users</div>
+          )}
+        </div>
+      </div>
+      <div className="mx-auto my-0 pt-6">
+        <div className='flex flex-row mb-2'>
+          <div>
+            <label>Group Size</label>
+            <input
+              type="number"
+              onChange={(v) => setGroupSize(v.currentTarget.valueAsNumber)}
+              value={groupSize}
+              className="mx-0.5 rounded-sm bg-gray-100 px-1 shadow-md w-16"
+            />
+          </div>
+          <button
+            className="mx-0.5 cursor-pointer rounded-sm bg-gray-100 px-1 shadow-md hover:bg-gray-200"
+            onClick={() => saveGroups()}
+          >
+            Save groups
+          </button>
+          <button
+            className="mx-0.5 cursor-pointer rounded-sm bg-gray-100 px-1 shadow-md hover:bg-gray-200"
+            onClick={() =>
+              randomGroups(
+                userList,
+                groupSize,
+                tempGroups,
+                setTempGroups,
+                setUngrouped
+              )
+            }
+          >
+            Random Groups
+          </button>
+        </div>
+        <div className="flex flex-col gap-2 rounded border border-solid p-2">
+          {tempGroups?.map((groupInfo) => (
+            <GroupContainer key={groupInfo.id} groupInfo={groupInfo} />
+          ))}
+        </div>
       </div>
     </div>
   );

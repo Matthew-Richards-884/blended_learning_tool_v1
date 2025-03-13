@@ -23,10 +23,12 @@ const prisma = new PrismaClient();
 export const ActivityForm = ({
   module,
   activityID,
+  quizID,
   group,
 }: {
   module: string;
   activityID: string;
+  quizID: string;
   group?: string;
 }) => {
   const router = useRouter();
@@ -71,31 +73,23 @@ export const ActivityForm = ({
     mutationFn: (response: responseType) => createQuizResponse(response),
   });
 
-  const quizzes = useQuery({
-    queryKey: ['quizzes', activityID, 'activityForm'],
-    queryFn: () => getQuizzesByActivity(activityID),
-  }).data;
-
-  const quizID = quizzes && quizzes.length > 0 ? quizzes[0].id : undefined;
+  // const quizID = quizzes && quizzes.length > 0 ? quizzes[0].id : undefined;
 
   const radioInfo = useQuery({
     queryKey: ['quizInfo', 'radio', activityID, 'activityForm', quizID],
-    queryFn: quizID ? () => getAllQuizMCQInfo(quizID) : skipToken,
-    enabled: !!(quizzes && quizzes.length > 0),
+    queryFn: () => getAllQuizMCQInfo(quizID),
   }).data;
   console.log('INFO', radioInfo);
 
   const textInfo = useQuery({
     queryKey: ['quizInfo', 'text', activityID, 'activityForm', quizID],
-    queryFn: quizID ? () => getAllQuizTextInfo(quizID) : skipToken,
-    enabled: !!(quizzes && quizzes.length > 0),
+    queryFn: () => getAllQuizTextInfo(quizID),
   }).data;
   console.log('INFO 2', textInfo);
 
   const questionOrder = useQuery({
     queryKey: ['questionOrder', activityID, 'activityForm', quizID],
-    queryFn: quizID ? () => getQuizQuestionOrder(quizID) : skipToken,
-    enabled: !!(quizzes && quizzes.length > 0),
+    queryFn: () => getQuizQuestionOrder(quizID),
   }).data;
   questionOrder?.reverse();
   console.log('INFO', questionOrder);

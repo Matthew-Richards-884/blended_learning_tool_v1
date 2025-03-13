@@ -19,13 +19,13 @@ export const ActivityDisplay = ({
   return (
     <div
       key={v.title}
-      className="my-2 flex rounded-sm bg-slate-50 p-2 text-black"
+      className="my-1 flex bg-slate-50 p-2 text-black shadow-md"
     >
       <div className="flex-grow">
         <div>{v.title}</div>
-        <div>{v.description}</div>
-        <div>{v.duration} minutes</div>
-        <div>Due: {new Date(v.deadline).toUTCString()}</div>
+        <div className="text-sm">{v.description}</div>
+        <div className="text-sm">Expected duration: {v.duration} minutes</div>
+        <div className="text-sm">Due: {new Date(v.deadline).toUTCString()}</div>
       </div>
       <div className="flex flex-none flex-col items-center justify-around align-middle">
         {session?.data.userType == UserType.Teacher ? (

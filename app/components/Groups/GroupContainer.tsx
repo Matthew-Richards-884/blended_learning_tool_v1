@@ -15,6 +15,7 @@ import {
 import { UserGroups, Users } from '@prisma/client';
 import { GroupElement } from './GroupElement';
 import { DropIndicator } from '@atlaskit/pragmatic-drag-and-drop-react-drop-indicator/box';
+import { DragHandle } from './DragHandle';
 
 export type GroupState =
   | {
@@ -151,8 +152,12 @@ export const GroupContainer = ({
     >
       {groupInfo ? (
         <>
-          Drop {groupInfo?.title}
-          <div className="min-h-16 rounded-sm bg-gray-300 p-1" ref={innerRef}>
+          <DragHandle />
+          {groupInfo?.title}
+          <div
+            className="grid min-h-8 grid-cols-6 rounded-sm bg-gray-300 p-1"
+            ref={innerRef}
+          >
             {groupInfo?.participants.map((e) => (
               <GroupElement key={e.email} userInfo={e} />
             ))}

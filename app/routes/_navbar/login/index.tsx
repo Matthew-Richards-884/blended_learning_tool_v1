@@ -54,7 +54,10 @@ export const loginFn = createServerFn(
     // Store the user's email in the session
     await session.update({
       userEmail: user.email,
-      userType: user.type
+      userType: user.type,
+      mainElementColour: 'bg-gray-50',
+      buttonHighlightColour: 'bg-gray-200',
+      backgroundColour: 'bg-slate-200'
     });
   }
 );

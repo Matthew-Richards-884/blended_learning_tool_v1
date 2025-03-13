@@ -4,7 +4,8 @@ export const randomGroups = (
   userList,
   groupSize,
   groups,
-  setGroups
+  setGroups,
+  setUngrouped
 ) => {
   console.log('Start random');
   if (!userList) {
@@ -60,5 +61,10 @@ export const randomGroups = (
     }
   }
   setGroups(newGroupData);
+  setUngrouped({
+    id: 'UNGROUPED',
+    title: 'Ungrouped students',
+    participants: [],
+  });
   return;
 };
