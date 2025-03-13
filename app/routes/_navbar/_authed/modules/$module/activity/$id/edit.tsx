@@ -1,8 +1,9 @@
 import { createFileRoute, useRouter } from '@tanstack/react-router';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   createQuiz,
   createQuizType,
+  deleteQuiz,
   getActivity,
   getQuizCardsInfo,
   updateActivity,
@@ -104,12 +105,34 @@ function ActivityComponent() {
   };
 
   const quizInfo = useQuery({
-    queryKey: ['quizInfo', module, id, 'editActivity'],
+    queryKey: ['quizInfo', id],
     queryFn: () => getQuizCardsInfo(id),
   });
 
+  const queryClient = useQueryClient();
+  const removeQuizMutation = useMutation({
+    mutationFn: (quizID: string) => deleteQuiz(quizID),
+    onSuccess: ({ activity, id }) => {
+      queryClient.invalidateQueries({ queryKey: ['quizInfo', activity] });
+      quizInfo.data
+        ? queryClient.setQueryData(
+            ['quizInfo', activity],
+            quizInfo.data.filter((q) => q.id !== id)
+          )
+        : undefined;
+      console.log('Current', quizInfo);
+      console.log(
+        'Updated',
+        quizInfo.data?.filter((q) => q.id !== id)
+      );
+    },
+  });
+  const removeQuiz = (quizID: string) => {
+    removeQuizMutation.mutate(quizID);
+  };
+
   return (
-    <div className="w-screen overflow-auto bg-violet-200 p-2 h-full text-black">
+    <div className="h-full w-screen overflow-auto bg-violet-200 p-2 text-black">
       <Suspense>
         {activityInfo ? (
           <div className="">
@@ -135,6 +158,7 @@ function ActivityComponent() {
                       moduleCode={module}
                       activity={id}
                       quizInfo={quiz}
+                      removeQuiz={removeQuiz}
                     />
                   ))
                 ) : (

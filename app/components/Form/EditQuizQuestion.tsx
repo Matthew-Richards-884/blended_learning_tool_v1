@@ -78,7 +78,10 @@ export function EditQuizQuestion({
   question: question;
 }) {
   return (
-    <div className="mt-3 rounded-md bg-slate-50 p-3" key={'Question-' + index}>
+    <div
+      className="mt-3 flex w-full flex-col rounded-md bg-slate-50 p-3"
+      key={'Question-' + index}
+    >
       <FormInput
         form={form}
         placeholder="Question"

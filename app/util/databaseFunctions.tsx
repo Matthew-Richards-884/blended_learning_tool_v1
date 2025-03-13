@@ -355,6 +355,10 @@ export const createQuizResponse = createServerFn(
   }
 );
 
+export const deleteQuiz = createServerFn('GET', async (quizID: string) => {
+  return await prisma.quizzes.delete({ where: { id: quizID } });
+});
+
 export const createActivity = createServerFn(
   'GET',
   async (data: Activities) => {

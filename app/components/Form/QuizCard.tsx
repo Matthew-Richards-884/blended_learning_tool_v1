@@ -1,13 +1,15 @@
 import { Link } from '@tanstack/react-router';
 import { Quizzes } from '@prisma/client';
 import { ActivityTooltip } from '../Activity/ActivityTooltip';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getAppSession } from '../Navbar';
+import { deleteQuiz } from '../../util/databaseFunctions';
 
 export const QuizCard = ({
   quizInfo,
   moduleCode,
   activity,
+  removeQuiz,
 }: {
   moduleCode: string;
   activity: string;
@@ -16,8 +18,8 @@ export const QuizCard = ({
       questions: number;
     };
   };
+  removeQuiz: (quizID: string) => void;
 }) => {
-  const removeQuiz = () => {};
   console.log('Info: ', quizInfo);
   const session = useQuery({
     queryKey: ['session'],
@@ -43,7 +45,7 @@ export const QuizCard = ({
         ) : (
           <div className="flex align-top">
             <button
-              onClick={() => removeQuiz()}
+              onClick={() => removeQuiz(quizInfo.id)}
               className="relative flex h-min flex-row hover:cursor-pointer hover:bg-gray-200"
             >
               <svg

@@ -20,6 +20,7 @@ import {
   Quizzes,
 } from '@prisma/client';
 import { EditQuizQuestion } from './EditQuizQuestion';
+import { ActivityTooltip } from '../Activity/ActivityTooltip';
 
 const prisma = new PrismaClient();
 
@@ -44,8 +45,8 @@ export const EditQuizForm = ({ quizID }) => {
       quizInfo: Quizzes & {
         QuizQuestionOrder: QuizQuestionOrder[];
         questions: (QuizQuestions & {
-        QuizQuestionAnswers: QuizQuestionAnswers[];
-      })[];
+          QuizQuestionAnswers: QuizQuestionAnswers[];
+        })[];
       }
     ) => updateQuiz(quizInfo),
   });
@@ -128,7 +129,7 @@ export const EditQuizForm = ({ quizID }) => {
   };
 
   return (
-    <div className="col-span-6 overflow-auto bg-violet-200 text-black">
+    <div className="col-span-6 h-full overflow-auto bg-violet-200 text-black">
       {quizInfo ? (
         <div>
           <form
@@ -154,8 +155,26 @@ export const EditQuizForm = ({ quizID }) => {
                           newQuestion() as question
                         )
                       }
+                      className="relative cursor-pointer rounded-sm bg-gray-100 px-1 shadow-md hover:bg-gray-200"
                     >
-                      Add Question
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="peer size-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M12 4.5v15m7.5-7.5h-15"
+                        />
+                      </svg>
+                      <ActivityTooltip
+                        id={'add-quiz-question'}
+                        text={'Add Question'}
+                      />
                     </button>
                   </div>
                   <div>
@@ -164,19 +183,41 @@ export const EditQuizForm = ({ quizID }) => {
                       mode="array"
                       children={(field) =>
                         field.state.value.map((question, index) => (
-                          <div>
-                            <EditQuizQuestion
-                              form={form}
-                              question={question}
-                              index={index}
-                              key={index}
-                            ></EditQuizQuestion>
-                            <button
-                              type="button"
-                              onClick={() => field.removeValue(index)}
-                            >
-                              Remove Question
-                            </button>
+                          <div className="flex flex-row">
+                            <div className="flex flex-auto">
+                              <EditQuizQuestion
+                                form={form}
+                                question={question}
+                                index={index}
+                                key={index}
+                              ></EditQuizQuestion>
+                            </div>
+                            <div className="ms-1 mt-2 flex">
+                              <button
+                                type="button"
+                                onClick={() => field.removeValue(index)}
+                                className="relative mt-1 flex h-min w-min flex-auto cursor-pointer flex-row rounded-sm bg-gray-100 shadow-md hover:bg-gray-200"
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth={1.5}
+                                  stroke="currentColor"
+                                  className="peer size-6"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M6 18 18 6M6 6l12 12"
+                                  />
+                                </svg>
+                                <ActivityTooltip
+                                  id={'remove-quiz-question-' + index}
+                                  text={'Remove Question'}
+                                />
+                              </button>
+                            </div>
                           </div>
                         ))
                       }
@@ -184,16 +225,21 @@ export const EditQuizForm = ({ quizID }) => {
                   </div>
                 </Suspense>
               </div>
+              <div>
+                <form.Subscribe
+                  selector={(state) => [state.canSubmit, state.isSubmitting]}
+                  children={([canSubmit, isSubmitting]) => (
+                    <button
+                      type="submit"
+                      disabled={!canSubmit}
+                      className="cursor-pointer rounded-sm bg-gray-100 px-1 shadow-md hover:bg-gray-200"
+                    >
+                      {isSubmitting ? '...' : 'Save'}
+                    </button>
+                  )}
+                />
+              </div>
             </div>
-
-            <form.Subscribe
-              selector={(state) => [state.canSubmit, state.isSubmitting]}
-              children={([canSubmit, isSubmitting]) => (
-                <button type="submit" disabled={!canSubmit}>
-                  {isSubmitting ? '...' : 'Submit'}
-                </button>
-              )}
-            />
           </form>
         </div>
       ) : (
