@@ -1,9 +1,9 @@
 @import './dummy.css';
 
-@import 'tailwindcss';
+/* @import 'tailwindcss'; */
 
 /* Manually add css styles to try to force it to work */
-/*@layer theme {
+@layer theme {
   :root,
   :host {
     --font-sans: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
@@ -1701,4 +1701,4 @@
   syntax: '*';
   inherits: false;
   initial-value: 0;
-} */
+}
