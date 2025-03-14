@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useRouter } from '@tanstack/react-router';
-import '../styles/main.css';
+import '../../styles/main.css';
 
 
 export const Route = createFileRoute('/_navbar/_authed')({

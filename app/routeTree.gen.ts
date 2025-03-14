@@ -11,7 +11,6 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as OriginalindexImport } from './routes/original_index'
 import { Route as NavbarImport } from './routes/_navbar'
 import { Route as NavbarAuthedImport } from './routes/_navbar/_authed'
 import { Route as NavbarSignupIndexImport } from './routes/_navbar/signup/index'
@@ -31,11 +30,6 @@ import { Route as NavbarAuthedModulesModuleActivityIdQuizQuizEditImport } from '
 import { Route as NavbarAuthedModulesModuleActivityIdQuizQuizBeginImport } from './routes/_navbar/_authed/modules/$module/activity/$id/quiz.$quiz/begin'
 
 // Create/Update Routes
-
-const OriginalindexRoute = OriginalindexImport.update({
-  path: '/original_index',
-  getParentRoute: () => rootRoute,
-} as any)
 
 const NavbarRoute = NavbarImport.update({
   id: '/_navbar',
@@ -139,13 +133,6 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: ''
       preLoaderRoute: typeof NavbarImport
-      parentRoute: typeof rootRoute
-    }
-    '/original_index': {
-      id: '/original_index'
-      path: '/original_index'
-      fullPath: '/original_index'
-      preLoaderRoute: typeof OriginalindexImport
       parentRoute: typeof rootRoute
     }
     '/_navbar/_authed': {
@@ -325,7 +312,6 @@ const NavbarRouteWithChildren =
 
 export interface FileRoutesByFullPath {
   '': typeof NavbarAuthedRouteWithChildren
-  '/original_index': typeof OriginalindexRoute
   '/calendar': typeof NavbarAuthedCalendarRoute
   '/options': typeof NavbarAuthedOptionsRoute
   '/': typeof NavbarAuthedIndexRoute
@@ -345,7 +331,6 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '': typeof NavbarRouteWithChildren
-  '/original_index': typeof OriginalindexRoute
   '/calendar': typeof NavbarAuthedCalendarRoute
   '/options': typeof NavbarAuthedOptionsRoute
   '/': typeof NavbarAuthedIndexRoute
@@ -366,7 +351,6 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/_navbar': typeof NavbarRouteWithChildren
-  '/original_index': typeof OriginalindexRoute
   '/_navbar/_authed': typeof NavbarAuthedRouteWithChildren
   '/_navbar/_authed/calendar': typeof NavbarAuthedCalendarRoute
   '/_navbar/_authed/options': typeof NavbarAuthedOptionsRoute
@@ -389,7 +373,6 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | ''
-    | '/original_index'
     | '/calendar'
     | '/options'
     | '/'
@@ -408,7 +391,6 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | ''
-    | '/original_index'
     | '/calendar'
     | '/options'
     | '/'
@@ -427,7 +409,6 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/_navbar'
-    | '/original_index'
     | '/_navbar/_authed'
     | '/_navbar/_authed/calendar'
     | '/_navbar/_authed/options'
@@ -449,12 +430,10 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   NavbarRoute: typeof NavbarRouteWithChildren
-  OriginalindexRoute: typeof OriginalindexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   NavbarRoute: NavbarRouteWithChildren,
-  OriginalindexRoute: OriginalindexRoute,
 }
 
 export const routeTree = rootRoute
@@ -469,8 +448,7 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/_navbar",
-        "/original_index"
+        "/_navbar"
       ]
     },
     "/_navbar": {
@@ -481,9 +459,6 @@ export const routeTree = rootRoute
         "/_navbar/logout/",
         "/_navbar/signup/"
       ]
-    },
-    "/original_index": {
-      "filePath": "original_index.tsx"
     },
     "/_navbar/_authed": {
       "filePath": "_navbar/_authed.tsx",
