@@ -23,6 +23,9 @@ importers:
       '@prisma/client':
         specifier: 5.22.0
         version: 5.22.0(prisma@5.22.0)
+      '@prisma/nextjs-monorepo-workaround-plugin':
+        specifier: ^6.5.0
+        version: 6.5.0
       '@tailwindcss/postcss':
         specifier: ^4.0.3
         version: 4.0.3
@@ -866,6 +869,9 @@ packages:
 
   '@prisma/get-platform@5.22.0':
     resolution: {integrity: sha512-pHhpQdr1UPFpt+zFfnPazhulaZYCUqeIcPpJViYoq9R+D/yw4fjE+CtnsnKzPYm0ddUbeXUzjGVGIRVgPDCk4Q==}
+
+  '@prisma/nextjs-monorepo-workaround-plugin@6.5.0':
+    resolution: {integrity: sha512-W//PmOanuqx7+xUvj3529wpC+6ZQLwtv+JEcMR5PVubUmKyaduhOdDvVEvjACo9sN7nAqVBTFDHMBarIeOw6Ig==}
 
   '@remix-run/node@2.13.1':
     resolution: {integrity: sha512-2ly7bENj2n2FNBdEN60ZEbNCs5dAOex/QJoo6EZ8RNFfUQxVKAZkMwfQ4ETV2SLWDgkRLj3Jo5n/dx7O2ZGhGw==}
@@ -3861,6 +3867,8 @@ snapshots:
     dependencies:
       '@prisma/debug': 5.22.0
 
+  '@prisma/nextjs-monorepo-workaround-plugin@6.5.0': {}
+
   '@remix-run/node@2.13.1(typescript@5.6.3)':
     dependencies:
       '@remix-run/server-runtime': 2.13.1(typescript@5.6.3)
@@ -4561,6 +4569,7 @@ snapshots:
   blended_learning_tool_v1@file:(@types/node@22.7.5)(ioredis@5.4.1)(lightningcss@1.29.1)(terser@5.34.1)(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.5)(lightningcss@1.29.1)(terser@5.34.1)):
     dependencies:
       '@dnd-kit/abstract': 0.0.9
+      '@dnd-kit/dom': 0.0.9
       '@dnd-kit/helpers': 0.0.9
       '@dnd-kit/react': 0.0.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@prisma/client': 5.22.0(prisma@5.22.0)
