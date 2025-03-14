@@ -1,11 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { createServerFn } from '@tanstack/start';
 import {
   Activities,
-  Board,
-  Post,
-  PrismaClient,
-  UserType,
 } from '@prisma/client';
 import {
   skipToken,
@@ -16,12 +11,9 @@ import {
 import {
   createBoard,
   getActivitiesByModule,
-  getBoard,
-  getBoardByModule,
   getBoardInfoByModule,
   getModule,
 } from '../../../../../util/databaseFunctions';
-import { getAppSession } from '../../../../../components/Navbar';
 import { ActivityDisplay } from '../../../../../components/Activity/ActivityDisplay';
 import { ActivityTooltip } from '../../../../../components/Activity/ActivityTooltip';
 import { DiscussionBoard } from '../../../../../components/Boards/DiscussionBoard';

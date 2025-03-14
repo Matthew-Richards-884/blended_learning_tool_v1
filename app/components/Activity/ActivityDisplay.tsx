@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router';
-import { Activities, UserType } from '@prisma/client';
+import { Activities } from '@prisma/client';
 import { ActivityTooltip } from './ActivityTooltip';
 import { useQuery } from '@tanstack/react-query';
 import { getAppSession } from '../Navbar';
@@ -28,7 +28,7 @@ export const ActivityDisplay = ({
         <div className="text-sm">Due: {new Date(v.deadline).toUTCString()}</div>
       </div>
       <div className="flex flex-none flex-col items-center justify-around align-middle">
-        {session?.data.userType == UserType.Teacher ? (
+        {session?.data.userType == 'Teacher' ? (
           <Link
             to="/modules/$module/activity/$id/edit"
             params={{ module: module, id: v.id }}

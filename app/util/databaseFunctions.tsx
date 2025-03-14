@@ -1,6 +1,5 @@
 import {
   Activities,
-  LocationType,
   Prisma,
   PrismaClient,
   QuizQuestionAnswers,
@@ -12,6 +11,7 @@ import {
 } from '@prisma/client';
 
 import { createServerFn, Fetcher } from '@tanstack/start';
+import { LocationType } from '../../prisma/types';
 
 const prisma = new PrismaClient();
 

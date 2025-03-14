@@ -2,10 +2,10 @@ import { PrismaClient } from '@prisma/client';
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { createServerFn, useServerFn } from '@tanstack/start';
 import { hashPassword } from '../../../util/hashPassword';
-import { UserType } from '@prisma/client';
 import { useAppSession } from '../../../util/session';
 import { useMutation } from '../../../hooks/useMutation';
 import { Auth } from '../../../components/Auth';
+import { UserType } from '../../../../prisma/types';
 
 export const Route = createFileRoute('/_navbar/signup/')({
   component: SignupComponent,
@@ -96,7 +96,7 @@ function SignupComponent() {
           email: formData.get('email') as string,
           password: formData.get('password') as string,
           username: formData.get('username') as string,
-          userType: UserType.Student,
+          userType: "Student",
         });
       }}
       afterSubmit={

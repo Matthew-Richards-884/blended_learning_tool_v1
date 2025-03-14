@@ -13,7 +13,7 @@ import { useForm } from '@tanstack/react-form';
 import { zodValidator } from '@tanstack/zod-form-adapter';
 import { innerQuestionClass, questionClass } from '../Form/EditQuizQuestion';
 import { getAppSession } from '../Navbar';
-import { Post, UserType } from '@prisma/client';
+import { Post } from '@prisma/client';
 import { useEffect, useState } from 'react';
 
 export const DiscussionBoard = ({
@@ -106,8 +106,8 @@ export const DiscussionBoard = ({
             <div>
               {boardInfo.data.Post.map((message) =>
                 !message.private ||
-                session?.data.userType === UserType.Teacher ||
-                session?.data.userType === UserType.Admin ||
+                session?.data.userType === 'Teacher' ||
+                session?.data.userType === 'Admin' ||
                 session?.data.userEmail === message.userEmail ? (
                   <div className="m-1 bg-gray-100 p-3 shadow" key={message.id}>
                     <div className="flex flex-row">

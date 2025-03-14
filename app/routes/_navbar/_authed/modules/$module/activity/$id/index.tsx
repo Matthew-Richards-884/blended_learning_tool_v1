@@ -8,16 +8,11 @@ import {
 import {
   deleteQuiz,
   getActivity,
-  getBoardByActivity,
   getBoardByActivityGroup,
-  getGroup,
   getGroupByUserActivity,
   getQuizCardsInfo,
-  getQuizzesByActivity,
 } from '../../../../../../../util/databaseFunctions';
-import { ActivityDisplay } from '../../../../../../../components/Activity/ActivityDisplay';
 import { DiscussionBoard } from '../../../../../../../components/Boards/DiscussionBoard';
-import { Activities, UserType } from '@prisma/client';
 import { getAppSession } from '../../../../../../../components/Navbar';
 import { ActivityTooltip } from '../../../../../../../components/Activity/ActivityTooltip';
 import { QuizCard } from '../../../../../../../components/Form/QuizCard';
@@ -109,7 +104,7 @@ function ActivityComponent() {
             </div>
           </div>
           <div className="flex flex-none flex-col items-center justify-around align-middle">
-            {session?.data.userType == UserType.Teacher ? (
+            {session?.data.userType == "Teacher" ? (
               <Link
                 to="/modules/$module/activity/$id/edit"
                 params={{ module: module, id: activity.data.id }}

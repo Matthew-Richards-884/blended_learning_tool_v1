@@ -1,4 +1,4 @@
-import { PrismaClient, MediaType, QuestionType } from '@prisma/client';
+import { PrismaClient} from '@prisma/client';
 import { hashPassword } from '../app/util/hashPassword';
 
 const prisma = new PrismaClient();
@@ -239,7 +239,7 @@ async function main() {
       name: 'Intro to Lecture',
       description: 'The introduction lecture to stuff',
       url: 'SomeLinkGoesHere',
-      type: MediaType.Video,
+      type: "Video",
     },
   });
   await prisma.media.create({
@@ -247,7 +247,7 @@ async function main() {
       name: 'Intro to Lecture 2',
       description: 'The introduction lecture to stuff',
       url: 'SomeLinkGoesHere2',
-      type: MediaType.Video,
+      type: "Video",
     },
   });
 
@@ -263,7 +263,7 @@ async function main() {
     data: {
       title: 'Quiz Question 1',
       description: 'The first quiz question',
-      type: QuestionType.radio,
+      type: "radio",
       quiz: quiz1.id,
     },
   });
@@ -311,7 +311,7 @@ async function main() {
     data: {
       title: 'Quiz Question 2',
       description: 'The second quiz question',
-      type: QuestionType.text,
+      type: "text",
       quiz: quiz1.id,
     },
   });
@@ -335,7 +335,7 @@ async function main() {
     data: {
       title: 'Quiz Question 3',
       description: 'The third quiz question',
-      type: QuestionType.radio,
+      type: "radio",
       quiz: quiz1.id,
     },
   });
@@ -367,7 +367,7 @@ async function main() {
     data: {
       title: 'Quiz Question 4',
       description: 'The fourth quiz question',
-      type: QuestionType.text,
+      type: "text",
       quiz: quiz1.id,
     },
   });

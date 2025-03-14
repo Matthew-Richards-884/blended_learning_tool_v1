@@ -2,18 +2,13 @@ import { useForm } from '@tanstack/react-form';
 import { zodValidator } from '@tanstack/zod-form-adapter';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import {
-  createQuizSubmission,
   getAllQuizInfo,
-  responseType,
   updateQuiz,
 } from '../../util/databaseFunctions';
 import { Suspense, useEffect, useState } from 'react';
 import { getAppSession } from '../Navbar';
 import {
-  $Enums,
-  Prisma,
   PrismaClient,
-  QuestionType,
   QuizQuestionAnswers,
   QuizQuestionOrder,
   QuizQuestions,
@@ -21,6 +16,7 @@ import {
 } from '@prisma/client';
 import { EditQuizQuestion } from './EditQuizQuestion';
 import { ActivityTooltip } from '../Activity/ActivityTooltip';
+import { QuestionType } from '../../../prisma/types';
 
 const prisma = new PrismaClient();
 
@@ -35,7 +31,7 @@ export type question = {
   id: string;
   title: string;
   description: string | null;
-  type: $Enums.QuestionType;
+  type: QuestionType;
   quiz: string | null;
 };
 

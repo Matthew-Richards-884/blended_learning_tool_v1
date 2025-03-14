@@ -1,7 +1,7 @@
 import { createFileRoute, useRouter } from '@tanstack/react-router';
 import { useMutation } from '../../../hooks/useMutation';
 import { createServerFn, useServerFn } from '@tanstack/start';
-import { PrismaClient, UserType } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { hashPassword } from '../../../util/hashPassword';
 import { useAppSession } from '../../../util/session';
 import { signupFn } from '../signup';
@@ -57,7 +57,7 @@ export const loginFn = createServerFn(
       userType: user.type,
       mainElementColour: 'bg-gray-50',
       buttonHighlightColour: 'bg-gray-200',
-      backgroundColour: 'bg-slate-200'
+      backgroundColour: 'bg-slate-200',
     });
   }
 );
@@ -108,7 +108,7 @@ function LoginComponent() {
                       email: formData.get('email') as string,
                       password: formData.get('password') as string,
                       username: formData.get('username') as string,
-                      userType: UserType.Student,
+                      userType: "Student",
                     });
                   }}
                   type="button"
