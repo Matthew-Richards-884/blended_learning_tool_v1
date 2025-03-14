@@ -11,7 +11,7 @@
     "start": "vinxi start",
     "predeploy": "pnpm build",
     "deploy": "gh-pages -d build",
-    "postinstall": "pnpm prisma generate"
+    "postinstall": "pnpm prisma generate && pnpm prisma db push && pnpm prisma db seed"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -58,6 +58,7 @@
     "prettier-plugin-tailwindcss": "^0.6.8",
     "tailwindcss": "^4.0.3",
     "ts-node": "^10.9.2",
-    "typescript": "^5.6.3"
+    "typescript": "^5.6.3",
+    "vercel": "^41.4.1"
   }
 }
