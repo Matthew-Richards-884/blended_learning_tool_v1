@@ -135,7 +135,9 @@ function ModuleComponent() {
       </div>
       <div className="grid grid-cols-3">
         <div className="col-span-1">
-          {activities?.map((v) => <ActivityDisplay module={module} v={v} />)}
+          {activities?.map((v) => (
+            <ActivityDisplay module={module} v={v} key={v.id} />
+          ))}
         </div>
         <div className="col-span-2">
           <div>

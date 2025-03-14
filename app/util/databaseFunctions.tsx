@@ -386,20 +386,27 @@ export const createQuiz = createServerFn(
   }
 );
 
-export type createGroupsType = (UserGroups & {
-  participants: {
-    connect: { email: string }[];
-  };
-})[];
+export type createGroupsType = {
+  activity: string;
+  groups: (UserGroups & {
+    participants: {
+      connect: { email: string }[];
+    };
+  })[];
+};
 
 export const createGroups = createServerFn(
   'GET',
   async (data: createGroupsType) => {
     return await prisma.$transaction([
       prisma.userGroups.deleteMany({
-        where: { id: { in: data.map((v) => v.id) } },
+        where: { Activities: { some: { id: data.activity } } },
       }),
-      prisma.userGroups.createMany({ data: data }),
+      ...data.groups.map((g) =>
+        prisma.userGroups.create({
+          data: { ...g, Activities: { connect: { id: data.activity } } },
+        })
+      ),
     ]);
   }
 );

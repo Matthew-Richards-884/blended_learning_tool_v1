@@ -159,6 +159,7 @@ function ActivityComponent() {
                       activity={id}
                       quizInfo={quiz}
                       removeQuiz={removeQuiz}
+                      key={quiz.id}
                     />
                   ))
                 ) : (

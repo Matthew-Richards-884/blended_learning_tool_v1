@@ -80,6 +80,66 @@ async function main() {
     },
   });
 
+  await prisma.users.create({
+    data: {
+      email: 'd@d.com',
+      username: 'd',
+      password: await hashPassword('d'),
+      type: 'Student',
+      modules: {
+        connectOrCreate: [
+          { where: { id: module1.id }, create: module1 },
+          { where: { id: module2.id }, create: module2 },
+        ],
+      },
+    },
+  });
+
+  await prisma.users.create({
+    data: {
+      email: 'e@e.com',
+      username: 'e',
+      password: await hashPassword('e'),
+      type: 'Student',
+      modules: {
+        connectOrCreate: [
+          { where: { id: module1.id }, create: module1 },
+          { where: { id: module2.id }, create: module2 },
+        ],
+      },
+    },
+  });
+
+  await prisma.users.create({
+    data: {
+      email: 'f@f.com',
+      username: 'f',
+      password: await hashPassword('f'),
+      type: 'Student',
+      modules: {
+        connectOrCreate: [
+          { where: { id: module1.id }, create: module1 },
+          { where: { id: module2.id }, create: module2 },
+        ],
+      },
+    },
+  });
+
+  await prisma.users.create({
+    data: {
+      email: 'g@g.com',
+      username: 'g',
+      password: await hashPassword('g'),
+      type: 'Student',
+      modules: {
+        connectOrCreate: [
+          { where: { id: module1.id }, create: module1 },
+          { where: { id: module2.id }, create: module2 },
+        ],
+      },
+    },
+  });
+
   const activityGroup1 = await prisma.userGroups.create({
     data: {
       title: 'group 1',

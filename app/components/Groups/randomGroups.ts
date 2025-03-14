@@ -1,12 +1,7 @@
 import { Users } from '@prisma/client';
 
-export const randomGroups = (
-  userList,
-  groupSize,
-  groups,
-  setGroups,
-  setUngrouped
-) => {
+export const randomGroups = (userList, groupSize, groups, setGroups) => {
+  const tempGroups = groups.filter((g) => g.id !== 'UNGROUPED');
   console.log('Start random');
   if (!userList) {
     console.log('Users not found');
@@ -28,10 +23,10 @@ export const randomGroups = (
     }
     newGroups.push(tempGroup);
   }
-  const newGroupData: typeof groups.data = [];
+  const newGroupData: typeof tempGroups.data = [];
 
   // If there are no defined groups, create all new groups
-  if (!groups) {
+  if (!tempGroups) {
     for (let i = 0; i < newGroups.length; i++) {
       newGroupData.push({
         id: crypto.randomUUID(),
@@ -45,11 +40,11 @@ export const randomGroups = (
 
   // If there are some groups, re-use them
   for (let i = 0; i < newGroups.length; i++) {
-    console.log(groups.length, i, newGroups.length);
-    if (groups.length > i) {
+    console.log(tempGroups.length, i, newGroups.length);
+    if (tempGroups.length > i) {
       newGroupData.push({
-        id: groups[i].id,
-        title: groups[i].title,
+        id: tempGroups[i].id,
+        title: `Group ${i}`,
         participants: newGroups[i],
       });
     } else {
@@ -60,11 +55,13 @@ export const randomGroups = (
       });
     }
   }
-  setGroups(newGroupData);
-  setUngrouped({
-    id: 'UNGROUPED',
-    title: 'Ungrouped students',
-    participants: [],
-  });
+  setGroups([
+    {
+      id: 'UNGROUPED',
+      title: 'Ungrouped students',
+      participants: [],
+    },
+    ...newGroupData,
+  ]);
   return;
 };

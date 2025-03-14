@@ -60,6 +60,7 @@ function ActivityComponent() {
             <Link
               to="/modules/$module/activity/$id/quiz/$quiz/begin"
               params={{ module: module, id: id, quiz: q.id }}
+              key={q.id}
             >
               Begin Quiz {q.title}
             </Link>

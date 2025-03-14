@@ -125,9 +125,9 @@ function CalendarComponent() {
                 );
               })
               .map((f) => (
-                <div>
+                <div key={f.id}>
                   <Link
-                    className="relative flex flex-initial items-center bg-slate-300 hover:bg-slate-200 my-0.5 px-0.5 rounded-sm text-sm"
+                    className="relative my-0.5 flex flex-initial items-center rounded-sm bg-slate-300 px-0.5 text-sm hover:bg-slate-200"
                     to="/modules/$module/activity/$id"
                     params={{ module: f.module!, id: f.id }}
                   >

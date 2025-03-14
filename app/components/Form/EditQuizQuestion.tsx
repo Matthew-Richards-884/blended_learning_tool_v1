@@ -101,7 +101,7 @@ export function EditQuizQuestion({
         mode="array"
         children={(answerField) =>
           answerField.state.value.map((_, answerIndex) => (
-            <div>
+            <div key={answerIndex}>
               <FormInput
                 form={form}
                 placeholder="Answer Title"

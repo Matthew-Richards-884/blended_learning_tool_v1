@@ -183,7 +183,7 @@ export const EditQuizForm = ({ quizID }) => {
                       mode="array"
                       children={(field) =>
                         field.state.value.map((question, index) => (
-                          <div className="flex flex-row">
+                          <div className="flex flex-row" key={index}>
                             <div className="flex flex-auto">
                               <EditQuizQuestion
                                 form={form}

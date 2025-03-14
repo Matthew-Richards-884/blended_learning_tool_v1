@@ -38,12 +38,12 @@ export const Navbar = () => {
       <NavbarLink to={'/calendar'} text={'Calendar'} />
       <NavbarLink to={'/options'} text={'Options'} />
       {session.isSuccess && session.data.data.userEmail ? (
-        <div className="ms-auto">
+        <div className="ms-auto flex flex-row">
           <NavbarLink
             to={session.data.data.userEmail ? '/logout' : '/login'}
             text={session.data.data.userEmail ? <>Log Out</> : <>Log In</>}
           />
-          <div>{session.data.data.userEmail}</div>
+          <div className='flex my-auto'>{session.data.data.userEmail}</div>
         </div>
       ) : (
         <></>

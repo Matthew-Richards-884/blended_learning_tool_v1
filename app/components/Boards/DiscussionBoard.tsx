@@ -109,7 +109,7 @@ export const DiscussionBoard = ({
                 session?.data.userType === UserType.Teacher ||
                 session?.data.userType === UserType.Admin ||
                 session?.data.userEmail === message.userEmail ? (
-                  <div className="m-1 bg-gray-100 p-3 shadow">
+                  <div className="m-1 bg-gray-100 p-3 shadow" key={message.id}>
                     <div className="flex flex-row">
                       {message.private ? <div>Private message</div> : <></>}
                       {message.postID ? (
