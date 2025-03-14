@@ -1,4 +1,6 @@
 import { createFileRoute, Link, useRouter } from '@tanstack/react-router';
+import '../styles/main.css';
+
 
 export const Route = createFileRoute('/_navbar/_authed')({
   beforeLoad: ({ context }: { context: any }) => {

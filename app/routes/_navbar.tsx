@@ -3,6 +3,8 @@ import { Navbar } from '../components/Navbar';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Suspense, useEffect, useState } from 'react';
 import { LoadingSpinner } from '../components/LoadingSpinner';
+import '../styles/main.css';
+
 
 export const NAVBAR_HEIGHT = 3;
 

@@ -2,6 +2,8 @@ import { Link } from '@tanstack/react-router';
 import { useAppSession } from '../util/session';
 import { useQuery } from '@tanstack/react-query';
 import { createServerFn } from '@tanstack/start';
+import '../styles/main.css';
+
 
 export const getAppSession = createServerFn('GET', async () => {
   return await useAppSession();

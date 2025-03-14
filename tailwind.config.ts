@@ -12,6 +12,8 @@ export default {
     './_Server/**/*.{js,ts,jsx,tsx}',
     './assets/**/*.{js,ts,jsx,tsx}',
     './Assets/**/*.{js,ts,jsx,tsx}',
+    './**/assets/**/*.{js,ts,jsx,tsx}',
+    './**/Assets/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
     extend: {

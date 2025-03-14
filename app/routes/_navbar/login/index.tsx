@@ -6,6 +6,8 @@ import { hashPassword } from '../../../util/hashPassword';
 import { useAppSession } from '../../../util/session';
 import { signupFn } from '../signup';
 import { Auth } from '../../../components/Auth';
+import '../styles/main.css';
+
 
 export const Route = createFileRoute('/_navbar/login/')({
   component: LoginComponent,
