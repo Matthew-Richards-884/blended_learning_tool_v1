@@ -11,7 +11,7 @@
     "start": "vinxi start",
     "predeploy": "pnpm build",
     "deploy": "gh-pages -d build",
-    "postinstall": "prisma generate"
+    "postinstall": "pnpm prisma generate"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
