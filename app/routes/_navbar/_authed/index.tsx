@@ -71,7 +71,7 @@ function HomeComponent() {
             )}
           </div>
         </div>
-        <div className="flex flex-col sm:col-span-3 sm:block">
+        <div className="flex flex-col sm:col-span-5 sm:block">
           <h1 className="p-1 text-center text-2xl">Activities</h1>
           <div
             className={`sm:h-[var(--element-height)] sm:overflow-auto`}
@@ -90,7 +90,7 @@ function HomeComponent() {
             )}
           </div>
         </div>
-        <div className="flex flex-col sm:col-span-2 sm:block">
+        {/* <div className="flex flex-col sm:col-span-2 sm:block">
           <h1 className="p-1 text-center text-2xl">Activity Manager</h1>
           <div
             className={`h-[var(--element-height)] overflow-auto`}
@@ -102,7 +102,7 @@ function HomeComponent() {
           >
             <div className="col-span-2"></div>
           </div>
-        </div>
+        </div> */}
       </Suspense>
     </div>
   );

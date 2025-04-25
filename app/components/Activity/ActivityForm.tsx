@@ -8,6 +8,7 @@ import {
   getAllQuizMCQInfo,
   getAllQuizTextInfo,
   getGroupUsers,
+  getQuizData,
   getQuizQuestionOrder,
   getQuizzesByActivity,
   getUserByEmail,
@@ -50,6 +51,11 @@ export const ActivityForm = ({
       ? () => getUserByEmail(session!.data.userEmail)
       : skipToken,
     enabled: !!session,
+  }).data;
+
+  const quizData = useQuery({
+    queryKey: ['quiz', quizID],
+    queryFn: () => getQuizData(quizID),
   }).data;
 
   const quizSubmissionMutation = useMutation({
@@ -160,40 +166,55 @@ export const ActivityForm = ({
 
   return (
     <div className="h-full overflow-auto bg-slate-200 text-black">
-      <h1>Quiz</h1>
-      <form
-        onSubmit={(e) => {
-          console.log('E', e);
-          e.preventDefault();
-          e.stopPropagation();
-          console.log('FIELD INFO', form.fieldInfo);
-          form.handleSubmit();
-        }}
-      >
-        <div className="p-2">
-          <Suspense fallback={<div>Loading!</div>}>
-            {orderedQuestionArray?.map((question) => {
-              return question ? (
-                <QuizQuestion
-                  form={form}
-                  questionInfo={question}
-                  key={question.id}
-                ></QuizQuestion>
-              ) : (
-                <div>Something Went Wrong</div>
-              );
-            })}
-          </Suspense>
+      <div className="grid grid-cols-5">
+        <div className="col-span-1"></div>
+        <div className="col-span-3 m-3 rounded-md bg-gray-50 p-5 shadow-md">
+          <div className="flex w-full flex-col justify-center">
+            <h1 className="flex justify-center text-3xl">{quizData?.title}</h1>
+            <h2 className="flex justify-center text-xl text-gray-800">
+              {quizData?.description}
+            </h2>
+          </div>
+          <form
+            onSubmit={(e) => {
+              console.log('E', e);
+              e.preventDefault();
+              e.stopPropagation();
+              console.log('FIELD INFO', form.fieldInfo);
+              form.handleSubmit();
+            }}
+          >
+            <div className="p-2">
+              <Suspense fallback={<div>Loading!</div>}>
+                {orderedQuestionArray?.map((question) => {
+                  return question ? (
+                    <QuizQuestion
+                      form={form}
+                      questionInfo={question}
+                      key={question.id}
+                    ></QuizQuestion>
+                  ) : (
+                    <div>Something Went Wrong</div>
+                  );
+                })}
+              </Suspense>
+            </div>
+            <form.Subscribe
+              selector={(state) => [state.canSubmit, state.isSubmitting]}
+              children={([canSubmit, isSubmitting]) => (
+                <button
+                  type="submit"
+                  disabled={!canSubmit}
+                  className="cursor-pointer rounded-sm bg-gray-200 px-2 shadow-md hover:bg-gray-300"
+                >
+                  {isSubmitting ? '...' : 'Submit'}
+                </button>
+              )}
+            />
+          </form>
         </div>
-        <form.Subscribe
-          selector={(state) => [state.canSubmit, state.isSubmitting]}
-          children={([canSubmit, isSubmitting]) => (
-            <button type="submit" disabled={!canSubmit}>
-              {isSubmitting ? '...' : 'Submit'}
-            </button>
-          )}
-        />
-      </form>
+        <div className="col-span-1"></div>
+      </div>
     </div>
   );
 };

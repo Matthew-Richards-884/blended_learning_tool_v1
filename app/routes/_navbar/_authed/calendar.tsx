@@ -89,6 +89,14 @@ function CalendarComponent() {
 
     const calendarElementDateClass = 'relative flex h-6 justify-end';
 
+    const DateElement = ({ date }) => (
+      <p
+        className={`absolute ${new Date().toISOString().slice(0, 10) == date.toISOString().slice(0, 10) ? 'size-6 rounded-full bg-sky-300 me-1 ps-1' : 'px-2'}`}
+      >
+        {date.getDate()}
+      </p>
+    );
+
     return (
       <div className="grid h-[calc(var(--element-height)-3rem)] grid-cols-7 grid-rows-6">
         {preDays.map((v) => (
@@ -97,11 +105,7 @@ function CalendarComponent() {
             className={`bg-gray-200 text-gray-600 ${calendarElementClass}`}
           >
             <div className={calendarElementDateClass}>
-              <p
-                className={`absolute ${new Date().toISOString().slice(0, 10) == v.toISOString().slice(0, 10) ? 'rounded-full bg-blue-300 px-2' : ''}`}
-              >
-                {v.getDate()}
-              </p>
+              <DateElement date={v} />
             </div>
           </div>
         ))}
@@ -111,11 +115,7 @@ function CalendarComponent() {
             className={`bg-gray-100 ${calendarElementClass}`}
           >
             <div className={calendarElementDateClass}>
-              <p
-                className={`absolute ${new Date().toISOString().slice(0, 10) == v.toISOString().slice(0, 10) ? 'rounded-full bg-blue-300 px-2' : ''}`}
-              >
-                {v.getDate()}
-              </p>
+              <DateElement date={v} />
             </div>
             {activities.data
               ?.filter((b) => {
@@ -143,11 +143,7 @@ function CalendarComponent() {
             className={`bg-gray-200 text-gray-600 ${calendarElementClass}`}
           >
             <div className={calendarElementDateClass}>
-              <p
-                className={`absolute ${new Date().toISOString().slice(0, 10) == v.toISOString().slice(0, 10) ? 'rounded-full bg-blue-300 px-2' : ''}`}
-              >
-                {v.getDate()}
-              </p>
+              <DateElement date={v} />
             </div>
           </div>
         ))}

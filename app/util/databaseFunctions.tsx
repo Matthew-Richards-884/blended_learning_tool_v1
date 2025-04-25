@@ -333,6 +333,14 @@ export const createBoard = createServerFn(
   }
 );
 
+export const getQuizData = createServerFn('GET', async (quizID: string) => {
+  return await prisma.quizzes.findFirst({
+    where: {
+      id: quizID,
+    },
+  });
+});
+
 export const createQuizSubmission = createServerFn(
   'GET',
   async (params: { quizID: string; users: Users[]; completeDate: Date }) => {

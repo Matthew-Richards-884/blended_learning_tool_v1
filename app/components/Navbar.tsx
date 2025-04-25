@@ -38,7 +38,7 @@ export const Navbar = () => {
     >
       <NavbarLink to={'/'} text={'Home'} />
       <NavbarLink to={'/calendar'} text={'Calendar'} />
-      <NavbarLink to={'/options'} text={'Options'} />
+      {/* <NavbarLink to={'/options'} text={'Options'} /> */}
       {session.isSuccess && session.data.data.userEmail ? (
         <div className="ms-auto flex flex-row">
           <NavbarLink
