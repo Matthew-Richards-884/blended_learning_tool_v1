@@ -16,7 +16,7 @@ import {
 } from '../../../../../../../util/databaseFunctions';
 import { DiscussionBoard } from '../../../../../../../components/Boards/DiscussionBoard';
 import { getAppSession } from '../../../../../../../components/Navbar';
-import { ActivityTooltip } from '../../../../../../../components/Activity/ActivityTooltip';
+import { Tooltip } from '../../../../../../../components/Activity/Tooltip';
 import { QuizCard } from '../../../../../../../components/Form/QuizCard';
 import { UserType } from '@prisma/client';
 
@@ -152,7 +152,7 @@ function ActivityComponent() {
                     d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
                   />
                 </svg>
-                <ActivityTooltip
+                <Tooltip
                   id={activity.data.id + '-edit'}
                   text={'Edit'}
                 />
@@ -177,7 +177,7 @@ function ActivityComponent() {
                   d="m5.25 4.5 7.5 7.5-7.5 7.5m6-15 7.5 7.5-7.5 7.5"
                 />
               </svg>
-              <ActivityTooltip
+              <Tooltip
                 id={activity.data.id + '-begin'}
                 text={'Begin Activity'}
               />

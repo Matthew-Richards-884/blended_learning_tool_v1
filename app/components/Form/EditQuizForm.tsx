@@ -17,7 +17,7 @@ import {
   innerQuestionClass,
   questionClass,
 } from './EditQuizQuestion';
-import { ActivityTooltip } from '../Activity/ActivityTooltip';
+import { Tooltip } from '../Activity/Tooltip';
 import { QuestionType } from '../../../prisma/types';
 import { FieldInfo } from '../FieldInfo';
 import { useRouter } from '@tanstack/react-router';
@@ -209,7 +209,7 @@ export const EditQuizForm = ({ module, quizID, activityID }) => {
                           d="M12 4.5v15m7.5-7.5h-15"
                         />
                       </svg>
-                      <ActivityTooltip
+                      <Tooltip
                         id={'add-quiz-question'}
                         text={'Add Question'}
                       />
@@ -250,7 +250,7 @@ export const EditQuizForm = ({ module, quizID, activityID }) => {
                                     d="M6 18 18 6M6 6l12 12"
                                   />
                                 </svg>
-                                <ActivityTooltip
+                                <Tooltip
                                   id={'remove-quiz-question-' + index}
                                   text={'Remove Question'}
                                 />

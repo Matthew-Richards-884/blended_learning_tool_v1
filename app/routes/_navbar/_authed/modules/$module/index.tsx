@@ -15,7 +15,7 @@ import {
   getModule,
 } from '../../../../../util/databaseFunctions';
 import { ActivityDisplay } from '../../../../../components/Activity/ActivityDisplay';
-import { ActivityTooltip } from '../../../../../components/Activity/ActivityTooltip';
+import { Tooltip } from '../../../../../components/Activity/Tooltip';
 import { DiscussionBoard } from '../../../../../components/Boards/DiscussionBoard';
 
 export const Route = createFileRoute('/_navbar/_authed/modules/$module/')({
@@ -122,7 +122,7 @@ function ModuleComponent() {
               d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
             />
           </svg>
-          <ActivityTooltip id="create-activity" text={'Create Activity'} />
+          <Tooltip id="create-activity" text={'Create Activity'} />
         </Link>
       </div>
       <div className="grid grid-cols-3">
