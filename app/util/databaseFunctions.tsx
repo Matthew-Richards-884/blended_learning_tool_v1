@@ -247,7 +247,7 @@ export const getBoardByActivity = createServerFn(
 
 export const getBoardByActivityGroup = createServerFn(
   'GET',
-  async (params: { activity: string; group: string }) => {
+  async (params: { activity: string; group: string | undefined }) => {
     return await prisma.board.findFirst({
       where: {
         group: params.group,
@@ -304,6 +304,7 @@ export const createBoard = createServerFn(
     defaultPrivate,
     locationType,
     locationID,
+    group,
   }: {
     id: string;
     title: string;
@@ -311,6 +312,7 @@ export const createBoard = createServerFn(
     defaultPrivate: boolean;
     locationType: LocationType;
     locationID: string;
+    group?: string;
   }) => {
     return await prisma.board.create({
       data: {
@@ -318,6 +320,7 @@ export const createBoard = createServerFn(
         title: title,
         description: description,
         defaultPrivate: defaultPrivate,
+        group: group,
         BoardLocation: {
           create: {
             type: locationType,

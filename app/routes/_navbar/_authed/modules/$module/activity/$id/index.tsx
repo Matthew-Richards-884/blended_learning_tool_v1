@@ -6,8 +6,10 @@ import {
   useQueryClient,
 } from '@tanstack/react-query';
 import {
+  createBoard,
   deleteQuiz,
   getActivity,
+  getBoardByActivity,
   getBoardByActivityGroup,
   getGroupByUserActivity,
   getQuizCardsInfo,
@@ -16,6 +18,7 @@ import { DiscussionBoard } from '../../../../../../../components/Boards/Discussi
 import { getAppSession } from '../../../../../../../components/Navbar';
 import { ActivityTooltip } from '../../../../../../../components/Activity/ActivityTooltip';
 import { QuizCard } from '../../../../../../../components/Form/QuizCard';
+import { UserType } from '@prisma/client';
 
 export const Route = createFileRoute(
   '/_navbar/_authed/modules/$module/activity/$id/'
@@ -51,11 +54,12 @@ function ActivityComponent() {
 
   const board = useQuery({
     queryKey: ['board', module, id, 'ActivityComponent'],
-    queryFn: group.data?.id
-      ? () => getBoardByActivityGroup({ activity: id, group: group.data!.id })
+    queryFn: group.isSuccess
+      ? () => getBoardByActivityGroup({ activity: id, group: group.data?.id })
       : skipToken,
-    enabled: !!group.data?.id,
+    enabled: !!group.isSuccess,
   });
+  console.warn(board.data);
 
   const quizInfo = useQuery({
     queryKey: ['quizInfo', id],
@@ -84,6 +88,30 @@ function ActivityComponent() {
     removeQuizMutation.mutate(quizID);
   };
 
+  const createBoardMutation = useMutation({
+    mutationFn: (params: {
+      title: string;
+      description: string;
+      defaultPrivate: boolean;
+      locationID: string;
+      groupID: string | undefined;
+    }) =>
+      createBoard({
+        id: crypto.randomUUID(),
+        title: params.title,
+        description: params.description,
+        defaultPrivate: params.defaultPrivate,
+        locationType: 'Activities',
+        locationID: params.locationID,
+        group: params.groupID,
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['board', module, id, 'ActivityComponent'],
+      });
+    },
+  });
+
   // console.log('Activity group', activity.data);
   // console.log('Group', group.data);
   // console.log('Board', board);
@@ -104,7 +132,7 @@ function ActivityComponent() {
             </div>
           </div>
           <div className="flex flex-none flex-col items-center justify-around align-middle">
-            {session?.data.userType == "Teacher" ? (
+            {session?.data.userType == 'Teacher' ? (
               <Link
                 to="/modules/$module/activity/$id/edit"
                 params={{ module: module, id: activity.data.id }}
@@ -160,38 +188,45 @@ function ActivityComponent() {
         <div>Loading...</div>
       )}
 
-      {/* <Link
-        to="/modules/$module/activity/$id/begin"
-        params={{ module: module, id: id }}
-      >
-        Begin Quiz
-      </Link> */}
-      {board.isSuccess && board.data ? (
-        <DiscussionBoard
-          boardCode={board.data.id}
-          group={group ? group.data!.id : undefined}
-        />
-      ) : board.fetchStatus === 'idle' &&
-        session?.data.userType === 'Teacher' ? (
-        <button className="rounded-xs px-1 hover:cursor-pointer hover:bg-gray-100">
-          Create new board
-        </button>
-      ) : (
-        <div>Loading...</div>
-      )}
-      <div className="flex flex-col">
-        {quizInfo.data ? (
-          quizInfo.data.map((q) => (
-            <QuizCard
-              moduleCode={module}
-              activity={id}
-              quizInfo={q}
-              removeQuiz={removeQuiz}
-              key={q.id}
-            />
-          ))
+      <div className="grid grid-cols-2">
+        <div className="flex flex-col">
+          {quizInfo.data ? (
+            quizInfo.data.map((q) => (
+              <QuizCard
+                moduleCode={module}
+                activity={id}
+                quizInfo={q}
+                removeQuiz={removeQuiz}
+                key={q.id}
+              />
+            ))
+          ) : (
+            <div>Loading Quizzes...</div>
+          )}
+        </div>
+        {board.isSuccess && board.data ? (
+          <DiscussionBoard
+            boardCode={board.data.id}
+            group={group ? group.data?.id : undefined}
+          />
+        ) : board.fetchStatus === 'idle' &&
+          session?.data.userType === 'Teacher' ? (
+          <button
+            onClick={() =>
+              createBoardMutation.mutate({
+                title: 'New Board',
+                description: 'New board description',
+                defaultPrivate: true,
+                locationID: id,
+                groupID: group.data?.id,
+              })
+            }
+            className="mt-1 mb-0.5 cursor-pointer rounded-sm bg-gray-100 px-2 shadow-md hover:bg-gray-50"
+          >
+            Create new board
+          </button>
         ) : (
-          <div>Loading Quizzes...</div>
+          <div>Loading...</div>
         )}
       </div>
     </div>

@@ -98,10 +98,10 @@ export const DiscussionBoard = ({
       {boardInfo.isSuccess && boardInfo.data ? (
         <div className="grid w-full grid-rows-4 bg-gray-200 text-black">
           <div className="row-span-3 w-full overflow-auto">
-            <div className="m-1 border border-gray-300 bg-gray-200 p-3 shadow">
+            <div className="m-1 bg-gray-100 p-3 shadow-md">
               <div>{boardInfo.data.title}</div>
               <div>{boardInfo.data.description}</div>
-              <div>Group: {groupInfo.data?.title}</div>
+              {group ? <div>Group: {groupInfo.data?.title}</div> : <></>}
             </div>
             <div>
               {boardInfo.data.Post.map((message) =>
@@ -111,7 +111,26 @@ export const DiscussionBoard = ({
                 session?.data.userEmail === message.userEmail ? (
                   <div className="m-1 bg-gray-100 p-3 shadow" key={message.id}>
                     <div className="flex flex-row">
-                      {message.private ? <div>Private message</div> : <></>}
+                      {message.private ? (
+                        <div className="flex justify-center align-middle">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="my-auto flex size-4"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88"
+                            />
+                          </svg>
+                        </div>
+                      ) : (
+                        <></>
+                      )}
                       {message.postID ? (
                         <div className="me-2 flex-auto pe-1">
                           Reply to:{' '}
@@ -152,7 +171,7 @@ export const DiscussionBoard = ({
               )}
             </div>
           </div>
-          <div className="m-2 bg-gray-100 p-2">
+          <div className="m-1 bg-gray-100 p-2">
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -226,8 +245,22 @@ export const DiscussionBoard = ({
                     checked={privateMessage}
                   />
                   <div className="peer relative h-6 w-11 rounded-full bg-gray-200 peer-checked:bg-green-600 after:absolute after:start-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:after:translate-x-full peer-checked:after:border-white rtl:peer-checked:after:-translate-x-full"></div>
-                  <span className="ms-3 text-sm font-medium text-gray-900">
-                    Private
+                  <span className="ms-3 flex text-sm font-medium text-gray-900">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="size-4"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88"
+                      />
+                    </svg>
+                    Private message
                   </span>
                 </label>
               </div>

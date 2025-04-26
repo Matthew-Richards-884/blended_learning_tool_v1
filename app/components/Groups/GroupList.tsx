@@ -11,6 +11,7 @@ import {
 import { DragDropProvider } from '@dnd-kit/react';
 import { GroupElement } from './GroupElement';
 import { move } from '@dnd-kit/helpers';
+import { questionClass } from '../Form/EditQuizQuestion';
 
 const UNGROUPED = 'UNGROUPED';
 
@@ -32,13 +33,24 @@ export const GroupList = ({
     queryFn: () => getActivityUsers(activityID),
   });
 
+  const [submitting, setSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
+
   const queryClient = useQueryClient();
   const createGroupsMutation = useMutation({
     mutationFn: (groups: createGroupsType) => createGroups(groups),
+    onMutate: () => {
+      setSubmitting(true);
+      setSuccess(false);
+    },
+    onSettled: () => {
+      setTimeout(() => setSubmitting(false), 1000);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ['activity', activityID, 'groups'],
       });
+      setSuccess(true);
     },
   });
 
@@ -187,10 +199,10 @@ export const GroupList = ({
               />
             </div>
             <button
-              className="mx-0.5 cursor-pointer rounded-sm bg-gray-100 px-1 shadow-md hover:bg-gray-200"
+              className={`mx-0.5 cursor-pointer rounded-sm ${submitting && success ? 'bg-green-400' : 'bg-gray-100'} w-24 px-1 shadow-md hover:bg-gray-200`}
               onClick={() => saveGroups()}
             >
-              Save groups
+              {submitting ? (success ? 'Saved!' : 'Saving...') : 'Save groups'}
             </button>
             <button
               className="mx-0.5 cursor-pointer rounded-sm bg-gray-100 px-1 shadow-md hover:bg-gray-200"
@@ -212,7 +224,7 @@ export const GroupList = ({
               <div key={index}>
                 {groupId !== UNGROUPED ? (
                   <GroupContainer key={groupId} id={groupId} index={index}>
-                    <div className="bg-gray-100 px-1">
+                    <div className={questionClass}>
                       <input
                         type="text"
                         value={groupInfo[groupId]}
@@ -222,6 +234,7 @@ export const GroupList = ({
                             [groupId]: v.target.value,
                           })
                         }
+                        className="w-full flex-1 border-0 bg-transparent py-1 ps-1 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:ring-0 sm:leading-6"
                       ></input>
                     </div>
                     <div className="bg-gray-200">

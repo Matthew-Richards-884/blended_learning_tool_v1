@@ -91,7 +91,7 @@ function CalendarComponent() {
 
     const DateElement = ({ date }) => (
       <p
-        className={`absolute ${new Date().toISOString().slice(0, 10) == date.toISOString().slice(0, 10) ? 'size-6 rounded-full bg-sky-300 me-1 ps-1' : 'px-2'}`}
+        className={`absolute ${new Date().toISOString().slice(0, 10) == date.toISOString().slice(0, 10) ? 'me-1 size-6 rounded-full bg-sky-300 ps-1' : 'px-2'}`}
       >
         {date.getDate()}
       </p>
@@ -107,6 +107,24 @@ function CalendarComponent() {
             <div className={calendarElementDateClass}>
               <DateElement date={v} />
             </div>
+            {activities.data
+              ?.filter((b) => {
+                return (
+                  new Date(b.deadline).toISOString().slice(0, 10) ==
+                  v.toISOString().slice(0, 10)
+                );
+              })
+              .map((f) => (
+                <div key={f.id}>
+                  <Link
+                    className="relative my-0.5 flex flex-initial items-center rounded-sm bg-slate-300 px-0.5 text-sm hover:bg-slate-200"
+                    to="/modules/$module/activity/$id"
+                    params={{ module: f.module!, id: f.id }}
+                  >
+                    {f.title}
+                  </Link>
+                </div>
+              ))}
           </div>
         ))}
         {days.map((v) => (
@@ -145,6 +163,24 @@ function CalendarComponent() {
             <div className={calendarElementDateClass}>
               <DateElement date={v} />
             </div>
+            {activities.data
+              ?.filter((b) => {
+                return (
+                  new Date(b.deadline).toISOString().slice(0, 10) ==
+                  v.toISOString().slice(0, 10)
+                );
+              })
+              .map((f) => (
+                <div key={f.id}>
+                  <Link
+                    className="relative my-0.5 flex flex-initial items-center rounded-sm bg-slate-300 px-0.5 text-sm hover:bg-slate-200"
+                    to="/modules/$module/activity/$id"
+                    params={{ module: f.module!, id: f.id }}
+                  >
+                    {f.title}
+                  </Link>
+                </div>
+              ))}
           </div>
         ))}
       </div>
@@ -170,7 +206,7 @@ function CalendarComponent() {
     'December',
   ];
 
-  const dayClass = `flex justify-end bg-gray-200 text-gray-600 ${calendarElementClass}`;
+  const dayClass = `flex justify-end bg-gray-100 text-gray-800 ${calendarElementClass}`;
 
   return (
     <div className="grid h-[var(--content-height)] w-screen grid-cols-6 bg-slate-200 text-black">
@@ -183,7 +219,7 @@ function CalendarComponent() {
             <div className="flex h-8 justify-center justify-items-center">
               <button
                 onClick={() => setMonthYear(month - 1)}
-                className="my-1 cursor-pointer rounded-md border border-gray-300 shadow-lg hover:bg-slate-100"
+                className="my-1 cursor-pointer rounded-md border border-gray-300 bg-gray-100 shadow-lg hover:bg-gray-50"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -205,13 +241,13 @@ function CalendarComponent() {
                   setMonth(new Date().getMonth());
                   setYear(new Date().getFullYear());
                 }}
-                className="my-1 flex cursor-pointer rounded-md border border-gray-300 px-3 shadow-lg hover:bg-slate-100"
+                className="my-1 flex cursor-pointer rounded-md border border-gray-300 bg-gray-100 px-3 shadow-lg hover:bg-gray-50"
               >
                 <span className="self-center text-sm">Today</span>
               </button>
               <button
                 onClick={() => setMonthYear(month + 1)}
-                className="my-1 cursor-pointer rounded-md border border-gray-300 shadow-lg hover:bg-slate-100"
+                className="my-1 cursor-pointer rounded-md border border-gray-300 bg-gray-100 shadow-lg hover:bg-gray-50"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

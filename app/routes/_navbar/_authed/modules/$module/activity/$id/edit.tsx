@@ -34,13 +34,17 @@ function ActivityComponent() {
 
   useEffect(() => {
     setActivityInfo(activity.data);
-  }, [activity]);
+    console.log('Setting to activity');
+  }, [activity.isSuccess]);
 
   const router = useRouter();
   const createActivityMutation = useMutation({
     mutationFn: (activity: typeof activityInfo) =>
       updateActivity(activity as Activities),
     onSuccess: async () => {
+      queryClient.invalidateQueries({
+        queryKey: ['id', module, id, 'ActivityEdit'],
+      });
       await router.invalidate();
       router.navigate({
         to: activityInfo ? '/modules/$module/activity/$id' : '/modules/$module',
@@ -66,6 +70,9 @@ function ActivityComponent() {
 
   const createQuizMutation = useMutation({
     mutationFn: (activity: createQuizType) => createQuiz(activity),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['quizInfo', id] });
+    },
   });
 
   const newQuiz = () => {
@@ -148,7 +155,7 @@ function ActivityComponent() {
                   onClick={async () =>
                     await createQuizMutation.mutateAsync(newQuiz())
                   }
-                  className="cursor-pointer"
+                  className="cursor-pointer rounded-sm bg-gray-50 px-2 shadow-md hover:bg-gray-100"
                 >
                   Create Quiz
                 </button>

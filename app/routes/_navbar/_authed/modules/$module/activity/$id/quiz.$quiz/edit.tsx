@@ -10,5 +10,5 @@ export const Route = createFileRoute(
 function QuizEditComponent() {
   const { module, id, quiz } = Route.useParams();
 
-  return <EditQuizForm quizID={quiz} />;
+  return <EditQuizForm module={module} quizID={quiz} activityID={id} />;
 }

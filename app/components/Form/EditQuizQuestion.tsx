@@ -9,11 +9,11 @@ import { ZodType, ZodTypeDef } from 'zod';
 import { question } from './EditQuizForm';
 
 export const questionClass =
-  'flex focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 transition-all';
+  'flex focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 transition-all bg-white';
 export const innerQuestionClass =
   'border-0 bg-transparent py-1 pl-1 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-0 sm:leading-6';
 
-const FormInput = ({
+export const FormInput = ({
   form,
   name,
   placeholder,
@@ -57,12 +57,16 @@ const FormInput = ({
 
 type formType = FormApi<
   {
+    quizTitle: string;
+    quizDescription: string;
     questions: question[];
   },
   Validator<unknown, ZodType<any, ZodTypeDef, any>>
 > &
   ReactFormApi<
     {
+      quizTitle: string;
+      quizDescription: string;
       questions: question[];
     },
     Validator<unknown, ZodType<any, ZodTypeDef, any>>

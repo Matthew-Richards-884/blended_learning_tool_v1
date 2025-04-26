@@ -1,10 +1,7 @@
-import { useForm } from '@tanstack/react-form';
+import { FieldApi, useForm } from '@tanstack/react-form';
 import { zodValidator } from '@tanstack/zod-form-adapter';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import {
-  getAllQuizInfo,
-  updateQuiz,
-} from '../../util/databaseFunctions';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { getAllQuizInfo, updateQuiz } from '../../util/databaseFunctions';
 import { Suspense, useEffect, useState } from 'react';
 import { getAppSession } from '../Navbar';
 import {
@@ -14,9 +11,16 @@ import {
   QuizQuestions,
   Quizzes,
 } from '@prisma/client';
-import { EditQuizQuestion } from './EditQuizQuestion';
+import {
+  EditQuizQuestion,
+  FormInput,
+  innerQuestionClass,
+  questionClass,
+} from './EditQuizQuestion';
 import { ActivityTooltip } from '../Activity/ActivityTooltip';
 import { QuestionType } from '../../../prisma/types';
+import { FieldInfo } from '../FieldInfo';
+import { useRouter } from '@tanstack/react-router';
 
 const prisma = new PrismaClient();
 
@@ -35,7 +39,9 @@ export type question = {
   quiz: string | null;
 };
 
-export const EditQuizForm = ({ quizID }) => {
+export const EditQuizForm = ({ module, quizID, activityID }) => {
+  const queryClient = useQueryClient();
+  const router = useRouter();
   const quizEditMutation = useMutation({
     mutationFn: (
       quizInfo: Quizzes & {
@@ -45,7 +51,22 @@ export const EditQuizForm = ({ quizID }) => {
         })[];
       }
     ) => updateQuiz(quizInfo),
+    onSuccess: async () => {
+      queryClient.invalidateQueries({
+        queryKey: ['quizInfo', 'radio', 'editQuizForm', quizID],
+      });
+      returnToActivity();
+      return;
+    },
   });
+
+  const returnToActivity = async () => {
+    await router.invalidate();
+    router.navigate({
+      to: activityID ? '/modules/$module/activity/$id' : '/modules/$module',
+      params: { id: activityID, module: module },
+    });
+  };
 
   const session = useQuery({
     queryKey: ['session', 'editQuizForm'],
@@ -89,6 +110,8 @@ export const EditQuizForm = ({ quizID }) => {
 
   const form = useForm({
     defaultValues: {
+      quizTitle: quizInfo?.title ?? 'Untitled Quiz',
+      quizDescription: quizInfo?.description ?? 'No Description',
       questions: quizInfo?.questions ?? ([] as question[]),
     },
     onSubmit: async ({ value }) => {
@@ -96,7 +119,14 @@ export const EditQuizForm = ({ quizID }) => {
       if (quizInfo && value.questions) {
         quizEditMutation.mutateAsync({
           ...quizInfo,
+          title: value.quizTitle,
+          description: value.quizDescription,
           questions: value.questions,
+          QuizQuestionOrder: value.questions.map((v, i) => ({
+            quizID: quizID,
+            questionID: v.id,
+            position: i,
+          })),
         });
       }
     },
@@ -141,8 +171,20 @@ export const EditQuizForm = ({ quizID }) => {
               <div className="col-start-2 col-end-6">
                 <Suspense fallback={<div>Loading!</div>}>
                   <div>
-                    <h1 className="text-2xl">{quizInfo.title}</h1>
-                    <h2 className="text-lg">{quizInfo.description}</h2>
+                    <FormInput
+                      form={form}
+                      name={'quizTitle'}
+                      placeholder="Untitled Quiz"
+                      outerClass={`${questionClass} w-4/5 border-b border-gray-300 drop-shadow-sm`}
+                      innerClass={`w-full flex-1 text-xl ${innerQuestionClass}`}
+                    />
+                    <FormInput
+                      form={form}
+                      name={'quizDescription'}
+                      placeholder="No Description"
+                      outerClass={`${questionClass} w-4/5 border-b border-gray-300 drop-shadow-sm`}
+                      innerClass={`w-full flex-1 text-xl ${innerQuestionClass}`}
+                    />
                     <button
                       type="button"
                       onClick={() =>
@@ -151,7 +193,7 @@ export const EditQuizForm = ({ quizID }) => {
                           newQuestion() as question
                         )
                       }
-                      className="relative cursor-pointer rounded-sm bg-gray-100 px-1 shadow-md hover:bg-gray-200"
+                      className="relative mt-1 flex h-min w-min flex-auto cursor-pointer flex-row rounded-sm bg-gray-100 shadow-md hover:bg-gray-200"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -234,6 +276,12 @@ export const EditQuizForm = ({ quizID }) => {
                     </button>
                   )}
                 />
+                <button
+                  className="cursor-pointer rounded-sm bg-gray-100 px-1 shadow-md hover:bg-gray-200"
+                  onClick={() => returnToActivity()}
+                >
+                  Back
+                </button>
               </div>
             </div>
           </form>

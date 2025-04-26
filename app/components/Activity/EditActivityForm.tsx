@@ -90,7 +90,7 @@ export const EditActivityForm = ({ activityInfo, form, setActivityInfo }) => (
                       duration: e.target.valueAsNumber,
                     })
                   }
-                  className="text-md w-full flex-1 border-0 bg-transparent py-1 pl-1 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-0 sm:leading-6"
+                  className="text-md w-full flex-1 border-0 bg-transparent py-1 px-1 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-0 sm:leading-6"
                 />
               </div>
               <FieldInfo field={field} />
@@ -140,9 +140,9 @@ export const EditActivityForm = ({ activityInfo, form, setActivityInfo }) => (
           <button
             type="submit"
             disabled={!canSubmit}
-            className="hover:cursor-pointer hover:bg-gray-200 px-1 rounded-xs mt-2"
+            className="hover:cursor-pointer hover:bg-gray-200 px-1 rounded-xs mt-2 bg-gray-50 shadow-sm"
           >
-            {isSubmitting ? '...' : 'Submit'}
+            {isSubmitting ? 'Submitting...' : 'Submit'}
           </button>
         )}
       />

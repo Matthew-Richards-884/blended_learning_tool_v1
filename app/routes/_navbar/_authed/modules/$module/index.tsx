@@ -70,7 +70,7 @@ function ModuleComponent() {
   activities ? console.log('DATE', activities[0].deadline) : null;
 
   return (
-    <div className="w-screen overflow-auto bg-violet-200 p-2 text-black">
+    <div className="w-screen h-full overflow-auto bg-slate-200 p-2 text-black">
       <div className="my-2 flex flex-row bg-slate-50 p-2 shadow-md">
         <div className="flex-grow">
           <div className="flex flex-row">

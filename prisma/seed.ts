@@ -1,4 +1,4 @@
-import { PrismaClient} from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { hashPassword } from '../app/util/hashPassword';
 
 const prisma = new PrismaClient();
@@ -22,7 +22,7 @@ async function main() {
 
   const teacher = await prisma.users.create({
     data: {
-      email: 't@t.com',
+      email: 'teacher@example.com',
       username: 't',
       password: await hashPassword('t'),
       type: 'Teacher',
@@ -37,9 +37,9 @@ async function main() {
 
   const student1 = await prisma.users.create({
     data: {
-      email: 'u@u.com',
-      username: 'u',
-      password: await hashPassword('u'),
+      email: 'student-1@example.com',
+      username: 'Student One',
+      password: await hashPassword('1'),
       type: 'Student',
       modules: {
         connectOrCreate: [
@@ -52,9 +52,9 @@ async function main() {
 
   const student2 = await prisma.users.create({
     data: {
-      email: 'b@b.com',
-      username: 'b',
-      password: await hashPassword('b'),
+      email: 'student-2@example.com',
+      username: 'Student Two',
+      password: await hashPassword('2'),
       type: 'Student',
       modules: {
         connectOrCreate: [
@@ -67,9 +67,9 @@ async function main() {
 
   const student3 = await prisma.users.create({
     data: {
-      email: 'c@c.com',
-      username: 'c',
-      password: await hashPassword('c'),
+      email: 'student-3@example.com',
+      username: 'Student 3',
+      password: await hashPassword('3'),
       type: 'Student',
       modules: {
         connectOrCreate: [
@@ -82,9 +82,9 @@ async function main() {
 
   await prisma.users.create({
     data: {
-      email: 'd@d.com',
-      username: 'd',
-      password: await hashPassword('d'),
+      email: 'student-4@example.com',
+      username: 'Student Four',
+      password: await hashPassword('4'),
       type: 'Student',
       modules: {
         connectOrCreate: [
@@ -97,9 +97,24 @@ async function main() {
 
   await prisma.users.create({
     data: {
-      email: 'e@e.com',
-      username: 'e',
-      password: await hashPassword('e'),
+      email: 'student-5@example.com',
+      username: 'Student Five',
+      password: await hashPassword('5'),
+      type: 'Student',
+      modules: {
+        connectOrCreate: [
+          { where: { id: module1.id }, create: module1 },
+          { where: { id: module2.id }, create: module2 },
+        ],
+      },
+    },
+  });
+
+  const student6 = await prisma.users.create({
+    data: {
+      email: 'student-6@example.com',
+      username: 'Student Six',
+      password: await hashPassword('6'),
       type: 'Student',
       modules: {
         connectOrCreate: [
@@ -112,24 +127,9 @@ async function main() {
 
   await prisma.users.create({
     data: {
-      email: 'f@f.com',
-      username: 'f',
-      password: await hashPassword('f'),
-      type: 'Student',
-      modules: {
-        connectOrCreate: [
-          { where: { id: module1.id }, create: module1 },
-          { where: { id: module2.id }, create: module2 },
-        ],
-      },
-    },
-  });
-
-  await prisma.users.create({
-    data: {
-      email: 'g@g.com',
-      username: 'g',
-      password: await hashPassword('g'),
+      email: 'student-7@example.com',
+      username: 'Student Seven',
+      password: await hashPassword('7'),
       type: 'Student',
       modules: {
         connectOrCreate: [
@@ -144,7 +144,7 @@ async function main() {
     data: {
       title: 'group 1',
       participants: {
-        connect: [student1, student2],
+        connect: [student1, student2, student6],
       },
     },
   });
@@ -163,7 +163,7 @@ async function main() {
       title: 'Activity A',
       description: 'A basic quiz',
       duration: 10,
-      deadline: new Date('2024-10-11 18:00').toISOString(),
+      deadline: new Date('2025-04-27 18:00').toISOString(),
       module: 'COMP30020',
       UserGroups: { connect: [activityGroup1] },
     },
@@ -173,7 +173,7 @@ async function main() {
       title: 'Activity B',
       description: 'A video to watch',
       duration: 15,
-      deadline: new Date('2024-10-17 18:00').toISOString(),
+      deadline: new Date('2025-04-28 18:00').toISOString(),
       module: 'COMP30020',
       UserGroups: { connect: [activityGroup2] },
     },
@@ -183,7 +183,7 @@ async function main() {
       title: 'Activity C',
       description: 'A more complex quiz',
       duration: 30,
-      deadline: new Date('2024-10-15 18:00').toISOString(),
+      deadline: new Date('2025-04-28 18:00').toISOString(),
       module: 'COMP30020',
     },
   });
@@ -192,7 +192,7 @@ async function main() {
       title: 'Activity D',
       description: 'An exercise sheet',
       duration: 20,
-      deadline: new Date('2024-10-21 18:00').toISOString(),
+      deadline: new Date('2025-05-01 18:00').toISOString(),
       module: 'COMP30020',
     },
   });
@@ -202,7 +202,7 @@ async function main() {
       title: 'Activity E',
       description: 'A basic quiz',
       duration: 10,
-      deadline: new Date('2024-10-11 18:00').toISOString(),
+      deadline: new Date('2025-04-30 18:00').toISOString(),
       module: 'COMP50020',
     },
   });
@@ -211,7 +211,7 @@ async function main() {
       title: 'Activity F',
       description: 'A video to watch',
       duration: 15,
-      deadline: new Date('2024-10-17 18:00').toISOString(),
+      deadline: new Date('2025-05-05 18:00').toISOString(),
       module: 'COMP50020',
     },
   });
@@ -220,7 +220,7 @@ async function main() {
       title: 'Activity G',
       description: 'A more complex quiz',
       duration: 30,
-      deadline: new Date('2024-10-15 18:00').toISOString(),
+      deadline: new Date('2025-06-03 18:00').toISOString(),
       module: 'COMP50020',
     },
   });
@@ -229,7 +229,7 @@ async function main() {
       title: 'Activity H',
       description: 'An exercise sheet',
       duration: 20,
-      deadline: new Date('2024-10-21 18:00').toISOString(),
+      deadline: new Date('2025-05-03 18:00').toISOString(),
       module: 'COMP50020',
     },
   });
@@ -239,7 +239,7 @@ async function main() {
       name: 'Intro to Lecture',
       description: 'The introduction lecture to stuff',
       url: 'SomeLinkGoesHere',
-      type: "Video",
+      type: 'Video',
     },
   });
   await prisma.media.create({
@@ -247,7 +247,7 @@ async function main() {
       name: 'Intro to Lecture 2',
       description: 'The introduction lecture to stuff',
       url: 'SomeLinkGoesHere2',
-      type: "Video",
+      type: 'Video',
     },
   });
 
@@ -263,7 +263,7 @@ async function main() {
     data: {
       title: 'Quiz Question 1',
       description: 'The first quiz question',
-      type: "radio",
+      type: 'radio',
       quiz: quiz1.id,
     },
   });
@@ -311,7 +311,7 @@ async function main() {
     data: {
       title: 'Quiz Question 2',
       description: 'The second quiz question',
-      type: "text",
+      type: 'text',
       quiz: quiz1.id,
     },
   });
@@ -335,7 +335,7 @@ async function main() {
     data: {
       title: 'Quiz Question 3',
       description: 'The third quiz question',
-      type: "radio",
+      type: 'radio',
       quiz: quiz1.id,
     },
   });
@@ -367,7 +367,7 @@ async function main() {
     data: {
       title: 'Quiz Question 4',
       description: 'The fourth quiz question',
-      type: "text",
+      type: 'text',
       quiz: quiz1.id,
     },
   });
