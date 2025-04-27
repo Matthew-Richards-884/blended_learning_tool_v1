@@ -8,14 +8,14 @@ async function main() {
   const module1 = await prisma.modules.create({
     data: {
       title: 'Third Year Project',
-      code: 'COMP30020',
+      code: 'COMP30030',
       description: 'The third year project module',
     },
   });
   const module2 = await prisma.modules.create({
     data: {
       title: 'Fifth Year Project',
-      code: 'COMP50020',
+      code: 'COMP50040',
       description: 'The fifth year project module',
     },
   });
